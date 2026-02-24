@@ -10,7 +10,7 @@ export default async function DashboardPage() {
         <div className="space-y-6">
             <div className="flex justify-between items-end px-1">
                 <div className="space-y-1">
-                    <h2 className="text-2xl font-black tracking-tighter uppercase leading-none">DASHBOARD 🚀 LIVE</h2>
+                    <h2 className="text-2xl font-black tracking-tighter uppercase leading-none">Pipeline</h2>
                     <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Track your progress and stay organized.</p>
                 </div>
                 <a
