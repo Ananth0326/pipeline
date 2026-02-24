@@ -1,11 +1,12 @@
 'use server';
 
-import { supabase } from '@/lib/supabase';
+import { getSupabase } from '@/lib/supabase';
 import { Company, ApplicationStatus, AppLog, AssessmentResponse } from '@/lib/types';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
 async function logActivity(companyId: string, action: string) {
+    const supabase = getSupabase();
     const { error } = await supabase
         .from('application_logs')
         .insert([{ company_id: companyId, action }]);
@@ -29,6 +30,7 @@ function computeNextAction(company: Partial<Company>): string {
 }
 
 export async function getCompanies() {
+    const supabase = getSupabase();
     const { data, error } = await supabase
         .from('companies')
         .select('*')
@@ -39,6 +41,7 @@ export async function getCompanies() {
 }
 
 export async function getCompany(id: string) {
+    const supabase = getSupabase();
     const { data, error } = await supabase
         .from('companies')
         .select('*, application_logs (*)')
@@ -57,6 +60,7 @@ export async function getCompany(id: string) {
 }
 
 async function uploadResume(companyName: string, resumeFile: { name: string, type: string, buffer: ArrayBuffer }) {
+    const supabase = getSupabase();
     const uuid = crypto.randomUUID();
     const fileName = `resumes/${companyName.replace(/\s+/g, '_')}-${uuid}.pdf`;
 
@@ -76,6 +80,7 @@ async function uploadResume(companyName: string, resumeFile: { name: string, typ
 }
 
 export async function addCompany(data: Partial<Company>, resumeFile?: { name: string, type: string, buffer: ArrayBuffer }) {
+    const supabase = getSupabase();
     let resumeUrl = null;
 
     if (resumeFile && data.company_name) {
@@ -105,6 +110,7 @@ export async function updateCompany(
     logMessage?: string,
     resumeFile?: { name: string, type: string, buffer: ArrayBuffer }
 ) {
+    const supabase = getSupabase();
     // If status is changed but next_action isn't manually provided, auto-compute it
     // Note: For existing companies, we fetch current state to merge for computation
     if (updates.status || updates.assessment_done !== undefined || updates.assessment_response || updates.qualified !== undefined || updates.interview_date) {
@@ -155,6 +161,7 @@ export async function updateCompany(
 }
 
 export async function deleteCompany(id: string) {
+    const supabase = getSupabase();
     const { error } = await supabase
         .from('companies')
         .delete()
@@ -165,6 +172,7 @@ export async function deleteCompany(id: string) {
 }
 
 export async function deleteCompanyAndRedirect(id: string) {
+    const supabase = getSupabase();
     const { error } = await supabase
         .from('companies')
         .delete()
