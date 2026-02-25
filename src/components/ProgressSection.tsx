@@ -10,8 +10,8 @@ interface ProgressSectionProps {
 
 export default function ProgressSection({ company }: ProgressSectionProps) {
     const [isUpdating, setIsUpdating] = useState(false);
-    const [statusText, setStatusText] = useState(company.status_text);
-    const [statusColor, setStatusColor] = useState(company.status_color);
+    const [statusText, setStatusText] = useState(company.status_text || 'Applied');
+    const [statusColor, setStatusColor] = useState(company.status_color || 'yellow');
 
     const handleUpdate = async (updates: Partial<Company>, logMessage: string) => {
         setIsUpdating(true);

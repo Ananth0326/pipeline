@@ -28,8 +28,8 @@ export default function CompanyTable({ companies }: CompanyTableProps) {
         };
 
         return {
-            primary: company.status_text.toUpperCase() || 'APPLIED',
-            color: colorMap[company.status_color] || colorMap.yellow
+            primary: (company.status_text || 'Applied').toUpperCase(),
+            color: colorMap[company.status_color as 'green' | 'yellow' | 'red'] || colorMap.yellow
         };
     };
 
