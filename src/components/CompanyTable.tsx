@@ -22,11 +22,11 @@ export default function CompanyTable({ companies }: CompanyTableProps) {
 
     const getStatusParts = (company: Company) => {
         const statusMap: Record<ApplicationStatus, { primary: string, color: string }> = {
-            applied: { primary: 'APPLIED', color: 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400' },
-            interview: { primary: 'INTERVIEW', color: 'bg-yellow-50 text-yellow-600 dark:bg-yellow-900/20 dark:text-yellow-400' },
-            rejected: { primary: 'REJECTED', color: 'bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400' },
-            offer: { primary: 'OFFER', color: 'bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400' },
-            selected: { primary: 'SELECTED', color: 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20 dark:text-indigo-400' },
+            applied: { primary: 'APPLIED', color: 'blue-600/20 text-blue-600 border-blue-200 bg-blue-50' },
+            interview: { primary: 'INTERVIEW', color: 'yellow-600/20 text-yellow-600 border-yellow-200 bg-yellow-50' },
+            rejected: { primary: 'REJECTED', color: 'red-600/20 text-red-600 border-red-200 bg-red-50' },
+            offer: { primary: 'OFFER', color: 'green-600/20 text-green-600 border-green-200 bg-green-50' },
+            selected: { primary: 'SELECTED', color: 'indigo-600/20 text-indigo-600 border-indigo-200 bg-indigo-50' },
         };
 
         const { primary, color } = statusMap[company.status] || statusMap.applied;
@@ -93,78 +93,58 @@ export default function CompanyTable({ companies }: CompanyTableProps) {
 
             <div className="overflow-x-auto relative">
                 <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-800">
-                    <thead className="sticky top-0 z-10 bg-white/80 dark:bg-black/80 backdrop-blur-md">
-                        <tr className="border-b border-gray-50 dark:border-gray-900">
-                            <th className="px-4 md:px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Company & Role</th>
-                            <th className="px-4 md:px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Status</th>
-                            <th className="hidden lg:table-cell px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Next Action</th>
-                            <th className="hidden md:table-cell px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Applied</th>
-                            <th className="hidden xl:table-cell px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Activity</th>
-                            <th className="px-4 md:px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-widest"></th>
+                    <thead className="sticky top-0 z-10 bg-white dark:bg-black">
+                        <tr className="border-b border-gray-100 dark:border-gray-800">
+                            <th className="px-4 md:px-6 py-4 text-left text-[9px] font-bold text-gray-400 uppercase tracking-[0.15em] font-sans">Project</th>
+                            <th className="px-4 md:px-6 py-4 text-left text-[9px] font-bold text-gray-400 uppercase tracking-[0.15em] font-sans">Status</th>
+                            <th className="hidden lg:table-cell px-6 py-4 text-left text-[9px] font-bold text-gray-400 uppercase tracking-[0.15em] font-sans">Compute</th>
+                            <th className="hidden md:table-cell px-6 py-4 text-left text-[9px] font-bold text-gray-400 uppercase tracking-[0.15em] font-sans">Region</th>
+                            <th className="hidden xl:table-cell px-6 py-4 text-left text-[9px] font-bold text-gray-400 uppercase tracking-[0.15em] font-sans">Created</th>
+                            <th className="px-4 md:px-6 py-4 text-right"></th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-50 dark:divide-gray-900 bg-white dark:bg-black">
+                    <tbody className="divide-y divide-gray-50 dark:divide-gray-950 bg-white dark:bg-black">
                         {companies.map((company) => {
-                            const { primary, secondary, color } = getStatusParts(company);
+                            const { primary, color } = getStatusParts(company);
                             return (
                                 <tr
                                     key={company.id}
                                     onClick={() => router.push(`/company/${company.id}`)}
-                                    className="hover:bg-gray-50/50 dark:hover:bg-gray-950 transition-colors cursor-pointer group"
+                                    className="hover:bg-gray-50/30 dark:hover:bg-white/[0.02] transition-colors cursor-pointer group border-b border-gray-50 dark:border-gray-900"
                                 >
-                                    <td className="px-4 md:px-6 py-4 whitespace-nowrap">
-                                        <div className="flex flex-col">
-                                            <div className="text-sm font-black text-gray-900 dark:text-gray-100 group-hover:text-blue-600 transition-colors">
-                                                {company.company_name}
+                                    <td className="px-4 md:px-6 py-5 whitespace-nowrap">
+                                        <div className="flex flex-col gap-0.5">
+                                            <div className="text-sm font-bold text-gray-900 dark:text-gray-100 font-inter tracking-tight">
+                                                {company.company_name}&apos;s Application
                                             </div>
-                                            <div className="text-[9px] font-bold text-gray-400 group-hover:text-gray-500 transition-colors uppercase tracking-tight">
-                                                {company.role_title}
+                                            <div className="text-[11px] font-medium text-gray-400 font-mono tracking-tight lowercase opacity-70">
+                                                {company.role_title.replace(/\s+/g, '-').toLowerCase()}-{company.id.slice(0, 8)}
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-4 md:px-6 py-4 whitespace-nowrap">
-                                        <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-3">
-                                            <span className={`w-fit px-2 py-0.5 rounded text-[9px] font-black tracking-tighter ${color}`}>
-                                                {primary}
+                                    <td className="px-4 md:px-6 py-5 whitespace-nowrap">
+                                        <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold tracking-tight border ${color}`}>
+                                            {primary}
+                                        </span>
+                                    </td>
+                                    <td className="hidden lg:table-cell px-6 py-5 whitespace-nowrap">
+                                        <div className="flex items-center gap-2">
+                                            <span className="px-2 py-0.5 rounded bg-gray-50 dark:bg-gray-950 border border-gray-100 dark:border-gray-800 text-[10px] font-bold text-gray-500 font-mono uppercase">
+                                                {company.application_platform || 'NANO'}
                                             </span>
-                                            {secondary && (
-                                                <span className="text-[9px] font-bold text-gray-400 uppercase tracking-tight truncate max-w-[80px] md:max-w-none">
-                                                    {secondary}
-                                                </span>
-                                            )}
                                         </div>
                                     </td>
-                                    <td className="hidden lg:table-cell px-6 py-4 whitespace-nowrap">
-                                        {company.next_action ? (
-                                            <div className="flex items-center gap-2">
-                                                <div className="w-1 h-1 rounded-full bg-black dark:bg-white animate-pulse" />
-                                                <span className="text-[10px] font-black uppercase tracking-tight text-black dark:text-white">
-                                                    {company.next_action}
-                                                </span>
-                                            </div>
-                                        ) : (
-                                            <span className="text-[9px] text-gray-300 italic font-medium">No action needed</span>
-                                        )}
+                                    <td className="hidden md:table-cell px-6 py-5 whitespace-nowrap">
+                                        <span className="text-xs font-medium text-gray-500 font-sans tracking-tight">
+                                            {company.location || 'remote | global'}
+                                        </span>
                                     </td>
-                                    <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap text-[10px] font-bold text-gray-400 uppercase tracking-tighter">
-                                        {new Date(company.date_applied).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                                    <td className="hidden xl:table-cell px-6 py-5 whitespace-nowrap text-xs font-medium text-gray-500 font-sans tracking-tight">
+                                        {new Date(company.date_applied).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: '2-digit' }).replace(',', '')} {new Date(company.date_applied).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                                     </td>
-                                    <td className="hidden xl:table-cell px-6 py-4 whitespace-nowrap text-[10px] font-bold text-gray-300 uppercase tracking-tighter">
-                                        {new Date(company.updated_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
-                                    </td>
-                                    <td className="px-4 md:px-6 py-4 whitespace-nowrap text-right text-sm">
-                                        <div className="flex justify-end items-center gap-4 md:gap-6 md:opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
-                                            <button
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    setDeleteId(company.id);
-                                                    setDeleteName(company.company_name);
-                                                }}
-                                                className="text-gray-300 hover:text-red-500 transition-colors"
-                                            >
-                                                <Trash2 size={14} />
-                                            </button>
-                                            <div className="text-gray-200">
+                                    <td className="px-4 md:px-6 py-5 whitespace-nowrap text-right">
+                                        <div className="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <div className="p-1 px-2 border border-gray-100 dark:border-gray-800 rounded-lg bg-white dark:bg-black text-gray-400 hover:text-black dark:hover:text-white">
                                                 <ExternalLink size={14} />
                                             </div>
                                         </div>

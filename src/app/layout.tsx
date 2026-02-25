@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Outfit, Inter } from 'next/font/google';
+import { Outfit, Inter, Roboto_Mono } from 'next/font/google';
 import { Plus } from 'lucide-react';
 import './globals.css';
 
@@ -15,6 +15,12 @@ const inter = Inter({
     display: 'swap',
 });
 
+const mono = Roboto_Mono({
+    subsets: ['latin'],
+    variable: '--font-mono',
+    display: 'swap',
+});
+
 export const metadata: Metadata = {
     title: 'Pipeline | Job Tracker',
     description: 'Fast, minimal job application tracker',
@@ -26,7 +32,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }) {
     return (
-        <html lang="en" className={`${outfit.variable} ${inter.variable}`}>
+        <html lang="en" className={`${outfit.variable} ${inter.variable} ${mono.variable}`}>
             <body className="antialiased min-h-screen bg-white dark:bg-black font-sans">
                 <nav className="border-b border-gray-100 dark:border-gray-900 px-8 py-4 flex justify-between items-center bg-white dark:bg-black sticky top-0 z-10">
                     <h1 className="text-xl font-black tracking-tighter font-outfit">PIPELINE</h1>
