@@ -25,7 +25,7 @@ export default async function CompanyDetailPage({ params }: { params: Promise<{ 
                     </a>
                     <div>
                         <div className="flex flex-col md:flex-row md:items-baseline gap-4 md:gap-6">
-                            <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tighter leading-none break-words max-w-[300px] md:max-w-none">{company.company_name}</h2>
+                            <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tighter leading-none break-words max-w-[300px] md:max-w-none font-outfit">{company.company_name}</h2>
                             <div className="flex items-center gap-2 bg-gray-50 px-3 py-1 rounded-full border border-gray-100 w-fit">
                                 <Globe size={12} className="text-gray-400" />
                                 <p className="text-[10px] font-black uppercase tracking-widest text-gray-500">{company.application_platform || 'Direct'}</p>

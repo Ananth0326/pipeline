@@ -71,8 +71,8 @@ export default function QuickAddModal() {
                     <div className="relative bg-white dark:bg-black w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-800 animate-in fade-in zoom-in duration-200">
                         <div className="sticky top-0 bg-white/80 dark:bg-black/80 backdrop-blur-md p-6 border-b border-gray-50 dark:border-gray-900 flex justify-between items-center z-10">
                             <div>
-                                <h2 className="text-xl font-black tracking-tighter uppercase">Quick Add</h2>
-                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">New Application Entry</p>
+                                <h2 className="text-xl font-black tracking-tighter uppercase font-outfit">Quick Add</h2>
+                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest font-sans">New Application Entry</p>
                             </div>
                             <button
                                 onClick={() => setIsOpen(false)}
