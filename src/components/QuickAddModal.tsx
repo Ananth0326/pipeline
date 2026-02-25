@@ -1,0 +1,97 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { Plus, X } from 'lucide-react';
+import CompanyForm from './CompanyForm';
+import { addCompany } from '@/lib/actions';
+
+export default function QuickAddModal() {
+    const [isOpen, setIsOpen] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            // Only trigger if not in an input/textarea
+            if (
+                e.key.toLowerCase() === 'a' &&
+                !['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement).tagName)
+            ) {
+                setIsOpen(true);
+            }
+            if (e.key === 'Escape') {
+                setIsOpen(false);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, []);
+
+    const handleSubmit = async (data: any, resumeFile: File | null) => {
+        setIsSubmitting(true);
+        try {
+            let resumeData = undefined;
+            if (resumeFile) {
+                const buffer = await resumeFile.arrayBuffer();
+                resumeData = {
+                    name: resumeFile.name,
+                    type: resumeFile.type,
+                    buffer
+                };
+            }
+            await addCompany(data, resumeData);
+            setIsOpen(false);
+        } catch (error) {
+            console.error('Failed to add company:', error);
+            alert('Failed to save application.');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    return (
+        <>
+            {/* FAB BUTTON */}
+            <button
+                onClick={() => setIsOpen(true)}
+                className="fixed bottom-8 right-8 w-14 h-14 bg-black text-white rounded-full flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all z-40 group"
+                title="Add Application (Press 'A')"
+            >
+                <Plus size={24} className="group-hover:rotate-90 transition-transform duration-300" />
+            </button>
+
+            {/* MODAL OVERLAY */}
+            {isOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    <div
+                        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+                        onClick={() => !isSubmitting && setIsOpen(false)}
+                    />
+
+                    <div className="relative bg-white dark:bg-black w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-800 animate-in fade-in zoom-in duration-200">
+                        <div className="sticky top-0 bg-white/80 dark:bg-black/80 backdrop-blur-md p-6 border-b border-gray-50 dark:border-gray-900 flex justify-between items-center z-10">
+                            <div>
+                                <h2 className="text-xl font-black tracking-tighter uppercase">Quick Add</h2>
+                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">New Application Entry</p>
+                            </div>
+                            <button
+                                onClick={() => setIsOpen(false)}
+                                disabled={isSubmitting}
+                                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-full transition-colors"
+                            >
+                                <X size={20} />
+                            </button>
+                        </div>
+
+                        <div className="p-8">
+                            <CompanyForm
+                                onSubmit={handleSubmit}
+                                isSubmitting={isSubmitting}
+                            />
+                        </div>
+                    </div>
+                </div>
+            )}
+        </>
+    );
+}

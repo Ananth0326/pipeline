@@ -1,6 +1,6 @@
 'use client';
 
-import { Company } from '@/lib/types';
+import { Company, ApplicationStatus } from '@/lib/types';
 import { useRouter } from 'next/navigation';
 import { deleteCompany } from '@/lib/actions';
 import { Trash2, ExternalLink, Target, PieChart, Users, CheckCircle2 } from 'lucide-react';
@@ -16,22 +16,29 @@ export default function CompanyTable({ companies }: CompanyTableProps) {
     const [deleteId, setDeleteId] = useState<string | null>(null);
     const [deleteName, setDeleteName] = useState('');
 
-    const activeCount = companies.filter(c => c.status !== 'rejected').length;
-    const selectedCount = companies.filter(c => c.status === 'selected').length;
+    const activeCount = companies.filter(c => !['rejected', 'offer'].includes(c.status)).length;
+    const offerCount = companies.filter(c => c.status === 'offer').length;
     const rejectedCount = companies.filter(c => c.status === 'rejected').length;
 
     const getStatusParts = (company: Company) => {
-        if (company.status === 'rejected') return { primary: 'REJECTED', secondary: '', color: 'bg-red-50 text-red-600' };
+        const statusMap: Record<ApplicationStatus, { primary: string, color: string }> = {
+            applied: { primary: 'APPLIED', color: 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400' },
+            interview: { primary: 'INTERVIEW', color: 'bg-yellow-50 text-yellow-600 dark:bg-yellow-900/20 dark:text-yellow-400' },
+            rejected: { primary: 'REJECTED', color: 'bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400' },
+            offer: { primary: 'OFFER', color: 'bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400' },
+            selected: { primary: 'SELECTED', color: 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20 dark:text-indigo-400' },
+        };
+
+        const { primary, color } = statusMap[company.status] || statusMap.applied;
 
         let secondary = '';
-        if (company.status === 'selected') {
+        if (company.status === 'selected' || company.status === 'interview') {
             if (company.interview_date) secondary = 'Interview Scheduled';
             else if (company.qualified === true) secondary = 'Qualified';
             else if (company.assessment_done) secondary = 'Assessment Done';
         }
 
-        const color = company.status === 'selected' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800';
-        return { primary: company.status.toUpperCase(), secondary, color };
+        return { primary, secondary, color };
     };
 
     const confirmDelete = async () => {
@@ -60,8 +67,8 @@ export default function CompanyTable({ companies }: CompanyTableProps) {
                             <CheckCircle2 size={14} />
                         </div>
                         <div>
-                            <p className="text-[9px] font-black uppercase tracking-widest text-gray-400">Active</p>
-                            <p className="text-sm font-black">{activeCount}</p>
+                            <p className="text-[9px] font-black uppercase tracking-widest text-gray-400">Offers</p>
+                            <p className="text-sm font-black">{offerCount}</p>
                         </div>
                     </div>
                     <div className="bg-gray-50/50 dark:bg-gray-950 p-3 rounded-2xl border border-gray-100 dark:border-gray-800 flex items-center gap-3">
@@ -78,7 +85,7 @@ export default function CompanyTable({ companies }: CompanyTableProps) {
                 {/* SUMMARY LINE */}
                 <div className="flex items-center gap-2 px-1">
                     <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-300">
-                        {companies.length} Applications • {activeCount} Active • {rejectedCount} Rejected
+                        {companies.length} Apps • {activeCount} Pipelined • {offerCount} Offers • {rejectedCount} Rejected
                     </p>
                     <div className="flex-1 h-[1px] bg-gray-50 bg-gradient-to-r from-gray-100/50 to-transparent" />
                 </div>

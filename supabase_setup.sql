@@ -5,6 +5,15 @@ EXCEPTION
     WHEN duplicate_object THEN null;
 END $$;
 
+-- Migration for new statuses:
+DO $$ BEGIN
+    ALTER TYPE application_status ADD VALUE 'interview';
+EXCEPTION WHEN duplicate_object THEN null; END $$;
+
+DO $$ BEGIN
+    ALTER TYPE application_status ADD VALUE 'offer';
+EXCEPTION WHEN duplicate_object THEN null; END $$;
+
 -- 2. Create the companies table
 CREATE TABLE IF NOT EXISTS companies (
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),

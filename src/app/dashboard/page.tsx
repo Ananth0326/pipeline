@@ -1,5 +1,6 @@
 import { getCompanies } from '@/lib/actions';
 import CompanyTable from '@/components/CompanyTable';
+import QuickAddModal from '@/components/QuickAddModal';
 
 export const dynamic = 'force-dynamic';
 
@@ -24,6 +25,8 @@ export default async function DashboardPage() {
             <div>
                 <CompanyTable companies={companies} />
             </div>
+
+            <QuickAddModal />
         </div>
     );
 }

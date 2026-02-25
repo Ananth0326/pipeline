@@ -14,9 +14,10 @@ async function logActivity(companyId: string, action: string) {
 }
 
 function computeNextAction(company: Partial<Company>): string {
+    if (company.status === 'offer') return 'Review offer and negotiate';
     if (company.status === 'rejected') return 'Archive and move on';
 
-    if (company.status === 'selected') {
+    if (company.status === 'selected' || company.status === 'interview') {
         if (company.interview_date) return `Prepare for interview on ${new Date(company.interview_date).toLocaleDateString()}`;
         if (company.qualified === true) return 'Schedule interview';
         if (company.qualified === false) return 'Wait for feedback';

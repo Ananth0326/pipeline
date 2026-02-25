@@ -134,7 +134,9 @@ export default function CompanyForm({ initialData, onSubmit, isSubmitting }: Com
                                 className="w-full border-2 border-white p-3 rounded-xl focus:ring-4 focus:ring-gray-50 outline-none font-black uppercase tracking-widest text-[10px] transition-all bg-white"
                             >
                                 <option value="applied">Applied</option>
+                                <option value="interview">Interview</option>
                                 <option value="selected">Selected</option>
+                                <option value="offer">Offer</option>
                                 <option value="rejected">Rejected</option>
                             </select>
                         </div>
