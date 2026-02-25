@@ -63,7 +63,8 @@ export default function RootLayout({
                     </a>
 
                     {/* Central Add Button for Mobile */}
-                    <a href="/add-company" className="w-12 h-12 bg-[#66D19E] rounded-2xl flex items-center justify-center text-[#064E3B] shadow-lg shadow-green-500/20 active:scale-90 transition-transform -translate-y-4 border-4 border-white dark:border-black">
+                    <a href="/add-company" className="w-12 h-12 bg-[#66D19E] rounded-2xl flex items-center justify-center text-[#064E3B] shadow-xl shadow-green-500/40 hover:scale-110 active:scale-90 transition-all -translate-y-4 border-4 border-white dark:border-black">
+                        <LayoutDashboard size={20} className="hidden" /> {/* Placeholder for logic if needed */}
                         <Plus size={24} strokeWidth={3} />
                     </a>
 

@@ -51,10 +51,9 @@ export default function QuickAddModal() {
 
     return (
         <>
-            {/* FAB BUTTON - HIDDEN ON MOBILE (Transitioned to Bottom Nav) */}
             <button
                 onClick={() => setIsOpen(true)}
-                className="hidden md:flex fixed bottom-8 right-8 w-14 h-14 bg-[#66D19E] hover:bg-[#58C28E] text-[#064E3B] rounded-full items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all z-40 group border border-[#4FB886]"
+                className="hidden md:flex fixed bottom-8 right-8 w-14 h-14 bg-[#66D19E] hover:bg-[#58C28E] text-[#064E3B] rounded-full items-center justify-center shadow-xl shadow-green-500/20 hover:scale-110 active:scale-95 transition-all z-40 group border border-[#4FB886]"
                 title="Add Application (Press 'A')"
             >
                 <Plus size={24} strokeWidth={3} className="group-hover:rotate-90 transition-transform duration-300" />
