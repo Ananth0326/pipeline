@@ -95,11 +95,11 @@ export default function CompanyTable({ companies }: CompanyTableProps) {
                 <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-800">
                     <thead className="sticky top-0 z-10 bg-white dark:bg-black">
                         <tr className="border-b border-gray-100 dark:border-gray-800">
-                            <th className="px-4 md:px-6 py-4 text-left text-[9px] font-bold text-gray-400 uppercase tracking-[0.15em] font-sans">Project</th>
+                            <th className="px-4 md:px-6 py-4 text-left text-[9px] font-bold text-gray-400 uppercase tracking-[0.15em] font-sans">Company & Role</th>
                             <th className="px-4 md:px-6 py-4 text-left text-[9px] font-bold text-gray-400 uppercase tracking-[0.15em] font-sans">Status</th>
-                            <th className="hidden lg:table-cell px-6 py-4 text-left text-[9px] font-bold text-gray-400 uppercase tracking-[0.15em] font-sans">Compute</th>
-                            <th className="hidden md:table-cell px-6 py-4 text-left text-[9px] font-bold text-gray-400 uppercase tracking-[0.15em] font-sans">Region</th>
-                            <th className="hidden xl:table-cell px-6 py-4 text-left text-[9px] font-bold text-gray-400 uppercase tracking-[0.15em] font-sans">Created</th>
+                            <th className="hidden lg:table-cell px-6 py-4 text-left text-[9px] font-bold text-gray-400 uppercase tracking-[0.15em] font-sans">Next Action</th>
+                            <th className="hidden md:table-cell px-6 py-4 text-left text-[9px] font-bold text-gray-400 uppercase tracking-[0.15em] font-sans">Applied</th>
+                            <th className="hidden xl:table-cell px-6 py-4 text-left text-[9px] font-bold text-gray-400 uppercase tracking-[0.15em] font-sans">Activity</th>
                             <th className="px-4 md:px-6 py-4 text-right"></th>
                         </tr>
                     </thead>
@@ -115,10 +115,10 @@ export default function CompanyTable({ companies }: CompanyTableProps) {
                                     <td className="px-4 md:px-6 py-5 whitespace-nowrap">
                                         <div className="flex flex-col gap-0.5">
                                             <div className="text-sm font-bold text-gray-900 dark:text-gray-100 font-inter tracking-tight">
-                                                {company.company_name}&apos;s Application
+                                                {company.company_name}
                                             </div>
-                                            <div className="text-[11px] font-medium text-gray-400 font-mono tracking-tight lowercase opacity-70">
-                                                {company.role_title.replace(/\s+/g, '-').toLowerCase()}-{company.id.slice(0, 8)}
+                                            <div className="text-[10px] font-medium text-gray-400 font-mono tracking-tight lowercase opacity-70">
+                                                {company.role_title}
                                             </div>
                                         </div>
                                     </td>
@@ -129,18 +129,18 @@ export default function CompanyTable({ companies }: CompanyTableProps) {
                                     </td>
                                     <td className="hidden lg:table-cell px-6 py-5 whitespace-nowrap">
                                         <div className="flex items-center gap-2">
-                                            <span className="px-2 py-0.5 rounded bg-gray-50 dark:bg-gray-950 border border-gray-100 dark:border-gray-800 text-[10px] font-bold text-gray-500 font-mono uppercase">
-                                                {company.application_platform || 'NANO'}
+                                            <span className="text-[10px] font-bold text-black dark:text-white font-mono uppercase tracking-tight">
+                                                {company.next_action || 'No action needed'}
                                             </span>
                                         </div>
                                     </td>
                                     <td className="hidden md:table-cell px-6 py-5 whitespace-nowrap">
-                                        <span className="text-xs font-medium text-gray-500 font-sans tracking-tight">
-                                            {company.location || 'remote | global'}
+                                        <span className="text-[10px] font-bold text-gray-500 font-mono tracking-tighter">
+                                            {new Date(company.date_applied).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }).toUpperCase()}
                                         </span>
                                     </td>
-                                    <td className="hidden xl:table-cell px-6 py-5 whitespace-nowrap text-xs font-medium text-gray-500 font-sans tracking-tight">
-                                        {new Date(company.date_applied).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: '2-digit' }).replace(',', '')} {new Date(company.date_applied).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                                    <td className="hidden xl:table-cell px-6 py-5 whitespace-nowrap text-[10px] font-bold text-gray-300 font-mono uppercase tracking-tighter">
+                                        {new Date(company.updated_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }).toUpperCase()}
                                     </td>
                                     <td className="px-4 md:px-6 py-5 whitespace-nowrap text-right">
                                         <div className="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">

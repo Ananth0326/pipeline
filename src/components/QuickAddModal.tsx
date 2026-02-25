@@ -54,10 +54,10 @@ export default function QuickAddModal() {
             {/* FAB BUTTON */}
             <button
                 onClick={() => setIsOpen(true)}
-                className="fixed bottom-8 right-8 w-14 h-14 bg-black text-white rounded-full flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all z-40 group"
+                className="fixed bottom-8 right-8 w-14 h-14 bg-[#66D19E] hover:bg-[#58C28E] text-[#064E3B] rounded-full flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all z-40 group border border-[#4FB886]"
                 title="Add Application (Press 'A')"
             >
-                <Plus size={24} className="group-hover:rotate-90 transition-transform duration-300" />
+                <Plus size={24} strokeWidth={3} className="group-hover:rotate-90 transition-transform duration-300" />
             </button>
 
             {/* MODAL OVERLAY */}
