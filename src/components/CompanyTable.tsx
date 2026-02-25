@@ -3,7 +3,7 @@
 import { Company, ApplicationStatus } from '@/lib/types';
 import { useRouter } from 'next/navigation';
 import { deleteCompany } from '@/lib/actions';
-import { Trash2, ExternalLink, Target, PieChart, Users, CheckCircle2 } from 'lucide-react';
+import { Trash2, ExternalLink, Target, PieChart, Users, CheckCircle2, MoreVertical, ChevronUp, ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 import ConfirmModal from './ConfirmModal';
 
@@ -92,109 +92,117 @@ export default function CompanyTable({ companies }: CompanyTableProps) {
             </div>
 
             {/* DESKTOP TABLE VIEW */}
-            <div className="hidden md:block overflow-x-auto relative">
-                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-800">
-                    <thead className="sticky top-0 z-10 bg-white dark:bg-black">
-                        <tr className="border-b border-gray-100 dark:border-gray-800">
-                            <th className="px-4 md:px-6 py-6 text-left text-xs font-bold text-gray-400 uppercase tracking-[0.2em] font-sans">Company & Role</th>
-                            <th className="px-4 md:px-6 py-6 text-left text-xs font-bold text-gray-400 uppercase tracking-[0.2em] font-sans">Status</th>
-                            <th className="hidden lg:table-cell px-6 py-6 text-left text-xs font-bold text-gray-400 uppercase tracking-[0.2em] font-sans">Next Action</th>
-                            <th className="hidden md:table-cell px-6 py-6 text-left text-xs font-bold text-gray-400 uppercase tracking-[0.2em] font-sans">Applied</th>
-                            <th className="hidden xl:table-cell px-6 py-6 text-left text-xs font-bold text-gray-400 uppercase tracking-[0.2em] font-sans">Activity</th>
-                            <th className="px-4 md:px-6 py-6 text-right"></th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-50 dark:divide-gray-950 bg-white dark:bg-black">
-                        {companies.map((company) => {
-                            const { primary, color } = getStatusParts(company);
-                            return (
-                                <tr
-                                    key={company.id}
-                                    onClick={() => router.push(`/company/${company.id}`)}
-                                    className="hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-all cursor-pointer group border-b border-gray-50 dark:border-gray-900 border-l-0 hover:border-l-4 hover:border-l-blue-500"
-                                >
-                                    <td className="px-4 md:px-6 py-8 whitespace-nowrap">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-400 dark:text-gray-500 font-black text-sm uppercase">
-                                                {company.company_name.charAt(0)}
-                                            </div>
-                                            <div className="flex flex-col gap-1.5">
-                                                <div className="text-lg font-bold text-gray-900 dark:text-gray-100 font-inter tracking-tight">
-                                                    {company.company_name}
-                                                </div>
-                                                <div className="text-sm font-medium text-gray-400 font-mono tracking-tight lowercase opacity-70">
-                                                    {company.role_title}
-                                                </div>
-                                            </div>
+            <div className="hidden md:block overflow-hidden rounded-xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-black shadow-sm">
+                <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-100 dark:divide-gray-800">
+                        <thead className="bg-gray-50/50 dark:bg-gray-950">
+                            <tr>
+                                <th className="px-6 py-3 text-left">
+                                    <button className="flex items-center gap-1 group/sort">
+                                        <span className="text-[10px] font-black uppercase tracking-[0.15em] text-gray-400 group-hover/sort:text-gray-600 transition-colors">Project</span>
+                                        <div className="flex flex-col -gap-1 opacity-0 group-hover/sort:opacity-100 transition-opacity">
+                                            <ChevronUp size={8} className="text-gray-400" />
+                                            <ChevronDown size={8} className="text-gray-400" />
                                         </div>
-                                    </td>
-                                    <td className="px-4 md:px-6 py-8 whitespace-nowrap">
-                                        <span className={`px-3 py-1.5 rounded-full text-[11px] font-bold tracking-tight border ${color}`}>
-                                            {primary}
-                                        </span>
-                                    </td>
-                                    <td className="hidden lg:table-cell px-6 py-8 whitespace-nowrap">
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-sm font-bold text-black dark:text-white font-mono uppercase tracking-tight">
-                                                {company.next_action || 'No action needed'}
+                                    </button>
+                                </th>
+                                <th className="px-6 py-3 text-left text-[10px] font-black uppercase tracking-[0.15em] text-gray-400">Status</th>
+                                <th className="hidden lg:table-cell px-6 py-3 text-left text-[10px] font-black uppercase tracking-[0.15em] text-gray-400">Next Action</th>
+                                <th className="hidden md:table-cell px-6 py-3 text-left text-[10px] font-black uppercase tracking-[0.15em] text-gray-400">Applied</th>
+                                <th className="hidden xl:table-cell px-6 py-3 text-left text-[10px] font-black uppercase tracking-[0.15em] text-gray-400">Activity</th>
+                                <th className="px-6 py-3 text-right"></th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-50 dark:divide-gray-950 bg-white dark:bg-black">
+                            {companies.map((company) => {
+                                const { primary, color } = getStatusParts(company);
+                                return (
+                                    <tr
+                                        key={company.id}
+                                        onClick={() => router.push(`/company/${company.id}`)}
+                                        className="hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-all cursor-pointer group border-b border-gray-50 dark:border-gray-900 border-l-0 hover:border-l-4 hover:border-l-blue-500"
+                                    >
+                                        <td className="px-6 py-5 whitespace-nowrap">
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-9 h-9 rounded-full bg-gray-50 dark:bg-gray-900 flex items-center justify-center text-gray-400 dark:text-gray-500 font-black text-xs uppercase border border-gray-100 dark:border-gray-800 shadow-sm">
+                                                    {company.company_name.charAt(0)}
+                                                </div>
+                                                <div className="flex flex-col gap-1">
+                                                    <div className="text-sm font-bold text-gray-900 dark:text-gray-100 font-inter tracking-tight leading-none">
+                                                        {company.company_name}
+                                                    </div>
+                                                    <div className="inline-flex items-center gap-1 group/slug cursor-pointer w-fit">
+                                                        <span className="text-[10px] font-medium text-gray-400 font-mono tracking-tight lowercase opacity-70 border-b border-transparent border-dashed group-hover/slug:border-gray-400 group-hover/slug:text-gray-600 transition-all">
+                                                            {company.role_title.replace(/\s+/g, '-')}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-5 whitespace-nowrap">
+                                            <span className={`px-[7px] py-[3px] rounded-full text-[9px] font-black tracking-widest uppercase border ${color}`}>
+                                                {primary}
                                             </span>
-                                        </div>
-                                    </td>
-                                    <td className="hidden md:table-cell px-6 py-8 whitespace-nowrap">
-                                        <span className="text-sm font-bold text-gray-500 font-mono tracking-tighter">
-                                            {new Date(company.date_applied).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }).toUpperCase()}
-                                        </span>
-                                    </td>
-                                    <td className="hidden xl:table-cell px-6 py-8 whitespace-nowrap text-sm font-bold text-gray-300 font-mono uppercase tracking-tighter">
-                                        {new Date(company.updated_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }).toUpperCase()}
-                                    </td>
-                                    <td className="px-4 md:px-6 py-8 whitespace-nowrap text-right">
-                                        <div className="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <div className="p-2 px-3 border border-gray-100 dark:border-gray-800 rounded-xl bg-white dark:bg-black text-gray-400 hover:text-black dark:hover:text-white">
-                                                <ExternalLink size={18} />
+                                        </td>
+                                        <td className="hidden lg:table-cell px-6 py-5 whitespace-nowrap">
+                                            <div className="inline-flex items-center justify-center rounded-md text-center font-mono uppercase whitespace-nowrap font-medium tracking-[0.06em] text-[10px] leading-[1.1] px-[6px] py-[3px] bg-gray-50 dark:bg-gray-900 text-gray-500 border border-gray-100 dark:border-gray-800">
+                                                {company.next_action || 'none'}
                                             </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
+                                        </td>
+                                        <td className="hidden md:table-cell px-6 py-5 whitespace-nowrap">
+                                            <span className="text-xs font-bold text-gray-400 font-mono tracking-tighter">
+                                                {new Date(company.date_applied).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: '2-digit' }).toUpperCase()}
+                                            </span>
+                                        </td>
+                                        <td className="hidden xl:table-cell px-6 py-5 whitespace-nowrap text-xs font-bold text-gray-300 font-mono uppercase tracking-tighter">
+                                            {new Date(company.updated_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }).toUpperCase()}
+                                        </td>
+                                        <td className="px-6 py-5 whitespace-nowrap text-right">
+                                            <button className="p-1.5 hover:bg-gray-50 dark:hover:bg-gray-900 rounded-md text-gray-400 hover:text-gray-600 transition-colors border border-transparent hover:border-gray-100 dark:hover:border-gray-800 shadow-sm opacity-0 group-hover:opacity-100">
+                                                <MoreVertical size={14} />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             {/* MOBILE CARD VIEW */}
-            <div className="md:hidden space-y-3">
+            <div className="md:hidden space-y-4">
                 {companies.map((company) => {
                     const { primary, color } = getStatusParts(company);
                     return (
                         <div
                             key={company.id}
                             onClick={() => router.push(`/company/${company.id}`)}
-                            className="bg-white dark:bg-black border border-gray-100 dark:border-gray-900 rounded-3xl p-6 active:scale-[0.98] transition-all flex justify-between items-center group border-l-4 border-l-transparent active:border-l-blue-500"
+                            className="bg-white dark:bg-black border border-gray-100 dark:border-gray-900 rounded-[2rem] p-6 active:scale-[0.98] transition-all flex justify-between items-center group border-l-4 border-l-transparent active:border-l-blue-500 shadow-sm"
                         >
                             <div className="flex items-center gap-4">
-                                <div className="hidden xs:flex w-12 h-12 rounded-full bg-gray-50 dark:bg-gray-900 items-center justify-center text-gray-400 font-black text-base uppercase border border-gray-100 dark:border-gray-800">
+                                <div className="hidden xs:flex w-11 h-11 rounded-full bg-gray-50 dark:bg-gray-900 items-center justify-center text-gray-400 font-black text-xs uppercase border border-gray-100 dark:border-gray-800 shadow-sm">
                                     {company.company_name.charAt(0)}
                                 </div>
-                                <div className="space-y-2">
+                                <div className="space-y-1.5">
                                     <div className="flex items-center gap-2">
-                                        <span className={`px-2.5 py-1 rounded-md text-[11px] font-bold tracking-tight border ${color}`}>
+                                        <span className={`px-[6px] py-[2.5px] rounded-full text-[9px] font-black tracking-widest uppercase border ${color}`}>
                                             {primary}
                                         </span>
-                                        <span className="text-[11px] font-bold text-gray-300 font-mono">
+                                        <span className="text-[10px] font-bold text-gray-300 font-mono">
                                             {new Date(company.updated_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }).toUpperCase()}
                                         </span>
                                     </div>
-                                    <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 font-inter leading-none">
+                                    <h3 className="text-base font-bold text-gray-900 dark:text-gray-100 font-inter leading-none">
                                         {company.company_name}
                                     </h3>
-                                    <p className="text-sm font-medium text-gray-400 font-mono lowercase opacity-70">
-                                        {company.role_title}
-                                    </p>
+                                    <div className="text-[10px] font-medium text-gray-400 font-mono tracking-tight lowercase opacity-70">
+                                        {company.role_title.replace(/\s+/g, '-')}
+                                    </div>
                                 </div>
                             </div>
-                            <div className="w-12 h-12 rounded-2xl bg-gray-50 dark:bg-gray-950 flex items-center justify-center text-gray-300 group-active:text-blue-500 transition-colors">
-                                <ExternalLink size={20} />
+                            <div className="w-10 h-10 rounded-xl bg-gray-50 dark:bg-gray-950 flex items-center justify-center text-gray-300 group-active:text-blue-500 transition-colors border border-transparent active:border-gray-100 dark:active:border-gray-800">
+                                <MoreVertical size={16} />
                             </div>
                         </div>
                     );
