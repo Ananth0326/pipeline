@@ -67,7 +67,7 @@ export default async function CompanyDetailPage({ params }: { params: Promise<{ 
 
                     {company.resume_url && (
                         <section className="space-y-6">
-                            <div className="flex justify-between items-end">
+                            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
                                 <div className="space-y-1 text-gray-400">
                                     <h3 className="text-sm font-black uppercase tracking-widest">Resume Preview</h3>
                                     <p className="text-xs font-medium">Original file used for this application.</p>
@@ -76,17 +76,27 @@ export default async function CompanyDetailPage({ params }: { params: Promise<{ 
                                     href={company.resume_url}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded text-[10px] font-black uppercase tracking-widest hover:bg-blue-100 border border-blue-200"
+                                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-blue-50 text-blue-700 px-6 py-4 sm:px-4 sm:py-2 rounded-xl sm:rounded text-xs sm:text-[10px] font-black uppercase tracking-widest hover:bg-blue-100 border border-blue-200 transition-all active:scale-95"
                                 >
-                                    <FileText size={14} /> Open Full PDF
+                                    <FileText size={16} /> Open Full PDF
                                 </a>
                             </div>
-                            <div className="border-4 border-gray-100 dark:border-gray-800 rounded-3xl overflow-hidden aspect-[1/1.4] bg-gray-50">
+
+                            {/* Desktop Preview */}
+                            <div className="hidden md:block border-4 border-gray-100 dark:border-gray-800 rounded-3xl overflow-hidden aspect-[1/1.4] bg-gray-50">
                                 <iframe
                                     src={`${company.resume_url}#toolbar=0&navpanes=0&scrollbar=0`}
                                     className="w-full h-full"
                                     title="Resume Preview"
                                 />
+                            </div>
+
+                            {/* Mobile Teaser/Preview Placeholder */}
+                            <div className="md:hidden block bg-gray-50 dark:bg-gray-950 border border-gray-100 dark:border-gray-900 rounded-3xl p-10 text-center space-y-4">
+                                <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/20 rounded-2xl flex items-center justify-center mx-auto text-blue-500">
+                                    <FileText size={32} strokeWidth={1.5} />
+                                </div>
+                                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">PDF Preview hidden on mobile</p>
                             </div>
                         </section>
                     )}

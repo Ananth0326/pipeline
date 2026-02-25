@@ -51,25 +51,30 @@ export default function QuickAddModal() {
 
     return (
         <>
-            {/* FAB BUTTON */}
+            {/* FAB BUTTON - HIDDEN ON MOBILE (Transitioned to Bottom Nav) */}
             <button
                 onClick={() => setIsOpen(true)}
-                className="fixed bottom-8 right-8 w-14 h-14 bg-[#66D19E] hover:bg-[#58C28E] text-[#064E3B] rounded-full flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all z-40 group border border-[#4FB886]"
+                className="hidden md:flex fixed bottom-8 right-8 w-14 h-14 bg-[#66D19E] hover:bg-[#58C28E] text-[#064E3B] rounded-full items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all z-40 group border border-[#4FB886]"
                 title="Add Application (Press 'A')"
             >
                 <Plus size={24} strokeWidth={3} className="group-hover:rotate-90 transition-transform duration-300" />
             </button>
 
-            {/* MODAL OVERLAY */}
+            {/* MODAL / BOTTOM SHEET OVERLAY */}
             {isOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                <div className="fixed inset-0 z-50 flex md:items-center items-end justify-center">
                     <div
-                        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+                        className="absolute inset-0 bg-black/40 backdrop-blur-sm animate-in fade-in duration-300"
                         onClick={() => !isSubmitting && setIsOpen(false)}
                     />
 
-                    <div className="relative bg-white dark:bg-black w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-800 animate-in fade-in zoom-in duration-200">
-                        <div className="sticky top-0 bg-white/80 dark:bg-black/80 backdrop-blur-md p-6 border-b border-gray-50 dark:border-gray-900 flex justify-between items-center z-10">
+                    <div className="relative bg-white dark:bg-black w-full max-w-2xl max-h-[90vh] md:max-h-[85vh] overflow-y-auto rounded-t-[2.5rem] md:rounded-[2.5rem] shadow-2xl border-t md:border border-gray-100 dark:border-gray-800 animate-in slide-in-from-bottom md:zoom-in duration-300">
+                        {/* Mobile Pull Handle */}
+                        <div className="md:hidden flex justify-center py-3">
+                            <div className="w-12 h-1.5 bg-gray-200 dark:bg-gray-800 rounded-full" />
+                        </div>
+
+                        <div className="sticky top-0 bg-white/80 dark:bg-black/80 backdrop-blur-md px-8 py-6 md:p-6 border-b border-gray-50 dark:border-gray-900 flex justify-between items-center z-10">
                             <div>
                                 <h2 className="text-xl font-black tracking-tighter uppercase font-outfit">Quick Add</h2>
                                 <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest font-sans">New Application Entry</p>
@@ -83,7 +88,7 @@ export default function QuickAddModal() {
                             </button>
                         </div>
 
-                        <div className="p-8">
+                        <div className="p-8 pb-12 md:pb-8">
                             <CompanyForm
                                 onSubmit={handleSubmit}
                                 isSubmitting={isSubmitting}

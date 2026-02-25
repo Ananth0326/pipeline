@@ -91,16 +91,17 @@ export default function CompanyTable({ companies }: CompanyTableProps) {
                 </div>
             </div>
 
-            <div className="overflow-x-auto relative">
+            {/* DESKTOP TABLE VIEW */}
+            <div className="hidden md:block overflow-x-auto relative">
                 <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-800">
                     <thead className="sticky top-0 z-10 bg-white dark:bg-black">
                         <tr className="border-b border-gray-100 dark:border-gray-800">
-                            <th className="px-4 md:px-6 py-4 text-left text-[9px] font-bold text-gray-400 uppercase tracking-[0.15em] font-sans">Company & Role</th>
-                            <th className="px-4 md:px-6 py-4 text-left text-[9px] font-bold text-gray-400 uppercase tracking-[0.15em] font-sans">Status</th>
-                            <th className="hidden lg:table-cell px-6 py-4 text-left text-[9px] font-bold text-gray-400 uppercase tracking-[0.15em] font-sans">Next Action</th>
-                            <th className="hidden md:table-cell px-6 py-4 text-left text-[9px] font-bold text-gray-400 uppercase tracking-[0.15em] font-sans">Applied</th>
-                            <th className="hidden xl:table-cell px-6 py-4 text-left text-[9px] font-bold text-gray-400 uppercase tracking-[0.15em] font-sans">Activity</th>
-                            <th className="px-4 md:px-6 py-4 text-right"></th>
+                            <th className="px-4 md:px-6 py-5 text-left text-[11px] font-bold text-gray-400 uppercase tracking-[0.15em] font-sans">Company & Role</th>
+                            <th className="px-4 md:px-6 py-5 text-left text-[11px] font-bold text-gray-400 uppercase tracking-[0.15em] font-sans">Status</th>
+                            <th className="hidden lg:table-cell px-6 py-5 text-left text-[11px] font-bold text-gray-400 uppercase tracking-[0.15em] font-sans">Next Action</th>
+                            <th className="hidden md:table-cell px-6 py-5 text-left text-[11px] font-bold text-gray-400 uppercase tracking-[0.15em] font-sans">Applied</th>
+                            <th className="hidden xl:table-cell px-6 py-5 text-left text-[11px] font-bold text-gray-400 uppercase tracking-[0.15em] font-sans">Activity</th>
+                            <th className="px-4 md:px-6 py-5 text-right"></th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-50 dark:divide-gray-950 bg-white dark:bg-black">
@@ -112,37 +113,37 @@ export default function CompanyTable({ companies }: CompanyTableProps) {
                                     onClick={() => router.push(`/company/${company.id}`)}
                                     className="hover:bg-gray-50/30 dark:hover:bg-white/[0.02] transition-colors cursor-pointer group border-b border-gray-50 dark:border-gray-900"
                                 >
-                                    <td className="px-4 md:px-6 py-5 whitespace-nowrap">
-                                        <div className="flex flex-col gap-0.5">
-                                            <div className="text-sm font-bold text-gray-900 dark:text-gray-100 font-inter tracking-tight">
+                                    <td className="px-4 md:px-6 py-6 whitespace-nowrap">
+                                        <div className="flex flex-col gap-1">
+                                            <div className="text-base font-bold text-gray-900 dark:text-gray-100 font-inter tracking-tight">
                                                 {company.company_name}
                                             </div>
-                                            <div className="text-[10px] font-medium text-gray-400 font-mono tracking-tight lowercase opacity-70">
+                                            <div className="text-[12px] font-medium text-gray-400 font-mono tracking-tight lowercase opacity-70">
                                                 {company.role_title}
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-4 md:px-6 py-5 whitespace-nowrap">
-                                        <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold tracking-tight border ${color}`}>
+                                    <td className="px-4 md:px-6 py-6 whitespace-nowrap">
+                                        <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold tracking-tight border ${color}`}>
                                             {primary}
                                         </span>
                                     </td>
-                                    <td className="hidden lg:table-cell px-6 py-5 whitespace-nowrap">
+                                    <td className="hidden lg:table-cell px-6 py-6 whitespace-nowrap">
                                         <div className="flex items-center gap-2">
-                                            <span className="text-[10px] font-bold text-black dark:text-white font-mono uppercase tracking-tight">
+                                            <span className="text-xs font-bold text-black dark:text-white font-mono uppercase tracking-tight">
                                                 {company.next_action || 'No action needed'}
                                             </span>
                                         </div>
                                     </td>
-                                    <td className="hidden md:table-cell px-6 py-5 whitespace-nowrap">
-                                        <span className="text-[10px] font-bold text-gray-500 font-mono tracking-tighter">
+                                    <td className="hidden md:table-cell px-6 py-6 whitespace-nowrap">
+                                        <span className="text-xs font-bold text-gray-500 font-mono tracking-tighter">
                                             {new Date(company.date_applied).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }).toUpperCase()}
                                         </span>
                                     </td>
-                                    <td className="hidden xl:table-cell px-6 py-5 whitespace-nowrap text-[10px] font-bold text-gray-300 font-mono uppercase tracking-tighter">
+                                    <td className="hidden xl:table-cell px-6 py-6 whitespace-nowrap text-xs font-bold text-gray-300 font-mono uppercase tracking-tighter">
                                         {new Date(company.updated_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }).toUpperCase()}
                                     </td>
-                                    <td className="px-4 md:px-6 py-5 whitespace-nowrap text-right">
+                                    <td className="px-4 md:px-6 py-6 whitespace-nowrap text-right">
                                         <div className="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
                                             <div className="p-1 px-2 border border-gray-100 dark:border-gray-800 rounded-lg bg-white dark:bg-black text-gray-400 hover:text-black dark:hover:text-white">
                                                 <ExternalLink size={14} />
@@ -152,16 +153,49 @@ export default function CompanyTable({ companies }: CompanyTableProps) {
                                 </tr>
                             );
                         })}
-                        {companies.length === 0 && (
-                            <tr>
-                                <td colSpan={6} className="px-6 py-16 text-center text-sm text-gray-500 italic">
-                                    No applications found. Add one to start tracking!
-                                </td>
-                            </tr>
-                        )}
                     </tbody>
                 </table>
             </div>
+
+            {/* MOBILE CARD VIEW */}
+            <div className="md:hidden space-y-3">
+                {companies.map((company) => {
+                    const { primary, color } = getStatusParts(company);
+                    return (
+                        <div
+                            key={company.id}
+                            onClick={() => router.push(`/company/${company.id}`)}
+                            className="bg-white dark:bg-black border border-gray-100 dark:border-gray-900 rounded-2xl p-5 active:scale-[0.98] transition-all flex justify-between items-center group"
+                        >
+                            <div className="space-y-1.5">
+                                <div className="flex items-center gap-2">
+                                    <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold tracking-tight border ${color}`}>
+                                        {primary}
+                                    </span>
+                                    <span className="text-[10px] font-bold text-gray-300 font-mono">
+                                        {new Date(company.updated_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }).toUpperCase()}
+                                    </span>
+                                </div>
+                                <h3 className="text-base font-bold text-gray-900 dark:text-gray-100 font-inter leading-none">
+                                    {company.company_name}
+                                </h3>
+                                <p className="text-xs font-medium text-gray-400 font-mono lowercase opacity-70">
+                                    {company.role_title}
+                                </p>
+                            </div>
+                            <div className="w-10 h-10 rounded-xl bg-gray-50 dark:bg-gray-950 flex items-center justify-center text-gray-300 group-active:text-blue-500 transition-colors">
+                                <ExternalLink size={16} />
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+
+            {companies.length === 0 && (
+                <div className="px-6 py-16 text-center text-sm text-gray-500 italic bg-gray-50/50 dark:bg-gray-950 rounded-3xl border border-dashed border-gray-200 dark:border-gray-800">
+                    No applications found. Add one to start tracking!
+                </div>
+            )}
 
             <ConfirmModal
                 isOpen={!!deleteId}
