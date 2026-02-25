@@ -10,6 +10,8 @@ export interface Company {
     resume_url?: string;
     date_applied: string;
     status: ApplicationStatus;
+    status_text: string;
+    status_color: 'green' | 'yellow' | 'red';
     notes?: string;
     assessment_done: boolean;
     assessment_response?: AssessmentResponse;

@@ -93,6 +93,11 @@ export async function addCompany(data: Partial<Company>, resumeFile?: { name: st
         data.next_action = computeNextAction(data);
     }
 
+    // Default manual status if not provided
+    if (data.status === undefined) data.status = 'applied';
+    if (data.status_text === undefined) data.status_text = 'Applied';
+    if (data.status_color === undefined) data.status_color = 'yellow';
+
     const { data: inserted, error } = await supabase
         .from('companies')
         .insert([{ ...data, resume_url: resumeUrl }])
@@ -112,9 +117,9 @@ export async function updateCompany(
     resumeFile?: { name: string, type: string, buffer: ArrayBuffer }
 ) {
     const supabase = getSupabase();
-    // If status is changed but next_action isn't manually provided, auto-compute it
-    // Note: For existing companies, we fetch current state to merge for computation
-    if (updates.status || updates.assessment_done !== undefined || updates.assessment_response || updates.qualified !== undefined || updates.interview_date) {
+
+    // If status/assessment fields are changed, auto-compute next_action
+    if (updates.status || updates.status_text || updates.assessment_done !== undefined || updates.assessment_response || updates.qualified !== undefined || updates.interview_date) {
         const { data: current } = await supabase.from('companies').select('*').eq('id', id).single();
         if (current) {
             const merged = { ...current, ...updates };
@@ -124,24 +129,28 @@ export async function updateCompany(
         }
     }
 
+    // Default status_text if it becomes empty
+    if (updates.status_text === '') {
+        updates.status_text = 'Applied';
+    }
+
     // Auto-clear logic: If status is changed to 'rejected', clear assessment and interview fields
-    if (updates.status === 'rejected') {
+    if (updates.status === 'rejected' || updates.status_color === 'red') {
         updates.assessment_done = false;
         updates.assessment_response = undefined;
         updates.qualified = undefined;
         updates.interview_date = undefined;
     }
 
-    // Micro UX: If Assessment Response is set to 'no_response', clear further fields
-    if (updates.assessment_response === 'no_response') {
-        updates.qualified = undefined;
-        updates.interview_date = undefined;
-    }
-
     // Handle Resume Update
-    if (resumeFile && (updates.company_name || updates.id)) {
-        const companyNameForFile = updates.company_name || 'update';
-        const resumeUrl = await uploadResume(companyNameForFile, resumeFile);
+    if (resumeFile) {
+        // Fetch name if we don't have it
+        let companyName = updates.company_name;
+        if (!companyName) {
+            const { data } = await supabase.from('companies').select('company_name').eq('id', id).single();
+            companyName = data?.company_name || 'update';
+        }
+        const resumeUrl = await uploadResume(companyName as string, resumeFile);
         updates.resume_url = resumeUrl;
         if (!logMessage) logMessage = 'Resume Updated';
     }

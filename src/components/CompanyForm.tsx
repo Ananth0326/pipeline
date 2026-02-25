@@ -18,6 +18,8 @@ export default function CompanyForm({ initialData, onSubmit, isSubmitting }: Com
         jd_text: initialData?.jd_text || '',
         date_applied: initialData?.date_applied || new Date().toISOString().split('T')[0],
         status: (initialData?.status as ApplicationStatus) || 'applied',
+        status_text: initialData?.status_text || 'Applied',
+        status_color: initialData?.status_color || 'yellow',
         notes: initialData?.notes || '',
         application_platform: initialData?.application_platform || '',
         next_action: initialData?.next_action || '',
@@ -125,20 +127,31 @@ export default function CompanyForm({ initialData, onSubmit, isSubmitting }: Com
                             />
                         </div>
                         <div>
-                            <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Current Status</label>
-                            <select
-                                name="status"
-                                value={formData.status}
-                                onChange={handleChange}
-                                disabled={!!initialData?.id}
-                                className="w-full border-2 border-white p-3 rounded-xl focus:ring-4 focus:ring-gray-50 outline-none font-black uppercase tracking-widest text-[10px] transition-all bg-white"
-                            >
-                                <option value="applied">Applied</option>
-                                <option value="interview">Interview</option>
-                                <option value="selected">Selected</option>
-                                <option value="offer">Offer</option>
-                                <option value="rejected">Rejected</option>
-                            </select>
+                            <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Manual Status</label>
+                            <div className="flex flex-col gap-3">
+                                <input
+                                    name="status_text"
+                                    value={formData.status_text}
+                                    onChange={handleChange}
+                                    className="w-full border-2 border-white p-3 rounded-xl focus:ring-4 focus:ring-gray-50 outline-none font-black uppercase tracking-widest text-[10px] placeholder:text-gray-300 transition-all shadow-sm"
+                                    placeholder="e.g. READY FOR INTERVIEW"
+                                />
+                                <div className="flex gap-2">
+                                    {(['green', 'yellow', 'red'] as const).map((color) => (
+                                        <button
+                                            key={color}
+                                            type="button"
+                                            onClick={() => setFormData(prev => ({ ...prev, status_color: color }))}
+                                            className={`w-8 h-8 rounded-full border-2 transition-all ${formData.status_color === color
+                                                ? 'border-black scale-110 shadow-md'
+                                                : 'border-transparent opacity-50 hover:opacity-100'
+                                                } ${color === 'green' ? 'bg-green-500' :
+                                                    color === 'yellow' ? 'bg-yellow-400' : 'bg-red-500'
+                                                }`}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

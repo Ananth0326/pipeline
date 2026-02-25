@@ -35,13 +35,20 @@ CREATE TABLE IF NOT EXISTS companies (
     updated_at timestamp with time zone DEFAULT now()
 );
 
--- Migration for existing tables:
 DO $$ BEGIN
     ALTER TABLE companies ADD COLUMN application_platform text;
 EXCEPTION WHEN duplicate_column THEN null; END $$;
 
 DO $$ BEGIN
     ALTER TABLE companies ADD COLUMN next_action text;
+EXCEPTION WHEN duplicate_column THEN null; END $$;
+
+DO $$ BEGIN
+    ALTER TABLE companies ADD COLUMN status_text text DEFAULT 'Applied';
+EXCEPTION WHEN duplicate_column THEN null; END $$;
+
+DO $$ BEGIN
+    ALTER TABLE companies ADD COLUMN status_color text DEFAULT 'yellow';
 EXCEPTION WHEN duplicate_column THEN null; END $$;
 
 -- 3. Enable Row Level Security (RLS)

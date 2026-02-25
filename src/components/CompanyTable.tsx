@@ -16,29 +16,21 @@ export default function CompanyTable({ companies }: CompanyTableProps) {
     const [deleteId, setDeleteId] = useState<string | null>(null);
     const [deleteName, setDeleteName] = useState('');
 
-    const activeCount = companies.filter(c => !['rejected', 'offer'].includes(c.status)).length;
-    const offerCount = companies.filter(c => c.status === 'offer').length;
-    const rejectedCount = companies.filter(c => c.status === 'rejected').length;
+    const activeCount = companies.filter(c => c.status_color === 'yellow' || c.status_color === 'green').length;
+    const offerCount = companies.filter(c => c.status_color === 'green' && c.status_text.toLowerCase().includes('offer')).length;
+    const rejectedCount = companies.filter(c => c.status_color === 'red').length;
 
     const getStatusParts = (company: Company) => {
-        const statusMap: Record<ApplicationStatus, { primary: string, color: string }> = {
-            applied: { primary: 'APPLIED', color: 'bg-blue-50/50 text-blue-600 border-blue-200 dark:bg-blue-900/10 dark:text-blue-400 dark:border-blue-800' },
-            interview: { primary: 'INTERVIEW', color: 'bg-yellow-50/50 text-yellow-600 border-yellow-200 dark:bg-yellow-900/10 dark:text-yellow-400 dark:border-yellow-800' },
-            rejected: { primary: 'REJECTED', color: 'bg-red-50/50 text-red-600 border-red-200 dark:bg-red-900/10 dark:text-red-400 dark:border-red-800' },
-            offer: { primary: 'OFFER', color: 'bg-green-50/50 text-green-600 border-green-200 dark:bg-green-900/10 dark:text-green-400 dark:border-green-800' },
-            selected: { primary: 'SELECTED', color: 'bg-indigo-50/50 text-indigo-600 border-indigo-200 dark:bg-indigo-900/10 dark:text-indigo-400 dark:border-indigo-800' },
+        const colorMap: Record<'green' | 'yellow' | 'red', string> = {
+            green: 'bg-green-50/50 text-green-600 border-green-200 dark:bg-green-900/10 dark:text-green-400 dark:border-green-800',
+            yellow: 'bg-yellow-50/50 text-yellow-600 border-yellow-200 dark:bg-yellow-900/10 dark:text-yellow-400 dark:border-yellow-800',
+            red: 'bg-red-50/50 text-red-600 border-red-200 dark:bg-red-900/10 dark:text-red-400 dark:border-red-800',
         };
 
-        const { primary, color } = statusMap[company.status] || statusMap.applied;
-
-        let secondary = '';
-        if (company.status === 'selected' || company.status === 'interview') {
-            if (company.interview_date) secondary = 'Interview Scheduled';
-            else if (company.qualified === true) secondary = 'Qualified';
-            else if (company.assessment_done) secondary = 'Assessment Done';
-        }
-
-        return { primary, secondary, color };
+        return {
+            primary: company.status_text.toUpperCase() || 'APPLIED',
+            color: colorMap[company.status_color] || colorMap.yellow
+        };
     };
 
     const confirmDelete = async () => {
