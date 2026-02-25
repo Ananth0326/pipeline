@@ -53,31 +53,31 @@ export default function CompanyTable({ companies }: CompanyTableProps) {
             {/* DASHBOARD STATS */}
             <div className="space-y-4">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="bg-gray-50/50 dark:bg-gray-950 p-4 rounded-2xl border border-gray-100 dark:border-gray-800 flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600">
-                            <Users size={16} />
+                    <div className="bg-gray-50/50 dark:bg-gray-950 p-3 rounded-2xl border border-gray-100 dark:border-gray-800 flex items-center gap-3">
+                        <div className="w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600">
+                            <Users size={14} />
                         </div>
                         <div>
                             <p className="text-[9px] font-black uppercase tracking-widest text-gray-400">Total</p>
-                            <p className="text-3xl font-black font-outfit leading-none mt-1">{companies.length}</p>
+                            <p className="text-xl font-black font-outfit leading-none mt-1">{companies.length}</p>
                         </div>
                     </div>
-                    <div className="bg-gray-50/50 dark:bg-gray-950 p-4 rounded-2xl border border-gray-100 dark:border-gray-800 flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-green-50 dark:bg-green-900/20 flex items-center justify-center text-green-600">
-                            <CheckCircle2 size={16} />
+                    <div className="bg-gray-50/50 dark:bg-gray-950 p-3 rounded-2xl border border-gray-100 dark:border-gray-800 flex items-center gap-3">
+                        <div className="w-7 h-7 rounded-lg bg-green-50 dark:bg-green-900/20 flex items-center justify-center text-green-600">
+                            <CheckCircle2 size={14} />
                         </div>
                         <div>
                             <p className="text-[9px] font-black uppercase tracking-widest text-gray-400">Offers</p>
-                            <p className="text-3xl font-black text-green-600 font-outfit leading-none mt-1">{offerCount}</p>
+                            <p className="text-xl font-black text-green-600 font-outfit leading-none mt-1">{offerCount}</p>
                         </div>
                     </div>
-                    <div className="bg-gray-50/50 dark:bg-gray-950 p-4 rounded-2xl border border-gray-100 dark:border-gray-800 flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-red-50 dark:bg-red-900/20 flex items-center justify-center text-red-600">
-                            <PieChart size={16} />
+                    <div className="bg-gray-50/50 dark:bg-gray-950 p-3 rounded-2xl border border-gray-100 dark:border-gray-800 flex items-center gap-3">
+                        <div className="w-7 h-7 rounded-lg bg-red-50 dark:bg-red-900/20 flex items-center justify-center text-red-600">
+                            <PieChart size={14} />
                         </div>
                         <div>
                             <p className="text-[9px] font-black uppercase tracking-widest text-gray-400">Rejected</p>
-                            <p className="text-3xl font-black text-red-600 font-outfit leading-none mt-1">{rejectedCount}</p>
+                            <p className="text-xl font-black text-red-600 font-outfit leading-none mt-1">{rejectedCount}</p>
                         </div>
                     </div>
                 </div>
@@ -101,7 +101,7 @@ export default function CompanyTable({ companies }: CompanyTableProps) {
                                 <tr className="border-b bg-gray-50/50 dark:bg-gray-950">
                                     <th className="h-10 px-4 text-left align-middle text-gray-400 font-medium">
                                         <button className="group/sort flex items-center gap-1 uppercase tracking-widest text-[9px] font-bold">
-                                            Project
+                                            Company & Role
                                             <div className="w-3 h-3 relative overflow-hidden opacity-0 group-hover/sort:opacity-100">
                                                 <ChevronUp size={12} className="absolute inset-0" />
                                                 <ChevronDown size={12} className="absolute inset-0" />
