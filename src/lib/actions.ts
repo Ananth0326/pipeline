@@ -5,6 +5,17 @@ import { Company, ApplicationStatus, AppLog, AssessmentResponse } from '@/lib/ty
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
+function toUserFacingError(error: unknown, fallback: string): Error {
+    const message = error instanceof Error ? error.message : '';
+    const lower = message.toLowerCase();
+
+    if (lower.includes('abort') || lower.includes('timeout') || lower.includes('fetch failed') || lower.includes('failed to fetch')) {
+        return new Error('Supabase did not respond in time. Check NEXT_PUBLIC_SUPABASE_URL and your network, then try again.');
+    }
+
+    return new Error(message || fallback);
+}
+
 async function logActivity(companyId: string, action: string) {
     const supabase = getSupabase();
     const { error } = await supabase
@@ -31,33 +42,41 @@ function computeNextAction(company: Partial<Company>): string {
 }
 
 export async function getCompanies() {
-    const supabase = getSupabase();
-    const { data, error } = await supabase
-        .from('companies')
-        .select('*')
-        .order('updated_at', { ascending: false });
+    try {
+        const supabase = getSupabase();
+        const { data, error } = await supabase
+            .from('companies')
+            .select('*')
+            .order('updated_at', { ascending: false });
 
-    if (error) throw error;
-    return data as Company[];
+        if (error) throw error;
+        return data as Company[];
+    } catch (error) {
+        throw toUserFacingError(error, 'Failed to load companies.');
+    }
 }
 
 export async function getCompany(id: string) {
-    const supabase = getSupabase();
-    const { data, error } = await supabase
-        .from('companies')
-        .select('*, application_logs (*)')
-        .eq('id', id)
-        .single();
+    try {
+        const supabase = getSupabase();
+        const { data, error } = await supabase
+            .from('companies')
+            .select('*, application_logs (*)')
+            .eq('id', id)
+            .single();
 
-    if (error) throw error;
+        if (error) throw error;
 
-    if (data.application_logs) {
-        data.application_logs.sort((a: any, b: any) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-        );
+        if (data.application_logs) {
+            data.application_logs.sort((a: any, b: any) =>
+                new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+            );
+        }
+
+        return data as Company & { application_logs: AppLog[] };
+    } catch (error) {
+        throw toUserFacingError(error, 'Failed to load application details.');
     }
-
-    return data as Company & { application_logs: AppLog[] };
 }
 
 async function uploadResume(companyName: string, resumeFile: { name: string, type: string, buffer: ArrayBuffer }) {

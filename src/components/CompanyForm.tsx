@@ -1,7 +1,7 @@
 'use client';
 
 import { Company, ApplicationStatus } from '@/lib/types';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { FileText, Globe, Target } from 'lucide-react';
 
 interface CompanyFormProps {
@@ -25,6 +25,7 @@ export default function CompanyForm({ initialData, onSubmit, isSubmitting }: Com
         next_action: initialData?.next_action || '',
     });
     const [resumeFile, setResumeFile] = useState<File | null>(null);
+    const jdTextareaRef = useRef<HTMLTextAreaElement>(null);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -38,6 +39,69 @@ export default function CompanyForm({ initialData, onSubmit, isSubmitting }: Com
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         onSubmit(formData, resumeFile);
+    };
+
+    const applyInlineFormat = (delimiter: '**' | '*') => {
+        const textarea = jdTextareaRef.current;
+        if (!textarea) return;
+
+        const { selectionStart, selectionEnd } = textarea;
+        const selectedText = formData.jd_text.slice(selectionStart, selectionEnd);
+        const content = selectedText || 'text';
+        const updated =
+            formData.jd_text.slice(0, selectionStart) +
+            `${delimiter}${content}${delimiter}` +
+            formData.jd_text.slice(selectionEnd);
+
+        setFormData(prev => ({ ...prev, jd_text: updated }));
+
+        const selectionOffset = delimiter.length;
+        requestAnimationFrame(() => {
+            textarea.focus();
+            textarea.setSelectionRange(
+                selectionStart + selectionOffset,
+                selectionStart + selectionOffset + content.length
+            );
+        });
+    };
+
+    const applyBullets = () => {
+        const textarea = jdTextareaRef.current;
+        if (!textarea) return;
+
+        const { selectionStart, selectionEnd } = textarea;
+        const selectedText = formData.jd_text.slice(selectionStart, selectionEnd);
+
+        if (!selectedText) {
+            const updated =
+                formData.jd_text.slice(0, selectionStart) +
+                '- ' +
+                formData.jd_text.slice(selectionEnd);
+            setFormData(prev => ({ ...prev, jd_text: updated }));
+
+            requestAnimationFrame(() => {
+                textarea.focus();
+                textarea.setSelectionRange(selectionStart + 2, selectionStart + 2);
+            });
+            return;
+        }
+
+        const bulletedText = selectedText
+            .split('\n')
+            .map((line) => (line.trim() ? (line.trimStart().startsWith('- ') ? line : `- ${line}`) : line))
+            .join('\n');
+
+        const updated =
+            formData.jd_text.slice(0, selectionStart) +
+            bulletedText +
+            formData.jd_text.slice(selectionEnd);
+
+        setFormData(prev => ({ ...prev, jd_text: updated }));
+
+        requestAnimationFrame(() => {
+            textarea.focus();
+            textarea.setSelectionRange(selectionStart, selectionStart + bulletedText.length);
+        });
     };
 
     return (
@@ -193,14 +257,40 @@ export default function CompanyForm({ initialData, onSubmit, isSubmitting }: Com
                 </div>
 
                 <div>
-                    <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Job Description</label>
+                    <div className="flex items-center justify-between mb-2">
+                        <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400">Job Description</label>
+                        <div className="flex items-center gap-2">
+                            <button
+                                type="button"
+                                onClick={() => applyInlineFormat('**')}
+                                className="px-2 py-1 rounded-md border border-gray-200 text-[10px] font-black uppercase tracking-widest text-gray-500 hover:bg-gray-100"
+                            >
+                                Bold
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => applyInlineFormat('*')}
+                                className="px-2 py-1 rounded-md border border-gray-200 text-[10px] font-black uppercase tracking-widest text-gray-500 hover:bg-gray-100 italic"
+                            >
+                                Italic
+                            </button>
+                            <button
+                                type="button"
+                                onClick={applyBullets}
+                                className="px-2 py-1 rounded-md border border-gray-200 text-[10px] font-black uppercase tracking-widest text-gray-500 hover:bg-gray-100"
+                            >
+                                Bullets
+                            </button>
+                        </div>
+                    </div>
                     <textarea
+                        ref={jdTextareaRef}
                         name="jd_text"
                         value={formData.jd_text}
                         onChange={handleChange}
                         rows={6}
                         className="w-full border-2 border-gray-100 p-4 rounded-2xl focus:ring-4 focus:ring-gray-50 outline-none font-medium text-sm leading-relaxed transition-all"
-                        placeholder="Paste JD details here..."
+                        placeholder="Paste JD details here... (supports bold, italic, bullets)"
                     />
                 </div>
             </div>

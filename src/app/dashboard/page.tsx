@@ -1,11 +1,19 @@
 import { getCompanies } from '@/lib/actions';
 import CompanyTable from '@/components/CompanyTable';
 import QuickAddModal from '@/components/QuickAddModal';
+import { Company } from '@/lib/types';
 
 export const dynamic = 'force-dynamic';
 
 export default async function DashboardPage() {
-    const companies = await getCompanies();
+    let companies: Company[] = [];
+    let loadError = '';
+
+    try {
+        companies = await getCompanies();
+    } catch (error) {
+        loadError = error instanceof Error ? error.message : 'Unable to connect to Supabase right now.';
+    }
 
     return (
         <div className="space-y-6">
@@ -15,6 +23,13 @@ export default async function DashboardPage() {
                     <p className="text-[10px] font-black uppercase tracking-widest text-gray-500">Track your progress and stay organized.</p>
                 </div>
             </div>
+
+            {loadError && (
+                <div className="px-4 py-3 rounded-xl border border-red-200 bg-red-50 text-red-700">
+                    <p className="text-[10px] font-black uppercase tracking-widest">Connection Problem</p>
+                    <p className="text-sm">{loadError}</p>
+                </div>
+            )}
 
             <div>
                 <CompanyTable companies={companies} />
