@@ -1,7 +1,7 @@
 import { getCompanies, getSavedRoles } from '@/lib/actions';
 import CompanyTable from '@/components/CompanyTable';
 import QuickAddModal from '@/components/QuickAddModal';
-import SavedRolesSection from '@/components/SavedRolesSection';
+import SavedRolesModal from '@/components/SavedRolesModal';
 import { Company, SavedRole } from '@/lib/types';
 
 export const dynamic = 'force-dynamic';
@@ -32,6 +32,7 @@ export default async function DashboardPage() {
                     <h2 className="text-2xl font-black tracking-tighter uppercase leading-none font-outfit">DASHBOARD</h2>
                     <p className="text-[10px] font-black uppercase tracking-widest text-gray-500">Track your progress and stay organized.</p>
                 </div>
+                <SavedRolesModal savedRoles={savedRoles} />
             </div>
 
             {loadError && (
@@ -44,8 +45,6 @@ export default async function DashboardPage() {
             <div>
                 <CompanyTable companies={companies} />
             </div>
-
-            <SavedRolesSection savedRoles={savedRoles} />
 
             <QuickAddModal />
         </div>
