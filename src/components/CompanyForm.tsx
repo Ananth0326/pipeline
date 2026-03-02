@@ -22,6 +22,7 @@ export default function CompanyForm({ initialData, onSubmit, isSubmitting }: Com
         status_color: initialData?.status_color || 'yellow',
         notes: initialData?.notes || '',
         application_platform: initialData?.application_platform || '',
+        application_links: initialData?.application_links || '',
         next_action: initialData?.next_action || '',
     });
     const [resumeFile, setResumeFile] = useState<File | null>(null);
@@ -254,6 +255,19 @@ export default function CompanyForm({ initialData, onSubmit, isSubmitting }: Com
                         className="w-full border-2 border-gray-100 p-4 rounded-2xl focus:ring-4 focus:ring-gray-50 outline-none font-medium italic text-sm transition-all"
                         placeholder="Referrals, HR names, follow-up dates..."
                     />
+                </div>
+
+                <div>
+                    <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Application Links</label>
+                    <textarea
+                        name="application_links"
+                        value={formData.application_links}
+                        onChange={handleChange}
+                        rows={3}
+                        className="w-full border-2 border-gray-100 p-4 rounded-2xl focus:ring-4 focus:ring-gray-50 outline-none font-medium text-sm transition-all"
+                        placeholder={"https://careers.company.com/job/123\nhttps://linkedin.com/jobs/view/456"}
+                    />
+                    <p className="text-[9px] text-gray-400 mt-2 font-medium italic px-1">One link per line.</p>
                 </div>
 
                 <div>

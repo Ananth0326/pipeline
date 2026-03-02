@@ -3,8 +3,9 @@ import ProgressSection from '@/components/ProgressSection';
 import ActivityTimeline from '@/components/ActivityTimeline';
 import DeleteButton from '@/components/DeleteButton';
 import FormattedText from '@/components/FormattedText';
+import CopyTextButton from '@/components/CopyTextButton';
 import { notFound } from 'next/navigation';
-import { FileText, Trash2, Edit3, ArrowLeft, Globe, Target } from 'lucide-react';
+import { FileText, Edit3, ArrowLeft, Globe, Target, ExternalLink } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
@@ -32,6 +33,13 @@ export default async function CompanyDetailPage({ params }: { params: Promise<{ 
     if (!company) {
         notFound();
     }
+
+    const applicationLinks = (company.application_links || '')
+        .split('\n')
+        .map((link) => link.trim())
+        .filter(Boolean);
+
+    const toHref = (value: string) => (/^https?:\/\//i.test(value) ? value : `https://${value}`);
 
     return (
         <div className="pt-12 md:pt-24 pb-20 px-6 max-w-5xl mx-auto space-y-12">
@@ -121,7 +129,10 @@ export default async function CompanyDetailPage({ params }: { params: Promise<{ 
 
                     {company.jd_text && (
                         <section className="space-y-6">
-                            <h3 className="text-sm font-black uppercase tracking-widest text-gray-400">Job Description</h3>
+                            <div className="flex items-center justify-between gap-3">
+                                <h3 className="text-sm font-black uppercase tracking-widest text-gray-400">Job Description</h3>
+                                <CopyTextButton text={company.jd_text} />
+                            </div>
                             <div className="bg-gray-50 dark:bg-gray-950 p-10 rounded-3xl border dark:border-gray-800 text-sm text-gray-600 dark:text-gray-400">
                                 <FormattedText text={company.jd_text} />
                             </div>
@@ -147,6 +158,26 @@ export default async function CompanyDetailPage({ params }: { params: Promise<{ 
                                 <p className="text-xs font-medium leading-relaxed bg-yellow-50 dark:bg-yellow-900/10 p-4 rounded-xl border border-yellow-100 dark:border-yellow-900/50 italic text-yellow-900 dark:text-yellow-200">
                                     {company.notes}
                                 </p>
+                            </div>
+                        )}
+
+                        {applicationLinks.length > 0 && (
+                            <div className="space-y-2">
+                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Application Links</p>
+                                <div className="space-y-2">
+                                    {applicationLinks.map((link, index) => (
+                                        <a
+                                            key={`${link}-${index}`}
+                                            href={toHref(link)}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="flex items-center justify-between gap-2 rounded-lg border border-gray-100 px-3 py-2 text-xs text-blue-700 hover:bg-blue-50 transition-colors"
+                                        >
+                                            <span className="truncate">{link}</span>
+                                            <ExternalLink size={12} />
+                                        </a>
+                                    ))}
+                                </div>
                             </div>
                         )}
 

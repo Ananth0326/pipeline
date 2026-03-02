@@ -18,6 +18,7 @@ export interface Company {
     qualified?: boolean;
     interview_date?: string;
     application_platform?: string;
+    application_links?: string;
     next_action?: string;
     created_at: string;
     updated_at: string;

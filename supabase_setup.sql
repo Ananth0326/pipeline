@@ -44,6 +44,10 @@ DO $$ BEGIN
 EXCEPTION WHEN duplicate_column THEN null; END $$;
 
 DO $$ BEGIN
+    ALTER TABLE companies ADD COLUMN application_links text;
+EXCEPTION WHEN duplicate_column THEN null; END $$;
+
+DO $$ BEGIN
     ALTER TABLE companies ADD COLUMN status_text text DEFAULT 'Applied';
 EXCEPTION WHEN duplicate_column THEN null; END $$;
 
