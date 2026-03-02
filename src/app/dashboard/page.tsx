@@ -1,6 +1,7 @@
 import { getCompanies } from '@/lib/actions';
 import CompanyTable from '@/components/CompanyTable';
 import QuickAddModal from '@/components/QuickAddModal';
+import ApplicationLinksHub from '@/components/ApplicationLinksHub';
 import { Company } from '@/lib/types';
 
 export const dynamic = 'force-dynamic';
@@ -30,6 +31,10 @@ export default async function DashboardPage() {
                     <p className="text-sm">{loadError}</p>
                 </div>
             )}
+
+            <div>
+                <ApplicationLinksHub companies={companies} />
+            </div>
 
             <div>
                 <CompanyTable companies={companies} />
