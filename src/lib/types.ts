@@ -18,7 +18,6 @@ export interface Company {
     qualified?: boolean;
     interview_date?: string;
     application_platform?: string;
-    application_links?: string;
     next_action?: string;
     created_at: string;
     updated_at: string;
@@ -29,4 +28,12 @@ export interface AppLog {
     company_id: string;
     action: string;
     created_at: string;
+}
+
+export interface SavedRole {
+    id: string;
+    company_name: string;
+    job_link: string;
+    created_at: string;
+    updated_at: string;
 }

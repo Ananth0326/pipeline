@@ -44,10 +44,6 @@ DO $$ BEGIN
 EXCEPTION WHEN duplicate_column THEN null; END $$;
 
 DO $$ BEGIN
-    ALTER TABLE companies ADD COLUMN application_links text;
-EXCEPTION WHEN duplicate_column THEN null; END $$;
-
-DO $$ BEGIN
     ALTER TABLE companies ADD COLUMN status_text text DEFAULT 'Applied';
 EXCEPTION WHEN duplicate_column THEN null; END $$;
 
@@ -99,6 +95,33 @@ ALTER TABLE application_logs ENABLE ROW LEVEL SECURITY;
 DO $$ BEGIN
     CREATE POLICY "Allow all access for application_logs" ON application_logs
         FOR ALL USING (true) WITH CHECK (true);
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
+
+-- 10. Saved roles table (separate from applied tracker)
+CREATE TABLE IF NOT EXISTS saved_roles (
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    company_name text NOT NULL,
+    job_link text NOT NULL,
+    created_at timestamp with time zone DEFAULT now(),
+    updated_at timestamp with time zone DEFAULT now()
+);
+
+ALTER TABLE saved_roles ENABLE ROW LEVEL SECURITY;
+
+DO $$ BEGIN
+    CREATE POLICY "Allow all access for saved_roles" ON saved_roles
+        FOR ALL USING (true) WITH CHECK (true);
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+    CREATE TRIGGER update_saved_roles_updated_at
+        BEFORE UPDATE ON saved_roles
+        FOR EACH ROW
+        EXECUTE PROCEDURE update_updated_at_column();
 EXCEPTION
     WHEN duplicate_object THEN null;
 END $$;

@@ -1,7 +1,7 @@
 'use server';
 
 import { getSupabase } from '@/lib/supabase';
-import { Company, ApplicationStatus, AppLog, AssessmentResponse } from '@/lib/types';
+import { Company, ApplicationStatus, AppLog, AssessmentResponse, SavedRole } from '@/lib/types';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
@@ -210,4 +210,63 @@ export async function deleteCompanyAndRedirect(id: string) {
     if (error) throw error;
     revalidatePath('/dashboard');
     redirect('/dashboard');
+}
+
+export async function getSavedRoles() {
+    try {
+        const supabase = getSupabase();
+        const { data, error } = await supabase
+            .from('saved_roles')
+            .select('*')
+            .order('updated_at', { ascending: false });
+
+        if (error) throw error;
+        return data as SavedRole[];
+    } catch (error) {
+        throw toUserFacingError(error, 'Failed to load saved roles.');
+    }
+}
+
+export async function addSavedRole(payload: Pick<SavedRole, 'company_name' | 'job_link'>) {
+    try {
+        const supabase = getSupabase();
+        const { error } = await supabase
+            .from('saved_roles')
+            .insert([payload]);
+
+        if (error) throw error;
+        revalidatePath('/dashboard');
+    } catch (error) {
+        throw toUserFacingError(error, 'Failed to add saved role.');
+    }
+}
+
+export async function updateSavedRole(id: string, updates: Partial<Pick<SavedRole, 'company_name' | 'job_link'>>) {
+    try {
+        const supabase = getSupabase();
+        const { error } = await supabase
+            .from('saved_roles')
+            .update(updates)
+            .eq('id', id);
+
+        if (error) throw error;
+        revalidatePath('/dashboard');
+    } catch (error) {
+        throw toUserFacingError(error, 'Failed to update saved role.');
+    }
+}
+
+export async function deleteSavedRole(id: string) {
+    try {
+        const supabase = getSupabase();
+        const { error } = await supabase
+            .from('saved_roles')
+            .delete()
+            .eq('id', id);
+
+        if (error) throw error;
+        revalidatePath('/dashboard');
+    } catch (error) {
+        throw toUserFacingError(error, 'Failed to delete saved role.');
+    }
 }

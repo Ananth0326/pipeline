@@ -1,19 +1,28 @@
-import { getCompanies } from '@/lib/actions';
+import { getCompanies, getSavedRoles } from '@/lib/actions';
 import CompanyTable from '@/components/CompanyTable';
 import QuickAddModal from '@/components/QuickAddModal';
-import ApplicationLinksHub from '@/components/ApplicationLinksHub';
-import { Company } from '@/lib/types';
+import SavedRolesSection from '@/components/SavedRolesSection';
+import { Company, SavedRole } from '@/lib/types';
 
 export const dynamic = 'force-dynamic';
 
 export default async function DashboardPage() {
     let companies: Company[] = [];
+    let savedRoles: SavedRole[] = [];
     let loadError = '';
 
     try {
         companies = await getCompanies();
     } catch (error) {
         loadError = error instanceof Error ? error.message : 'Unable to connect to Supabase right now.';
+    }
+
+    try {
+        savedRoles = await getSavedRoles();
+    } catch (error) {
+        if (!loadError) {
+            loadError = error instanceof Error ? error.message : 'Unable to load saved roles right now.';
+        }
     }
 
     return (
@@ -33,12 +42,10 @@ export default async function DashboardPage() {
             )}
 
             <div>
-                <ApplicationLinksHub companies={companies} />
-            </div>
-
-            <div>
                 <CompanyTable companies={companies} />
             </div>
+
+            <SavedRolesSection savedRoles={savedRoles} />
 
             <QuickAddModal />
         </div>
