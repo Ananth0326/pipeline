@@ -1,13 +1,16 @@
 'use client';
 
 import CompanyForm from '@/components/CompanyForm';
-import { addCompany } from '@/lib/actions';
+import { addCompany, deleteSavedRole } from '@/lib/actions';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function AddCompanyPage() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const companyFromSavedRole = searchParams.get('company') || '';
+    const savedRoleId = searchParams.get('savedRoleId');
 
     const handleSubmit = async (formData: any, resumeFile: File | null) => {
         setIsSubmitting(true);
@@ -22,6 +25,9 @@ export default function AddCompanyPage() {
             }
 
             await addCompany(formData, resumeData);
+            if (savedRoleId) {
+                await deleteSavedRole(savedRoleId);
+            }
             router.push('/dashboard');
         } catch (error) {
             console.error('Failed to add company:', error);
@@ -40,7 +46,11 @@ export default function AddCompanyPage() {
             </div>
 
             <div className="bg-white dark:bg-black border rounded-3xl p-10 lg:p-16 shadow-sm">
-                <CompanyForm onSubmit={handleSubmit} isSubmitting={isSubmitting} />
+                <CompanyForm
+                    initialData={companyFromSavedRole ? { company_name: companyFromSavedRole } : undefined}
+                    onSubmit={handleSubmit}
+                    isSubmitting={isSubmitting}
+                />
             </div>
         </div>
     );

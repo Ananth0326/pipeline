@@ -2,7 +2,8 @@
 
 import { addSavedRole, deleteSavedRole, updateSavedRole } from '@/lib/actions';
 import { SavedRole } from '@/lib/types';
-import { ExternalLink, Pencil, Plus, Trash2, X } from 'lucide-react';
+import { ExternalLink, Pencil, Plus, X } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import ConfirmModal from './ConfirmModal';
 
@@ -21,8 +22,10 @@ function normalizeLink(url: string) {
 }
 
 export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps) {
+    const router = useRouter();
     const [form, setForm] = useState<RoleFormState>({ company_name: '', job_link: '' });
     const [editingId, setEditingId] = useState<string | null>(null);
+    const [changingId, setChangingId] = useState<string | null>(null);
     const [editForm, setEditForm] = useState<RoleFormState>({ company_name: '', job_link: '' });
     const [deleting, setDeleting] = useState<SavedRole | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -46,6 +49,7 @@ export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps
     };
 
     const startEdit = (role: SavedRole) => {
+        setChangingId(null);
         setEditingId(role.id);
         setEditForm({
             company_name: role.company_name,
@@ -56,6 +60,23 @@ export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps
     const cancelEdit = () => {
         setEditingId(null);
         setEditForm({ company_name: '', job_link: '' });
+    };
+
+    const startChange = (id: string) => {
+        setEditingId(null);
+        setChangingId(id);
+    };
+
+    const cancelChange = () => {
+        setChangingId(null);
+    };
+
+    const handleApplied = (role: SavedRole) => {
+        const params = new URLSearchParams({
+            company: role.company_name,
+            savedRoleId: role.id
+        });
+        router.push(`/add-company?${params.toString()}`);
     };
 
     const handleUpdate = async (id: string) => {
@@ -143,6 +164,7 @@ export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps
                             <tbody>
                                 {savedRoles.map((role) => {
                                     const isEditing = editingId === role.id;
+                                    const isChanging = changingId === role.id;
                                     return (
                                         <tr key={role.id} className="border-b last:border-0 border-gray-100">
                                             <td className="px-4 py-3">
@@ -206,14 +228,39 @@ export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps
                                                             </button>
                                                             <button
                                                                 type="button"
-                                                                onClick={() => setDeleting(role)}
-                                                                className="px-3 py-2 rounded-lg border border-red-200 bg-red-50 text-[10px] font-black uppercase tracking-widest text-red-600 inline-flex items-center gap-1"
+                                                                onClick={() => startChange(role.id)}
+                                                                className="px-3 py-2 rounded-lg border border-blue-200 bg-blue-50 text-[10px] font-black uppercase tracking-widest text-blue-700 inline-flex items-center gap-1"
                                                             >
-                                                                <Trash2 size={12} /> Delete
+                                                                Change
                                                             </button>
                                                         </>
                                                     )}
                                                 </div>
+                                                {isChanging && (
+                                                    <div className="mt-2 flex items-center justify-end gap-2">
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleApplied(role)}
+                                                            className="px-3 py-2 rounded-lg bg-black text-white text-[10px] font-black uppercase tracking-widest"
+                                                        >
+                                                            Applied
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setDeleting(role)}
+                                                            className="px-3 py-2 rounded-lg border border-red-200 bg-red-50 text-[10px] font-black uppercase tracking-widest text-red-600"
+                                                        >
+                                                            Not Suitable
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            onClick={cancelChange}
+                                                            className="px-3 py-2 rounded-lg border border-gray-200 text-[10px] font-black uppercase tracking-widest text-gray-500"
+                                                        >
+                                                            Cancel
+                                                        </button>
+                                                    </div>
+                                                )}
                                             </td>
                                         </tr>
                                     );
@@ -228,8 +275,8 @@ export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps
                 isOpen={!!deleting}
                 onClose={() => setDeleting(null)}
                 onConfirm={handleDelete}
-                title={deleting ? `Delete ${deleting.company_name}?` : 'Delete saved role?'}
-                message="This will permanently remove this saved role. This action cannot be undone."
+                title={deleting ? `Mark ${deleting.company_name} as not suitable?` : 'Mark role as not suitable?'}
+                message="This will remove this role from Saved Roles. This action cannot be undone."
             />
         </section>
     );
