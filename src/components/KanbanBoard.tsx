@@ -201,22 +201,20 @@ function KanbanCard({ company, isOverlay = false }: { company: Company, isOverla
             exit={{ opacity: 0, scale: 0.95 }}
             ref={setNodeRef}
             style={style}
-            onClick={() => !isOverlay && router.push(`/company/${company.id}`)}
-            className={`group bg-white dark:bg-[#111] p-4 rounded-xl shadow-sm border ${isOverlay ? 'border-blue-400 rotate-2 shadow-xl cursor-grabbing' : 'border-gray-100 dark:border-gray-800 cursor-pointer hover:border-gray-300 dark:hover:border-gray-600'} transition-colors relative flex flex-col gap-3`}
+            {...attributes}
+            {...listeners}
+            onClick={(e) => {
+                if (!isDragging && !isOverlay) {
+                    router.push(`/company/${company.id}`);
+                }
+            }}
+            className={`group bg-white dark:bg-[#111] p-4 rounded-xl shadow-sm border touch-none select-none ${isOverlay ? 'border-blue-400 rotate-2 shadow-xl cursor-grabbing' : 'border-gray-100 dark:border-gray-800 cursor-grab hover:border-gray-300 dark:hover:border-gray-600'} transition-colors relative flex flex-col gap-3`}
         >
             <div className="flex justify-between items-start gap-2">
                 <div>
                     <h4 className="font-inter font-bold text-gray-900 dark:text-gray-100 text-sm leading-tight">{company.company_name}</h4>
                     <p className="font-mono text-[10px] text-gray-500 mt-1 truncate max-w-[180px]">{company.role_title}</p>
                 </div>
-                <button
-                    {...attributes}
-                    {...listeners}
-                    onClick={(e) => e.stopPropagation()}
-                    className={`p-1.5 text-gray-300 hover:text-gray-600 dark:hover:text-gray-300 rounded cursor-grab active:cursor-grabbing ${isOverlay ? 'cursor-grabbing' : 'opacity-0 group-hover:opacity-100'} transition-opacity`}
-                >
-                    <GripVertical size={14} />
-                </button>
             </div>
             
             <div className="flex justify-between items-center mt-auto">
