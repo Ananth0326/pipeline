@@ -11,7 +11,7 @@ export interface Company {
     date_applied: string;
     status: ApplicationStatus;
     status_text: string;
-    status_color: 'green' | 'yellow' | 'red';
+    status_color: 'green' | 'yellow' | 'red' | 'blue' | 'orange' | 'purple';
     notes?: string;
     assessment_done: boolean;
     assessment_response?: AssessmentResponse;

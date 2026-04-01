@@ -83,14 +83,39 @@ export default function KanbanBoard({ companies: initialCompanies }: KanbanBoard
         if (targetColumn) {
             const company = companies.find(c => c.id === activeCompanyId);
             if (company && getColumnForStatus(company.status) !== targetColumn) {
+                
+                // Map column ID to rich UI textual statuses
+                const statusDetails: Record<string, { text: string, color: 'blue' | 'orange' | 'purple' | 'green' | 'red' }> = {
+                    'applied': { text: 'Applied', color: 'blue' },
+                    'assessment': { text: 'Assessment', color: 'orange' },
+                    'interview': { text: 'Interview', color: 'purple' },
+                    'offer': { text: 'Offer', color: 'green' },
+                    'rejected': { text: 'Rejected', color: 'red' }
+                };
+                
+                const newDetails = statusDetails[targetColumn] || { text: targetColumn, color: 'blue' };
+
                 // Optimistic UI Update
                 setCompanies(prev => prev.map(c => 
-                    c.id === activeCompanyId ? { ...c, status: targetColumn as ApplicationStatus } : c
+                    c.id === activeCompanyId ? { 
+                        ...c, 
+                        status: targetColumn as ApplicationStatus,
+                        status_text: newDetails.text,
+                        status_color: newDetails.color
+                    } : c
                 ));
                 
                 // Server Update
                 try {
-                    await updateCompany(activeCompanyId, { status: targetColumn as ApplicationStatus }, `Moved to ${targetColumn}`);
+                    await updateCompany(
+                        activeCompanyId, 
+                        { 
+                            status: targetColumn as ApplicationStatus,
+                            status_text: newDetails.text,
+                            status_color: newDetails.color
+                        }, 
+                        `Moved to ${newDetails.text}`
+                    );
                 } catch (error) {
                     console.error('Failed to move company:', error);
                     // Revert on failure
