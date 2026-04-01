@@ -14,6 +14,10 @@ DO $$ BEGIN
     ALTER TYPE application_status ADD VALUE 'offer';
 EXCEPTION WHEN duplicate_object THEN null; END $$;
 
+DO $$ BEGIN
+    ALTER TYPE application_status ADD VALUE 'assessment';
+EXCEPTION WHEN duplicate_object THEN null; END $$;
+
 -- 2. Create the companies table
 CREATE TABLE IF NOT EXISTS companies (
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -99,6 +103,25 @@ EXCEPTION
     WHEN duplicate_object THEN null;
 END $$;
 
+-- 9. Storage Setup
+INSERT INTO storage.buckets (id, name, public) 
+VALUES ('resumes', 'resumes', true)
+ON CONFLICT (id) DO UPDATE SET public = true;
+
+DO $$ BEGIN
+    CREATE POLICY "Allow public upload" ON storage.objects
+        FOR INSERT WITH CHECK (bucket_id = 'resumes');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+    CREATE POLICY "Allow public view" ON storage.objects
+        FOR SELECT USING (bucket_id = 'resumes');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
+
 -- 10. Saved roles table (separate from applied tracker)
 CREATE TABLE IF NOT EXISTS saved_roles (
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -122,25 +145,6 @@ DO $$ BEGIN
         BEFORE UPDATE ON saved_roles
         FOR EACH ROW
         EXECUTE PROCEDURE update_updated_at_column();
-EXCEPTION
-    WHEN duplicate_object THEN null;
-END $$;
-
--- 9. Storage Setup
-INSERT INTO storage.buckets (id, name, public) 
-VALUES ('resumes', 'resumes', true)
-ON CONFLICT (id) DO UPDATE SET public = true;
-
-DO $$ BEGIN
-    CREATE POLICY "Allow public upload" ON storage.objects
-        FOR INSERT WITH CHECK (bucket_id = 'resumes');
-EXCEPTION
-    WHEN duplicate_object THEN null;
-END $$;
-
-DO $$ BEGIN
-    CREATE POLICY "Allow public view" ON storage.objects
-        FOR SELECT USING (bucket_id = 'resumes');
 EXCEPTION
     WHEN duplicate_object THEN null;
 END $$;

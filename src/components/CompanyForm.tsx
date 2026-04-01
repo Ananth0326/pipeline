@@ -27,6 +27,12 @@ export default function CompanyForm({ initialData, onSubmit, isSubmitting }: Com
     const [resumeFile, setResumeFile] = useState<File | null>(null);
     const jdTextareaRef = useRef<HTMLTextAreaElement>(null);
 
+    // AI Autofill States
+    const [autofillUrl, setAutofillUrl] = useState('');
+    const [isExtracting, setIsExtracting] = useState(false);
+    const [extractError, setExtractError] = useState('');
+    const [extractSuccess, setExtractSuccess] = useState(false);
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
@@ -102,6 +108,40 @@ export default function CompanyForm({ initialData, onSubmit, isSubmitting }: Com
             textarea.focus();
             textarea.setSelectionRange(selectionStart, selectionStart + bulletedText.length);
         });
+    };
+
+    const handleAutofill = async () => {
+        if (!autofillUrl.trim()) return;
+        setIsExtracting(true);
+        setExtractError('');
+        setExtractSuccess(false);
+
+        try {
+            const res = await fetch('/api/extract-job', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url: autofillUrl })
+            });
+            const data = await res.json();
+            
+            if (!res.ok) throw new Error(data.error || 'Failed to extract data.');
+            if (data.data) {
+                setFormData(prev => ({
+                    ...prev,
+                    company_name: data.data.company_name || prev.company_name,
+                    role_title: data.data.role_title || prev.role_title,
+                    location: data.data.location || prev.location,
+                    jd_text: data.data.jd_text || prev.jd_text,
+                    application_platform: autofillUrl
+                }));
+                setExtractSuccess(true);
+                setTimeout(() => setExtractSuccess(false), 3000);
+            }
+        } catch (error: any) {
+            setExtractError(error.message);
+        } finally {
+            setIsExtracting(false);
+        }
     };
 
     return (
