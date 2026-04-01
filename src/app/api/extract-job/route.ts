@@ -28,16 +28,24 @@ export async function POST(req: Request) {
 
         const html = await response.text();
 
-        // 2. Parse HTML and clean up junk using cheerio
+        // 2. Parse HTML and grab critical structural metadata before cleaning
         const $ = cheerio.load(html);
+        const titleText = $('title').text() || '';
+        const metaDesc = $('meta[name="description"]').attr('content') || '';
+        const ogTitle = $('meta[property="og:title"]').attr('content') || '';
+        
+        // Clean up junk
         $('script, style, noscript, iframe, img, svg, footer, header, nav').remove();
 
-        const rawText = $('body').text()
+        const bodyText = $('body').text()
             .replace(/\s+/g, ' ')
             .trim();
 
+        // Combine meta text perfectly with body text in case it's a blank SPA
+        const combinedText = `PAGE TITLE: ${titleText}\nMETA DESCRIPTION: ${metaDesc}\nOG TITLE: ${ogTitle}\n\nBODY PAGE CONTENT:\n${bodyText}`;
+
         // Take up to 15,000 characters to ensure we fit in fast context limits
-        const truncatedText = rawText.slice(0, 15000);
+        const truncatedText = combinedText.slice(0, 15000);
 
         // 3. Setup Groq API
         const groq = new Groq({ apiKey });
@@ -67,9 +75,10 @@ ${truncatedText}
             model: 'llama-3.3-70b-versatile',
             temperature: 0.2,
             max_tokens: 1024,
+            response_format: { type: 'json_object' }
         });
 
-        const responseText = result.choices[0]?.message?.content || '';
+        const responseText = result.choices[0]?.message?.content || '{}';
 
         // 5. Parse JSON (strip potential markdown wrapping)
         const cleanJsonString = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
