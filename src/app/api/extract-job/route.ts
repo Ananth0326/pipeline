@@ -61,7 +61,7 @@ Extract to this exact JSON schema:
   "company_name": "String. The name of the company hiring. Infer from the text or URL.",
   "role_title": "String. The job title being offered.",
   "location": "String. Job location, e.g., 'Remote', 'New York, NY', etc. Empty if unknown.",
-  "jd_text": "String. Create a neatly summarized and easy to read description of the role, responsibilities, and requirements using bullet points (e.g. use '- ' for bullets). Max 1000 characters."
+  "jd_text": "String. Extract the FULL, verbatim job description. Include 'About the Role', 'Responsibilities', 'Requirements', and whatever else is in the text. Preserve the original text structure with newlines and bullet points exactly as they appeared. Do NOT truncate or arbitrarily summarize."
 }
 
 Here is the extracted text from the URL (${url}):
@@ -74,7 +74,7 @@ ${truncatedText}
             messages: [{ role: 'user', content: prompt }],
             model: 'llama-3.3-70b-versatile',
             temperature: 0.2,
-            max_tokens: 1024,
+            max_tokens: 4096,
             response_format: { type: 'json_object' }
         });
 
