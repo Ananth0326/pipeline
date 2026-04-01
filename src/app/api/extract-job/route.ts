@@ -61,10 +61,10 @@ Here is the extracted text from the URL (${url}):
 ${truncatedText}
 `;
 
-        // 4. Generate the response using LLaMA 3
+        // 4. Generate the response using LLaMA 3.3
         const result = await groq.chat.completions.create({
             messages: [{ role: 'user', content: prompt }],
-            model: 'llama3-8b-8192',
+            model: 'llama-3.3-70b-versatile',
             temperature: 0.2,
             max_tokens: 1024,
         });
