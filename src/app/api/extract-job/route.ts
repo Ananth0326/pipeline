@@ -38,7 +38,8 @@ export async function POST(req: Request) {
         $('script, style, noscript, iframe, img, svg, footer, header, nav').remove();
 
         const bodyText = $('body').text()
-            .replace(/\s+/g, ' ')
+            .replace(/[ \t]+/g, ' ') // Collapse multiple spaces/tabs
+            .replace(/[\r\n]+/g, '\n') // Collapse multiple newlines, but preserve them!
             .trim();
 
         // Combine meta text perfectly with body text in case it's a blank SPA
