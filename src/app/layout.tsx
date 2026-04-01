@@ -68,10 +68,10 @@ export default function RootLayout({
                         <Plus size={24} strokeWidth={3} />
                     </a>
 
-                    <a href="/dashboard" className="flex flex-col items-center gap-1 text-gray-400 opacity-30 cursor-not-allowed">
+                    <button onClick={() => { if (typeof window !== 'undefined') window.dispatchEvent(new Event('open-search')); }} className="flex flex-col items-center gap-1 text-gray-400 hover:text-black dark:hover:text-white transition-colors">
                         <Search size={20} />
                         <span className="text-[9px] font-bold uppercase tracking-widest">Search</span>
-                    </a>
+                    </button>
                 </nav>
             </body>
         </html>

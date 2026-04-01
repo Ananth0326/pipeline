@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Plus, X } from 'lucide-react';
 import CompanyForm from './CompanyForm';
 import { addCompany } from '@/lib/actions';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function QuickAddModal() {
     const [isOpen, setIsOpen] = useState(false);
@@ -60,42 +61,53 @@ export default function QuickAddModal() {
             </button>
 
             {/* MODAL / BOTTOM SHEET OVERLAY */}
-            {isOpen && (
-                <div className="fixed inset-0 z-50 flex md:items-center items-end justify-center">
-                    <div
-                        className="absolute inset-0 bg-black/40 backdrop-blur-sm animate-in fade-in duration-300"
-                        onClick={() => !isSubmitting && setIsOpen(false)}
-                    />
+            <AnimatePresence>
+                {isOpen && (
+                    <div className="fixed inset-0 z-50 flex md:items-center items-end justify-center">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+                            onClick={() => !isSubmitting && setIsOpen(false)}
+                        />
 
-                    <div className="relative bg-white dark:bg-black w-full max-w-2xl max-h-[90vh] md:max-h-[85vh] overflow-y-auto rounded-t-[2.5rem] md:rounded-[2.5rem] shadow-2xl border-t md:border border-gray-100 dark:border-gray-800 animate-in slide-in-from-bottom md:zoom-in duration-300">
-                        {/* Mobile Pull Handle */}
-                        <div className="md:hidden flex justify-center py-3">
-                            <div className="w-12 h-1.5 bg-gray-200 dark:bg-gray-800 rounded-full" />
-                        </div>
-
-                        <div className="sticky top-0 bg-white/80 dark:bg-black/80 backdrop-blur-md px-8 py-6 md:p-6 border-b border-gray-50 dark:border-gray-900 flex justify-between items-center z-10">
-                            <div>
-                                <h2 className="text-xl font-black tracking-tighter uppercase font-outfit">Quick Add</h2>
-                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest font-sans">New Application Entry</p>
+                        <motion.div
+                            initial={{ y: '100%', opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            exit={{ y: '100%', opacity: 0, scale: 0.95 }}
+                            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                            className="relative bg-white dark:bg-black w-full max-w-2xl max-h-[90vh] md:max-h-[85vh] overflow-y-auto rounded-t-[2.5rem] md:rounded-[2.5rem] shadow-2xl border border-gray-100 dark:border-gray-800"
+                        >
+                            {/* Mobile Pull Handle */}
+                            <div className="md:hidden flex justify-center py-3">
+                                <div className="w-12 h-1.5 bg-gray-200 dark:bg-gray-800 rounded-full" />
                             </div>
-                            <button
-                                onClick={() => setIsOpen(false)}
-                                disabled={isSubmitting}
-                                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-full transition-colors"
-                            >
-                                <X size={20} />
-                            </button>
-                        </div>
 
-                        <div className="p-8 pb-12 md:pb-8">
-                            <CompanyForm
-                                onSubmit={handleSubmit}
-                                isSubmitting={isSubmitting}
-                            />
-                        </div>
+                            <div className="sticky top-0 bg-white/80 dark:bg-black/80 backdrop-blur-md px-8 py-6 md:p-6 border-b border-gray-50 dark:border-gray-900 flex justify-between items-center z-10">
+                                <div>
+                                    <h2 className="text-xl font-black tracking-tighter uppercase font-outfit">Quick Add</h2>
+                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest font-sans">New Application Entry</p>
+                                </div>
+                                <button
+                                    onClick={() => setIsOpen(false)}
+                                    disabled={isSubmitting}
+                                    className="p-2 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-full transition-colors"
+                                >
+                                    <X size={20} />
+                                </button>
+                            </div>
+
+                            <div className="p-8 pb-12 md:pb-8">
+                                <CompanyForm
+                                    onSubmit={handleSubmit}
+                                    isSubmitting={isSubmitting}
+                                />
+                            </div>
+                        </motion.div>
                     </div>
-                </div>
-            )}
+                )}
+            </AnimatePresence>
         </>
     );
 }

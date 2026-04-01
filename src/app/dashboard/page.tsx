@@ -2,6 +2,7 @@ import { getCompanies, getSavedRoles } from '@/lib/actions';
 import CompanyTable from '@/components/CompanyTable';
 import QuickAddModal from '@/components/QuickAddModal';
 import SavedRolesModal from '@/components/SavedRolesModal';
+import SearchModal from '@/components/SearchModal';
 import { Company, SavedRole } from '@/lib/types';
 
 export const dynamic = 'force-dynamic';
@@ -47,6 +48,7 @@ export default async function DashboardPage() {
             </div>
 
             <QuickAddModal />
+            <SearchModal companies={companies} />
         </div>
     );
 }

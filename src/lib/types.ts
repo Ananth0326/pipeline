@@ -1,4 +1,4 @@
-export type ApplicationStatus = 'applied' | 'selected' | 'rejected' | 'interview' | 'offer';
+export type ApplicationStatus = 'applied' | 'assessment' | 'selected' | 'rejected' | 'interview' | 'offer';
 export type AssessmentResponse = 'response' | 'no_response';
 
 export interface Company {
