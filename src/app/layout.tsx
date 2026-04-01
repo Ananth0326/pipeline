@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Outfit, Inter, Roboto_Mono } from 'next/font/google';
-import { Plus, LayoutDashboard, Search } from 'lucide-react';
+import { Plus, LayoutDashboard } from 'lucide-react';
+import SearchButton from '@/components/SearchButton';
 import './globals.css';
 
 const outfit = Outfit({
@@ -68,10 +69,7 @@ export default function RootLayout({
                         <Plus size={24} strokeWidth={3} />
                     </a>
 
-                    <button onClick={() => { if (typeof window !== 'undefined') window.dispatchEvent(new Event('open-search')); }} className="flex flex-col items-center gap-1 text-gray-400 hover:text-black dark:hover:text-white transition-colors">
-                        <Search size={20} />
-                        <span className="text-[9px] font-bold uppercase tracking-widest">Search</span>
-                    </button>
+                    <SearchButton />
                 </nav>
             </body>
         </html>
