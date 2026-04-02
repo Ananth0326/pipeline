@@ -24,13 +24,39 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GripVertical, Clock, CheckCircle2, XCircle, FileText, Briefcase } from 'lucide-react';
+import confetti from 'canvas-confetti';
+
+const playThudSound = () => {
+    try {
+        const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+        if (!AudioContextClass) return;
+        const audioCtx = new AudioContextClass();
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(150, audioCtx.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+
+        gainNode.gain.setValueAtTime(1, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+
+        oscillator.start();
+        oscillator.stop(audioCtx.currentTime + 0.1);
+    } catch (e) {
+        // Ignore audio playback errors if user hasn't interacted with document
+    }
+};
 
 const COLUMNS = [
-    { id: 'applied', title: 'Applied', icon: <FileText size={16} />, color: 'text-blue-500 bg-blue-50 dark:bg-blue-900/20' },
-    { id: 'assessment', title: 'Assessment', icon: <Clock size={16} />, color: 'text-orange-500 bg-orange-50 dark:bg-orange-900/20' },
-    { id: 'interview', title: 'Interview', icon: <Briefcase size={16} />, color: 'text-purple-500 bg-purple-50 dark:bg-purple-900/20' },
-    { id: 'offer', title: 'Offer', icon: <CheckCircle2 size={16} />, color: 'text-green-500 bg-green-50 dark:bg-green-900/20' },
-    { id: 'rejected', title: 'Rejected', icon: <XCircle size={16} />, color: 'text-red-500 bg-red-50 dark:bg-red-900/20' },
+    { id: 'applied', title: 'Applied', icon: <FileText size={16} />, color: 'text-blue-500 bg-blue-50 dark:bg-blue-900/20', glow: 'shadow-[0_0_15px_rgba(59,130,246,0.1)] dark:shadow-[0_0_15px_rgba(59,130,246,0.3)]' },
+    { id: 'assessment', title: 'Assessment', icon: <Clock size={16} />, color: 'text-orange-500 bg-orange-50 dark:bg-orange-900/20', glow: '' },
+    { id: 'interview', title: 'Interview', icon: <Briefcase size={16} />, color: 'text-purple-500 bg-purple-50 dark:bg-purple-900/20', glow: 'shadow-[0_0_20px_rgba(245,158,11,0.2)] dark:shadow-[0_0_20px_rgba(245,158,11,0.5)] animate-pulse' },
+    { id: 'offer', title: 'Offer', icon: <CheckCircle2 size={16} />, color: 'text-green-500 bg-green-50 dark:bg-green-900/20', glow: 'shadow-[0_0_30px_rgba(16,185,129,0.4)] dark:shadow-[0_0_30px_rgba(16,185,129,0.8)]' },
+    { id: 'rejected', title: 'Rejected', icon: <XCircle size={16} />, color: 'text-red-500 bg-red-50 dark:bg-red-900/20', glow: '' },
 ];
 
 interface KanbanBoardProps {
@@ -81,8 +107,19 @@ export default function KanbanBoard({ companies: initialCompanies }: KanbanBoard
         }
 
         if (targetColumn) {
+            playThudSound();
+
             const company = companies.find(c => c.id === activeCompanyId);
             if (company && getColumnForStatus(company.status) !== targetColumn) {
+                if (targetColumn === 'offer') {
+                    confetti({
+                        particleCount: 150,
+                        spread: 80,
+                        origin: { y: 0.6 },
+                        colors: ['#10B981', '#34D399', '#A7F3D0'],
+                        disableForReducedMotion: true
+                    });
+                }
                 
                 // Map column ID to rich UI textual statuses
                 const statusDetails: Record<string, { text: string, color: 'blue' | 'orange' | 'purple' | 'green' | 'red' }> = {
@@ -133,8 +170,10 @@ export default function KanbanBoard({ companies: initialCompanies }: KanbanBoard
                 {COLUMNS.map((col) => {
                     const columnCompanies = companies.filter(c => getColumnForStatus(c.status) === col.id);
                     return (
-                        <div key={col.id} className="min-w-[300px] w-[300px] flex flex-col bg-gray-50/50 dark:bg-[#0a0a0a] rounded-2xl border border-gray-100 dark:border-gray-800 shrink-0 snap-center max-h-full">
-                            <div className="p-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between sticky top-0 bg-gray-50/50 dark:bg-black/50 backdrop-blur-md rounded-t-2xl z-10">
+                        <div key={col.id} className={`relative min-w-[300px] w-[300px] flex flex-col bg-gray-50/50 dark:bg-[rgba(10,10,10,0.6)] backdrop-blur-xl rounded-2xl border border-gray-100 dark:border-[rgba(255,255,255,0.1)] shrink-0 snap-center max-h-full ${col.glow}`}>
+                            {/* Subtle Radial Gradient Background for Active/Hover State */}
+                            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white/10 to-transparent dark:from-white/5 opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-2xl" />
+                            <div className="p-4 border-b border-gray-100 dark:border-[rgba(255,255,255,0.05)] flex items-center justify-between sticky top-0 bg-gray-50/50 dark:bg-[rgba(10,10,10,0.6)] backdrop-blur-xl rounded-t-2xl z-10">
                                 <div className="flex items-center gap-2">
                                     <span className={`p-1.5 rounded-lg ${col.color}`}>{col.icon}</span>
                                     <h3 className="font-outfit font-black tracking-tighter uppercase">{col.title}</h3>
@@ -150,7 +189,13 @@ export default function KanbanBoard({ companies: initialCompanies }: KanbanBoard
                 })}
             </div>
 
-            <DragOverlay dropAnimation={{ sideEffects: defaultDropAnimationSideEffects({ styles: { active: { opacity: '0.4' } } }) }}>
+            <DragOverlay 
+                dropAnimation={{ 
+                    duration: 400,
+                    easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+                    sideEffects: defaultDropAnimationSideEffects({ styles: { active: { opacity: '0.4' } } }) 
+                }}
+            >
                 {activeCompany ? <KanbanCard company={activeCompany} isOverlay /> : null}
             </DragOverlay>
         </DndContext>
@@ -197,8 +242,13 @@ function KanbanCard({ company, isOverlay = false }: { company: Company, isOverla
         <motion.div
             layout={!isOverlay}
             initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
+            animate={{ 
+                opacity: 1, 
+                scale: isOverlay ? 1.05 : 1,
+                rotate: isOverlay ? 5 : 0 
+            }}
             exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
             ref={setNodeRef}
             style={style}
             {...attributes}
@@ -208,7 +258,7 @@ function KanbanCard({ company, isOverlay = false }: { company: Company, isOverla
                     router.push(`/company/${company.id}`);
                 }
             }}
-            className={`group bg-white dark:bg-[#111] p-4 rounded-xl shadow-sm border touch-none select-none ${isOverlay ? 'border-blue-400 rotate-2 shadow-xl cursor-grabbing' : 'border-gray-100 dark:border-gray-800 cursor-grab hover:border-gray-300 dark:hover:border-gray-600'} transition-colors relative flex flex-col gap-3`}
+            className={`group bg-white/80 dark:bg-[rgba(10,10,10,0.4)] backdrop-blur-[10px] p-4 rounded-xl shadow-sm border touch-none select-none ${isOverlay ? 'border-indigo-500/50 shadow-[0_10px_30px_rgba(0,0,0,0.3)] cursor-grabbing z-50' : 'border-gray-100 dark:border-[rgba(255,255,255,0.1)] cursor-grab hover:border-gray-300 dark:hover:border-[rgba(255,255,255,0.2)]'} transition-colors relative flex flex-col gap-3`}
         >
             <div className="flex justify-between items-start gap-2">
                 <div>
