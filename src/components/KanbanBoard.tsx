@@ -13,6 +13,7 @@ import {
     useSensors,
     DragEndEvent,
     DragStartEvent,
+    DragOverEvent,
     DragOverlay,
     defaultDropAnimationSideEffects,
 } from '@dnd-kit/core';
@@ -52,11 +53,46 @@ const playThudSound = () => {
 };
 
 const COLUMNS = [
-    { id: 'applied', title: 'Applied', icon: <FileText size={16} />, color: 'text-blue-500 bg-blue-50 dark:bg-blue-900/20', glow: 'shadow-[0_0_15px_rgba(59,130,246,0.1)] dark:shadow-[0_0_15px_rgba(59,130,246,0.3)]' },
-    { id: 'assessment', title: 'Assessment', icon: <Clock size={16} />, color: 'text-orange-500 bg-orange-50 dark:bg-orange-900/20', glow: '' },
-    { id: 'interview', title: 'Interview', icon: <Briefcase size={16} />, color: 'text-purple-500 bg-purple-50 dark:bg-purple-900/20', glow: 'shadow-[0_0_20px_rgba(245,158,11,0.2)] dark:shadow-[0_0_20px_rgba(245,158,11,0.5)] animate-pulse' },
-    { id: 'offer', title: 'Offer', icon: <CheckCircle2 size={16} />, color: 'text-green-500 bg-green-50 dark:bg-green-900/20', glow: 'shadow-[0_0_30px_rgba(16,185,129,0.4)] dark:shadow-[0_0_30px_rgba(16,185,129,0.8)]' },
-    { id: 'rejected', title: 'Rejected', icon: <XCircle size={16} />, color: 'text-red-500 bg-red-50 dark:bg-red-900/20', glow: '' },
+    { 
+        id: 'applied', 
+        title: 'Applied', 
+        icon: <FileText size={16} />, 
+        color: 'text-blue-500 bg-blue-50 dark:bg-blue-900/20', 
+        glow: 'shadow-[0_0_15px_rgba(59,130,246,0.1)] dark:shadow-[0_0_15px_rgba(59,130,246,0.3)]',
+        titleClass: 'bg-[length:200%_auto] text-transparent bg-clip-text animate-gradient-shimmer bg-gradient-to-r from-blue-500 via-cyan-400 to-blue-500' 
+    },
+    { 
+        id: 'assessment', 
+        title: 'Assessment', 
+        icon: <Clock size={16} />, 
+        color: 'text-orange-500 bg-orange-50 dark:bg-orange-900/20', 
+        glow: '',
+        titleClass: 'text-gray-900 dark:text-gray-100'
+    },
+    { 
+        id: 'interview', 
+        title: 'Interview', 
+        icon: <Briefcase size={16} />, 
+        color: 'text-purple-500 bg-purple-50 dark:bg-purple-900/20', 
+        glow: 'shadow-[0_0_20px_rgba(245,158,11,0.2)] dark:shadow-[0_0_20px_rgba(245,158,11,0.5)] animate-pulse',
+        titleClass: 'bg-[length:200%_auto] text-transparent bg-clip-text animate-gradient-shimmer bg-gradient-to-r from-amber-500 via-yellow-300 to-amber-500'
+    },
+    { 
+        id: 'offer', 
+        title: 'Offer', 
+        icon: <CheckCircle2 size={16} />, 
+        color: 'text-green-500 bg-green-50 dark:bg-green-900/20', 
+        glow: 'shadow-[0_0_30px_rgba(16,185,129,0.4)] dark:shadow-[0_0_30px_rgba(16,185,129,0.8)]',
+        titleClass: 'bg-[length:200%_auto] text-transparent bg-clip-text animate-gradient-shimmer bg-gradient-to-r from-emerald-500 via-teal-300 to-emerald-500'
+    },
+    { 
+        id: 'rejected', 
+        title: 'Rejected', 
+        icon: <XCircle size={16} />, 
+        color: 'text-red-500 bg-red-50 dark:bg-red-900/20', 
+        glow: '',
+        titleClass: 'text-gray-900 dark:text-gray-100'
+    },
 ];
 
 interface KanbanBoardProps {
@@ -66,6 +102,7 @@ interface KanbanBoardProps {
 export default function KanbanBoard({ companies: initialCompanies }: KanbanBoardProps) {
     const [companies, setCompanies] = useState<Company[]>(initialCompanies);
     const [activeId, setActiveId] = useState<string | null>(null);
+    const [overId, setOverId] = useState<string | null>(null);
     const router = useRouter();
 
     useEffect(() => {
@@ -87,8 +124,14 @@ export default function KanbanBoard({ companies: initialCompanies }: KanbanBoard
         setActiveId(event.active.id as string);
     };
 
+    const handleDragOver = (event: DragOverEvent) => {
+        const { over } = event;
+        setOverId(over ? (over.id as string) : null);
+    };
+
     const handleDragEnd = async (event: DragEndEvent) => {
         setActiveId(null);
+        setOverId(null);
         const { active, over } = event;
         if (!over) return;
 
@@ -164,29 +207,64 @@ export default function KanbanBoard({ companies: initialCompanies }: KanbanBoard
 
     const activeCompany = activeId ? companies.find(c => c.id === activeId) : null;
 
+    const hoveredColumnId = (() => {
+        if (!overId) return null;
+        if (COLUMNS.find(c => c.id === overId)) return overId;
+        const overCompany = companies.find(c => c.id === overId);
+        if (overCompany) return getColumnForStatus(overCompany.status);
+        return null;
+    })();
+
     return (
-        <DndContext sensors={sensors} collisionDetection={closestCorners} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-            <div className="flex gap-4 overflow-x-auto pb-8 items-start snap-x h-[70vh] minimal-scrollbar">
-                {COLUMNS.map((col) => {
-                    const columnCompanies = companies.filter(c => getColumnForStatus(c.status) === col.id);
-                    return (
-                        <div key={col.id} className={`relative min-w-[300px] w-[300px] flex flex-col bg-gray-50/50 dark:bg-[rgba(10,10,10,0.6)] backdrop-blur-xl rounded-2xl border border-gray-100 dark:border-[rgba(255,255,255,0.1)] shrink-0 snap-center max-h-full ${col.glow}`}>
-                            {/* Subtle Radial Gradient Background for Active/Hover State */}
-                            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white/10 to-transparent dark:from-white/5 opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-2xl" />
-                            <div className="p-4 border-b border-gray-100 dark:border-[rgba(255,255,255,0.05)] flex items-center justify-between sticky top-0 bg-gray-50/50 dark:bg-[rgba(10,10,10,0.6)] backdrop-blur-xl rounded-t-2xl z-10">
-                                <div className="flex items-center gap-2">
-                                    <span className={`p-1.5 rounded-lg ${col.color}`}>{col.icon}</span>
-                                    <h3 className="font-outfit font-black tracking-tighter uppercase">{col.title}</h3>
+        <DndContext sensors={sensors} collisionDetection={closestCorners} onDragStart={handleDragStart} onDragOver={handleDragOver} onDragEnd={handleDragEnd}>
+            <div className="relative w-full">
+                {/* Background Interactive Orbs */}
+                <div className="absolute inset-0 pointer-events-none overflow-hidden z-0 flex items-center justify-between px-[5%] opacity-40 dark:opacity-100 transition-opacity">
+                    <motion.div 
+                        animate={{ rotate: 360 }} 
+                        transition={{ ease: "linear", duration: 40, repeat: Infinity }}
+                        className="w-[400px] h-[400px] bg-blue-500/20 dark:bg-blue-600/20 rounded-full blur-[100px] mix-blend-screen -translate-y-20 -translate-x-20"
+                    />
+                    <motion.div 
+                        initial={{ opacity: 0.2, scale: 1 }}
+                        animate={{ 
+                            scale: hoveredColumnId === 'offer' ? 1.4 : 1,
+                            opacity: hoveredColumnId === 'offer' ? 0.6 : 0.2
+                        }}
+                        transition={{ duration: 0.8 }}
+                        className="w-[500px] h-[500px] bg-emerald-500/20 dark:bg-emerald-600/20 rounded-full blur-[120px] mix-blend-screen translate-y-10 translate-x-20"
+                    />
+                </div>
+
+                <div className="flex gap-4 overflow-x-auto pb-8 items-start snap-x h-[70vh] minimal-scrollbar relative z-10 w-full">
+                    {COLUMNS.map((col) => {
+                        const columnCompanies = companies.filter(c => getColumnForStatus(c.status) === col.id);
+                        const isMagneticHovered = activeId !== null && hoveredColumnId === col.id;
+                        
+                        return (
+                            <motion.div 
+                                key={col.id} 
+                                animate={{ scale: isMagneticHovered ? 1.02 : 1 }}
+                                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                                className={`relative min-w-[300px] w-[300px] flex flex-col bg-gray-50/50 dark:bg-[rgba(10,10,10,0.6)] backdrop-blur-xl rounded-2xl border ${isMagneticHovered ? 'dark:border-[rgba(255,255,255,0.4)] border-gray-300 shadow-xl' : 'dark:border-[rgba(255,255,255,0.1)] border-gray-100'} shrink-0 snap-center max-h-full ${col.glow}`}
+                            >
+                                {/* Subtle Radial Gradient Background for Active/Hover State */}
+                                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white/10 to-transparent dark:from-white/5 opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-2xl" />
+                                <div className="p-4 border-b border-gray-100 dark:border-[rgba(255,255,255,0.05)] flex items-center justify-between sticky top-0 bg-gray-50/50 dark:bg-[rgba(10,10,10,0.6)] backdrop-blur-xl rounded-t-2xl z-10">
+                                    <div className="flex items-center gap-2">
+                                        <span className={`p-1.5 rounded-lg ${col.color}`}>{col.icon}</span>
+                                        <h3 className={`font-outfit font-black tracking-tighter uppercase ${col.titleClass}`}>{col.title}</h3>
+                                    </div>
+                                    <span className="text-[10px] font-mono bg-white dark:bg-black border border-gray-200 dark:border-gray-800 px-2 py-1 rounded-md text-gray-500">
+                                        {columnCompanies.length}
+                                    </span>
                                 </div>
-                                <span className="text-[10px] font-mono bg-white dark:bg-black border border-gray-200 dark:border-gray-800 px-2 py-1 rounded-md text-gray-500">
-                                    {columnCompanies.length}
-                                </span>
-                            </div>
-                            
-                            <KanbanColumn id={col.id} companies={columnCompanies} />
-                        </div>
-                    );
-                })}
+                                
+                                <KanbanColumn id={col.id} companies={columnCompanies} />
+                            </motion.div>
+                        );
+                    })}
+                </div>
             </div>
 
             <DragOverlay 
