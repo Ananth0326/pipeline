@@ -19,3 +19,19 @@ body {
   background: var(--background);
   font-family: var(--font-inter);
 }
+
+/* Custom scrollbar for Kanban */
+.minimal-scrollbar::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+.minimal-scrollbar::-webkit-scrollbar-track {
+  background: transparent; 
+}
+.minimal-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.3); 
+  border-radius: 10px;
+}
+.minimal-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.5); 
+}
