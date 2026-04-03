@@ -1,9 +1,9 @@
 'use client';
 
 import { Company, ApplicationStatus } from '@/lib/types';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { FileText, Globe, Target } from 'lucide-react';
-import GifOverlay from './GifOverlay';
+import AnalystLoader from './AnalystLoader';
 
 interface CompanyFormProps {
     initialData?: Partial<Company>;
@@ -34,15 +34,6 @@ export default function CompanyForm({ initialData, onSubmit, isSubmitting }: Com
     const [extractError, setExtractError] = useState('');
     const [extractSuccess, setExtractSuccess] = useState(false);
     const [showSubmitGif, setShowSubmitGif] = useState(false);
-    const submitGifTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-    useEffect(() => {
-        return () => {
-            if (submitGifTimeoutRef.current) {
-                clearTimeout(submitGifTimeoutRef.current);
-            }
-        };
-    }, []);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -57,19 +48,15 @@ export default function CompanyForm({ initialData, onSubmit, isSubmitting }: Com
         e.preventDefault();
 
         setShowSubmitGif(true);
-
-        await new Promise<void>((resolve) => {
-            if (submitGifTimeoutRef.current) {
-                clearTimeout(submitGifTimeoutRef.current);
-            }
-
-            submitGifTimeoutRef.current = setTimeout(() => {
-                setShowSubmitGif(false);
-                resolve();
-            }, 4000);
+        const minimumLoaderTime = new Promise<void>((resolve) => {
+            setTimeout(resolve, 3000);
         });
 
-        await onSubmit(formData, resumeFile);
+        try {
+            await Promise.all([onSubmit(formData, resumeFile), minimumLoaderTime]);
+        } finally {
+            setShowSubmitGif(false);
+        }
     };
 
     const applyInlineFormat = (delimiter: '**' | '*') => {
@@ -368,7 +355,7 @@ export default function CompanyForm({ initialData, onSubmit, isSubmitting }: Com
                 {isSubmitting ? 'Syncing...' : initialData?.id ? 'Update Information' : 'Deploy Application'}
             </button>
 
-            <GifOverlay isOpen={showSubmitGif} />
+            <AnalystLoader isOpen={showSubmitGif} />
         </form>
     );
 }

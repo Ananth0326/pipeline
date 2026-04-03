@@ -6,7 +6,7 @@ import { ExternalLink, Pencil, Plus, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import ConfirmModal from './ConfirmModal';
-import GifOverlay from './GifOverlay';
+import AnalystLoader from './AnalystLoader';
 
 interface SavedRolesSectionProps {
     savedRoles: SavedRole[];
@@ -70,49 +70,49 @@ export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps
             return;
         }
 
+        setExtractingId(role.id);
         setGifExtractingId(role.id);
-
-        if (gifTimeoutRef.current) {
-            clearTimeout(gifTimeoutRef.current);
-        }
-
-        gifTimeoutRef.current = setTimeout(async () => {
-            setGifExtractingId(null);
-            setExtractingId(role.id);
-            setExtractErrorId(null);
-            setExtractErrorMsg('');
-
-            try {
-                const res = await fetch('/api/extract-job', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ url: role.job_link })
-                });
-                const data = await res.json();
-
-                if (!res.ok) throw new Error(data.error || 'Extraction failed.');
-                if (data.data) {
-                    await addCompany({
-                        company_name: data.data.company_name || role.company_name,
-                        role_title: data.data.role_title || '',
-                        location: data.data.location || '',
-                        jd_text: data.data.jd_text || '',
-                        application_platform: role.job_link,
-                        status: 'applied',
-                        status_text: 'Applied',
-                        status_color: 'yellow'
-                    });
-
-                    await deleteSavedRole(role.id);
-                    setChangingId(null);
-                }
-            } catch (error: any) {
-                setExtractErrorId(role.id);
-                setExtractErrorMsg(error.message);
-            } finally {
-                setExtractingId(null);
+        setExtractErrorId(null);
+        setExtractErrorMsg('');
+        const minimumLoaderTime = new Promise<void>((resolve) => {
+            if (gifTimeoutRef.current) {
+                clearTimeout(gifTimeoutRef.current);
             }
-        }, 4000);
+            gifTimeoutRef.current = setTimeout(resolve, 3000);
+        });
+
+        try {
+            const res = await fetch('/api/extract-job', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url: role.job_link })
+            });
+            const data = await res.json();
+
+            if (!res.ok) throw new Error(data.error || 'Extraction failed.');
+            if (data.data) {
+                await addCompany({
+                    company_name: data.data.company_name || role.company_name,
+                    role_title: data.data.role_title || '',
+                    location: data.data.location || '',
+                    jd_text: data.data.jd_text || '',
+                    application_platform: role.job_link,
+                    status: 'applied',
+                    status_text: 'Applied',
+                    status_color: 'yellow'
+                });
+
+                await deleteSavedRole(role.id);
+                setChangingId(null);
+            }
+        } catch (error: any) {
+            setExtractErrorId(role.id);
+            setExtractErrorMsg(error.message);
+        } finally {
+            await minimumLoaderTime;
+            setExtractingId(null);
+            setGifExtractingId(null);
+        }
     };
 
     const startEdit = (role: SavedRole) => {
@@ -366,7 +366,7 @@ export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps
                 message="This will remove this role from Saved Roles. This action cannot be undone."
             />
 
-            <GifOverlay isOpen={gifExtractingId !== null} />
+            <AnalystLoader isOpen={gifExtractingId !== null} />
         </section>
     );
 }
