@@ -33,13 +33,13 @@ export default function CompanyForm({ initialData, onSubmit, isSubmitting }: Com
     const [isExtracting, setIsExtracting] = useState(false);
     const [extractError, setExtractError] = useState('');
     const [extractSuccess, setExtractSuccess] = useState(false);
-    const [showDeployGif, setShowDeployGif] = useState(false);
-    const deployGifTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const [showSubmitGif, setShowSubmitGif] = useState(false);
+    const submitGifTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     useEffect(() => {
         return () => {
-            if (deployGifTimeoutRef.current) {
-                clearTimeout(deployGifTimeoutRef.current);
+            if (submitGifTimeoutRef.current) {
+                clearTimeout(submitGifTimeoutRef.current);
             }
         };
     }, []);
@@ -56,21 +56,18 @@ export default function CompanyForm({ initialData, onSubmit, isSubmitting }: Com
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        const isDeployAction = !initialData?.id;
-        if (isDeployAction) {
-            setShowDeployGif(true);
+        setShowSubmitGif(true);
 
-            await new Promise<void>((resolve) => {
-                if (deployGifTimeoutRef.current) {
-                    clearTimeout(deployGifTimeoutRef.current);
-                }
+        await new Promise<void>((resolve) => {
+            if (submitGifTimeoutRef.current) {
+                clearTimeout(submitGifTimeoutRef.current);
+            }
 
-                deployGifTimeoutRef.current = setTimeout(() => {
-                    setShowDeployGif(false);
-                    resolve();
-                }, 4000);
-            });
-        }
+            submitGifTimeoutRef.current = setTimeout(() => {
+                setShowSubmitGif(false);
+                resolve();
+            }, 4000);
+        });
 
         await onSubmit(formData, resumeFile);
     };
@@ -365,13 +362,13 @@ export default function CompanyForm({ initialData, onSubmit, isSubmitting }: Com
 
             <button
                 type="submit"
-                disabled={isSubmitting || showDeployGif}
+                disabled={isSubmitting || showSubmitGif}
                 className="w-full bg-black text-white px-10 py-5 rounded-2xl font-black uppercase tracking-widest text-sm hover:bg-gray-800 disabled:bg-gray-400 transition-all shadow-xl shadow-gray-900/10 border-b-4 border-gray-900 active:border-b-0 active:translate-y-1"
             >
                 {isSubmitting ? 'Syncing...' : initialData?.id ? 'Update Information' : 'Deploy Application'}
             </button>
 
-            <GifOverlay isOpen={showDeployGif} />
+            <GifOverlay isOpen={showSubmitGif} />
         </form>
     );
 }
