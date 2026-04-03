@@ -44,7 +44,7 @@ export default function RootLayout({
                         <a href="/dashboard" className="text-[10px] font-black uppercase tracking-widest text-[#E1E1E1] hover:text-[#00F2FE] transition-colors">Dashboard</a>
                         <a
                             href="/add-company"
-                            className="bg-black hover:bg-[#111111] text-[#E1E1E1] px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 border border-white/10 shadow-lg shadow-emerald-500/50"
+                            className="bg-black hover:bg-[#111111] text-[#E1E1E1] px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 flex items-center gap-2 border border-white/10 shadow-lg shadow-emerald-500/50"
                         >
                             <Plus size={14} strokeWidth={3} />
                             Add Application
@@ -64,7 +64,7 @@ export default function RootLayout({
                     </a>
 
                     {/* Central Add Button for Mobile */}
-                    <a href="/add-company" className="w-12 h-12 bg-black rounded-2xl flex items-center justify-center text-[#E1E1E1] shadow-xl shadow-emerald-500/50 hover:scale-110 active:scale-90 transition-all -translate-y-4 border border-white/10">
+                    <a href="/add-company" className="w-12 h-12 bg-black rounded-2xl flex items-center justify-center text-[#E1E1E1] shadow-xl shadow-emerald-500/50 hover:scale-110 active:scale-95 transition-all -translate-y-4 border border-white/10">
                         <LayoutDashboard size={20} className="hidden" /> {/* Placeholder for logic if needed */}
                         <Plus size={24} strokeWidth={3} />
                     </a>

@@ -39,6 +39,18 @@ export default function CompanyTable({ companies }: CompanyTableProps) {
         };
     };
 
+    const getStatusHoverShadow = (statusColor?: string) => {
+        const map: Record<string, string> = {
+            blue: 'hover:shadow-[0_14px_28px_rgba(0,242,254,0.15)]',
+            yellow: 'hover:shadow-[0_14px_28px_rgba(0,242,254,0.15)]',
+            orange: 'hover:shadow-[0_14px_28px_rgba(255,184,0,0.15)]',
+            purple: 'hover:shadow-[0_14px_28px_rgba(161,110,255,0.15)]',
+            green: 'hover:shadow-[0_14px_28px_rgba(0,230,118,0.15)]',
+            red: 'hover:shadow-[0_14px_28px_rgba(255,23,68,0.15)]',
+        };
+        return map[statusColor || 'yellow'] || map.yellow;
+    };
+
     const confirmDelete = async () => {
         if (deleteId) {
             await deleteCompany(deleteId);
@@ -169,7 +181,7 @@ export default function CompanyTable({ companies }: CompanyTableProps) {
                                                             exit={{ opacity: 0 }}
                                                             transition={{ delay: i * 0.03, duration: 0.2 }}
                                                             onClick={() => router.push(`/company/${company.id}`)}
-                                                            className="border-b border-white/10 last:border-0 hover:bg-white/[0.03] cursor-pointer transition-colors group"
+                                                            className={`border-b border-white/10 last:border-0 hover:bg-white/[0.03] hover:border-white/50 hover:[box-shadow:inset_0_0_0_1px_rgba(255,255,255,0.5)] ${getStatusHoverShadow(company.status_color)} cursor-pointer transition-all group`}
                                                         >
                                                             <td className="p-4 align-middle">
                                                                 <div className="flex items-center gap-4">
@@ -220,7 +232,7 @@ export default function CompanyTable({ companies }: CompanyTableProps) {
                                             exit={{ opacity: 0, scale: 0.95 }}
                                             transition={{ delay: i * 0.05 }}
                                             onClick={() => router.push(`/company/${company.id}`)}
-                                            className="bg-[#161616] border border-white/10 rounded-[2rem] p-6 active:scale-[0.98] transition-all flex justify-between items-center group backdrop-blur-md relative overflow-hidden"
+                                            className={`bg-[#161616] border border-white/10 hover:border-white/50 rounded-[2rem] p-6 active:scale-[0.98] transition-all ${getStatusHoverShadow(company.status_color)} flex justify-between items-center group backdrop-blur-md relative overflow-hidden`}
                                         >
                                             <div className="flex items-center gap-4 relative z-10 w-full">
                                                 <div className="hidden xs:flex w-11 h-11 rounded-full bg-gray-50 dark:bg-gray-900 items-center justify-center text-gray-400 font-black text-xs border border-gray-100 dark:border-gray-800 uppercase shrink-0">{company.company_name.charAt(0)}</div>

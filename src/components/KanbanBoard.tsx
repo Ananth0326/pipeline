@@ -315,6 +315,15 @@ function KanbanCard({ company, isOverlay = false }: { company: Company, isOverla
     }
 
     const updatedDate = new Date(company.updated_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+    const hoverShadowMap: Record<string, string> = {
+        blue: 'hover:shadow-[0_14px_28px_rgba(0,242,254,0.15)]',
+        yellow: 'hover:shadow-[0_14px_28px_rgba(0,242,254,0.15)]',
+        orange: 'hover:shadow-[0_14px_28px_rgba(255,184,0,0.15)]',
+        purple: 'hover:shadow-[0_14px_28px_rgba(161,110,255,0.15)]',
+        green: 'hover:shadow-[0_14px_28px_rgba(0,230,118,0.15)]',
+        red: 'hover:shadow-[0_14px_28px_rgba(255,23,68,0.15)]',
+    };
+    const hoverShadowClass = hoverShadowMap[company.status_color] || hoverShadowMap.yellow;
 
     return (
         <motion.div
@@ -336,7 +345,7 @@ function KanbanCard({ company, isOverlay = false }: { company: Company, isOverla
                     router.push(`/company/${company.id}`);
                 }
             }}
-            className={`group bg-[#161616] backdrop-blur-md p-4 rounded-xl border touch-none select-none ${isOverlay ? 'border-[#00E676]/50 shadow-[0_10px_30px_rgba(0,0,0,0.3)] cursor-grabbing z-50' : 'border-white/10 cursor-grab hover:border-white/25'} transition-colors relative flex flex-col gap-3`}
+            className={`group bg-[#161616] backdrop-blur-md p-4 rounded-xl border touch-none select-none ${isOverlay ? 'border-[#00E676]/50 shadow-[0_10px_30px_rgba(0,0,0,0.3)] cursor-grabbing z-50' : `border-white/10 hover:border-white/50 ${hoverShadowClass} cursor-grab`} transition-all relative flex flex-col gap-3`}
         >
             <div className="flex justify-between items-start gap-2">
                 <div>

@@ -24,6 +24,19 @@ body {
   border-color: var(--line);
 }
 
+@keyframes content-reveal {
+  from {
+    opacity: 0.45;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.scan-printing main {
+  animation: content-reveal 0.35s ease-out 0.2s both;
+}
+
 /* Custom scrollbar for Kanban */
 .minimal-scrollbar::-webkit-scrollbar {
   height: 6px;

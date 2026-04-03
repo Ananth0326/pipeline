@@ -350,7 +350,7 @@ export default function CompanyForm({ initialData, onSubmit, isSubmitting }: Com
             <button
                 type="submit"
                 disabled={isSubmitting || showSubmitGif}
-                className="w-full bg-black text-[#E1E1E1] px-10 py-5 rounded-2xl font-black uppercase tracking-widest text-sm hover:bg-[#111111] disabled:bg-gray-700 transition-all shadow-xl shadow-emerald-500/50 border border-white/10"
+                className="w-full bg-black text-[#E1E1E1] px-10 py-5 rounded-2xl font-black uppercase tracking-widest text-sm hover:bg-[#111111] active:scale-95 disabled:bg-gray-700 transition-all shadow-xl shadow-emerald-500/50 border border-white/10"
             >
                 {isSubmitting ? 'Syncing...' : initialData?.id ? 'Update Information' : 'Deploy Application'}
             </button>

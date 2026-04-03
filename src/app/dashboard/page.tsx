@@ -3,6 +3,7 @@ import CompanyTable from '@/components/CompanyTable';
 import QuickAddModal from '@/components/QuickAddModal';
 import SavedRolesModal from '@/components/SavedRolesModal';
 import SearchModal from '@/components/SearchModal';
+import AmbientOrbs from '@/components/AmbientOrbs';
 import { Company, SavedRole } from '@/lib/types';
 
 export const dynamic = 'force-dynamic';
@@ -27,7 +28,8 @@ export default async function DashboardPage() {
     }
 
     return (
-        <div className="space-y-6">
+        <div className="relative space-y-6 overflow-hidden">
+            <AmbientOrbs />
             <div className="flex justify-between items-end px-1">
                 <div className="space-y-1">
                     <h2 className="text-2xl font-black tracking-tighter uppercase leading-none font-outfit">DASHBOARD</h2>
