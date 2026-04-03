@@ -4,8 +4,9 @@ import { addSavedRole, deleteSavedRole, updateSavedRole, addCompany } from '@/li
 import { SavedRole } from '@/lib/types';
 import { ExternalLink, Pencil, Plus, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import ConfirmModal from './ConfirmModal';
+import GifOverlay from './GifOverlay';
 
 interface SavedRolesSectionProps {
     savedRoles: SavedRole[];
@@ -32,8 +33,18 @@ export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps
     const [error, setError] = useState('');
 
     const [extractingId, setExtractingId] = useState<string | null>(null);
+    const [gifExtractingId, setGifExtractingId] = useState<string | null>(null);
     const [extractErrorId, setExtractErrorId] = useState<string | null>(null);
     const [extractErrorMsg, setExtractErrorMsg] = useState<string>('');
+    const gifTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    useEffect(() => {
+        return () => {
+            if (gifTimeoutRef.current) {
+                clearTimeout(gifTimeoutRef.current);
+            }
+        };
+    }, []);
 
     const handleAdd = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -59,40 +70,49 @@ export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps
             return;
         }
 
-        setExtractingId(role.id);
-        setExtractErrorId(null);
-        setExtractErrorMsg('');
+        setGifExtractingId(role.id);
 
-        try {
-            const res = await fetch('/api/extract-job', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ url: role.job_link })
-            });
-            const data = await res.json();
-            
-            if (!res.ok) throw new Error(data.error || 'Extraction failed.');
-            if (data.data) {
-                await addCompany({
-                    company_name: data.data.company_name || role.company_name,
-                    role_title: data.data.role_title || '',
-                    location: data.data.location || '',
-                    jd_text: data.data.jd_text || '',
-                    application_platform: role.job_link,
-                    status: 'applied',
-                    status_text: 'Applied',
-                    status_color: 'yellow'
-                });
-                
-                await deleteSavedRole(role.id);
-                setChangingId(null);
-            }
-        } catch (error: any) {
-            setExtractErrorId(role.id);
-            setExtractErrorMsg(error.message);
-        } finally {
-            setExtractingId(null);
+        if (gifTimeoutRef.current) {
+            clearTimeout(gifTimeoutRef.current);
         }
+
+        gifTimeoutRef.current = setTimeout(async () => {
+            setGifExtractingId(null);
+            setExtractingId(role.id);
+            setExtractErrorId(null);
+            setExtractErrorMsg('');
+
+            try {
+                const res = await fetch('/api/extract-job', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url: role.job_link })
+                });
+                const data = await res.json();
+
+                if (!res.ok) throw new Error(data.error || 'Extraction failed.');
+                if (data.data) {
+                    await addCompany({
+                        company_name: data.data.company_name || role.company_name,
+                        role_title: data.data.role_title || '',
+                        location: data.data.location || '',
+                        jd_text: data.data.jd_text || '',
+                        application_platform: role.job_link,
+                        status: 'applied',
+                        status_text: 'Applied',
+                        status_color: 'yellow'
+                    });
+
+                    await deleteSavedRole(role.id);
+                    setChangingId(null);
+                }
+            } catch (error: any) {
+                setExtractErrorId(role.id);
+                setExtractErrorMsg(error.message);
+            } finally {
+                setExtractingId(null);
+            }
+        }, 4000);
     };
 
     const startEdit = (role: SavedRole) => {
@@ -289,13 +309,13 @@ export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps
                                                             <button
                                                                 type="button"
                                                                 onClick={() => handleMagicAutofillApply(role)}
-                                                                disabled={extractingId === role.id}
+                                                                disabled={extractingId === role.id || gifExtractingId === role.id}
                                                                 className="px-3 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 text-white text-[10px] font-black uppercase tracking-widest flex items-center gap-1 disabled:opacity-50 hover:scale-[1.02] active:scale-95 transition-all shadow-sm"
                                                             >
                                                                 {extractingId === role.id ? (
                                                                     <span className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
                                                                 ) : (
-                                                                    <span>✨</span>
+                                                                    <span>AI</span>
                                                                 )}
                                                                 Auto-Apply
                                                             </button>
@@ -306,27 +326,27 @@ export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps
                                                             >
                                                                 Manual
                                                             </button>
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => setDeleting(role)}
-                                                            className="px-3 py-2 rounded-lg border border-red-200 bg-red-50 text-[10px] font-black uppercase tracking-widest text-red-600"
-                                                        >
-                                                            Not Suitable
-                                                        </button>
-                                                        <button
-                                                            type="button"
-                                                            onClick={cancelChange}
-                                                            className="px-3 py-2 rounded-lg border border-gray-200 text-[10px] font-black uppercase tracking-widest text-gray-500"
-                                                        >
-                                                            Cancel
-                                                        </button>
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => setDeleting(role)}
+                                                                className="px-3 py-2 rounded-lg border border-red-200 bg-red-50 text-[10px] font-black uppercase tracking-widest text-red-600"
+                                                            >
+                                                                Not Suitable
+                                                            </button>
+                                                            <button
+                                                                type="button"
+                                                                onClick={cancelChange}
+                                                                className="px-3 py-2 rounded-lg border border-gray-200 text-[10px] font-black uppercase tracking-widest text-gray-500"
+                                                            >
+                                                                Cancel
+                                                            </button>
+                                                        </div>
+                                                        {extractErrorId === role.id && (
+                                                            <p className="text-[9px] text-red-500 font-bold uppercase tracking-widest bg-red-50 p-1.5 rounded-md w-full text-right mt-1">
+                                                                Warning: {extractErrorMsg}
+                                                            </p>
+                                                        )}
                                                     </div>
-                                                    {extractErrorId === role.id && (
-                                                        <p className="text-[9px] text-red-500 font-bold uppercase tracking-widest bg-red-50 p-1.5 rounded-md w-full text-right mt-1">
-                                                            ⚠️ {extractErrorMsg}
-                                                        </p>
-                                                    )}
-                                                </div>
                                                 )}
                                             </td>
                                         </tr>
@@ -345,6 +365,8 @@ export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps
                 title={deleting ? `Mark ${deleting.company_name} as not suitable?` : 'Mark role as not suitable?'}
                 message="This will remove this role from Saved Roles. This action cannot be undone."
             />
+
+            <GifOverlay isOpen={gifExtractingId !== null} />
         </section>
     );
 }

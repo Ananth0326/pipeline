@@ -1,8 +1,9 @@
 'use client';
 
 import { Company, ApplicationStatus } from '@/lib/types';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FileText, Globe, Target } from 'lucide-react';
+import GifOverlay from './GifOverlay';
 
 interface CompanyFormProps {
     initialData?: Partial<Company>;
@@ -32,6 +33,16 @@ export default function CompanyForm({ initialData, onSubmit, isSubmitting }: Com
     const [isExtracting, setIsExtracting] = useState(false);
     const [extractError, setExtractError] = useState('');
     const [extractSuccess, setExtractSuccess] = useState(false);
+    const [showDeployGif, setShowDeployGif] = useState(false);
+    const deployGifTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    useEffect(() => {
+        return () => {
+            if (deployGifTimeoutRef.current) {
+                clearTimeout(deployGifTimeoutRef.current);
+            }
+        };
+    }, []);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -42,9 +53,26 @@ export default function CompanyForm({ initialData, onSubmit, isSubmitting }: Com
         setResumeFile(e.target.files?.[0] || null);
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        onSubmit(formData, resumeFile);
+
+        const isDeployAction = !initialData?.id;
+        if (isDeployAction) {
+            setShowDeployGif(true);
+
+            await new Promise<void>((resolve) => {
+                if (deployGifTimeoutRef.current) {
+                    clearTimeout(deployGifTimeoutRef.current);
+                }
+
+                deployGifTimeoutRef.current = setTimeout(() => {
+                    setShowDeployGif(false);
+                    resolve();
+                }, 4000);
+            });
+        }
+
+        await onSubmit(formData, resumeFile);
     };
 
     const applyInlineFormat = (delimiter: '**' | '*') => {
@@ -337,11 +365,13 @@ export default function CompanyForm({ initialData, onSubmit, isSubmitting }: Com
 
             <button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isSubmitting || showDeployGif}
                 className="w-full bg-black text-white px-10 py-5 rounded-2xl font-black uppercase tracking-widest text-sm hover:bg-gray-800 disabled:bg-gray-400 transition-all shadow-xl shadow-gray-900/10 border-b-4 border-gray-900 active:border-b-0 active:translate-y-1"
             >
                 {isSubmitting ? 'Syncing...' : initialData?.id ? 'Update Information' : 'Deploy Application'}
             </button>
+
+            <GifOverlay isOpen={showDeployGif} />
         </form>
     );
 }
