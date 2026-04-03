@@ -54,7 +54,7 @@ export default function QuickAddModal() {
         <>
             <button
                 onClick={() => setIsOpen(true)}
-                className="hidden md:flex fixed bottom-8 right-8 w-14 h-14 bg-[#66D19E] hover:bg-[#58C28E] text-[#064E3B] rounded-full items-center justify-center shadow-xl shadow-green-500/20 hover:scale-110 active:scale-95 transition-all z-40 group border border-[#4FB886]"
+                className="hidden md:flex fixed bottom-8 right-8 w-14 h-14 bg-black hover:bg-[#111111] text-[#E1E1E1] rounded-full items-center justify-center shadow-xl shadow-emerald-500/50 hover:scale-110 active:scale-95 transition-all z-40 group border border-white/10"
                 title="Add Application (Press 'A')"
             >
                 <Plus size={24} strokeWidth={3} className="group-hover:rotate-90 transition-transform duration-300" />
@@ -77,22 +77,22 @@ export default function QuickAddModal() {
                             animate={{ y: 0, opacity: 1 }}
                             exit={{ y: '100%', opacity: 0, scale: 0.95 }}
                             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                            className="relative bg-white dark:bg-black w-full max-w-2xl max-h-[90vh] md:max-h-[85vh] overflow-y-auto rounded-t-[2.5rem] md:rounded-[2.5rem] shadow-2xl border border-gray-100 dark:border-gray-800"
+                            className="relative bg-[#161616] w-full max-w-2xl max-h-[90vh] md:max-h-[85vh] overflow-y-auto rounded-t-[2.5rem] md:rounded-[2.5rem] border border-white/10"
                         >
                             {/* Mobile Pull Handle */}
                             <div className="md:hidden flex justify-center py-3">
-                                <div className="w-12 h-1.5 bg-gray-200 dark:bg-gray-800 rounded-full" />
+                                <div className="w-12 h-1.5 bg-white/20 rounded-full" />
                             </div>
 
-                            <div className="sticky top-0 bg-white/80 dark:bg-black/80 backdrop-blur-md px-8 py-6 md:p-6 border-b border-gray-50 dark:border-gray-900 flex justify-between items-center z-10">
+                            <div className="sticky top-0 bg-[#161616]/90 backdrop-blur-md px-8 py-6 md:p-6 border-b border-white/10 flex justify-between items-center z-10">
                                 <div>
                                     <h2 className="text-xl font-black tracking-tighter uppercase font-outfit">Quick Add</h2>
-                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest font-sans">New Application Entry</p>
+                                    <p className="text-[10px] font-bold text-[#E1E1E1]/60 uppercase tracking-widest font-sans">New Application Entry</p>
                                 </div>
                                 <button
                                     onClick={() => setIsOpen(false)}
                                     disabled={isSubmitting}
-                                    className="p-2 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-full transition-colors"
+                                    className="p-2 hover:bg-white/10 rounded-full transition-colors"
                                 >
                                     <X size={20} />
                                 </button>

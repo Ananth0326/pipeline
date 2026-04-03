@@ -31,13 +31,13 @@ export default async function DashboardPage() {
             <div className="flex justify-between items-end px-1">
                 <div className="space-y-1">
                     <h2 className="text-2xl font-black tracking-tighter uppercase leading-none font-outfit">DASHBOARD</h2>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-500">Track your progress and stay organized.</p>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-[#E1E1E1]/60">Track your progress and stay organized.</p>
                 </div>
                 <SavedRolesModal savedRoles={savedRoles} />
             </div>
 
             {loadError && (
-                <div className="px-4 py-3 rounded-xl border border-red-200 bg-red-50 text-red-700">
+                <div className="px-4 py-3 rounded-xl border border-[#FF1744]/50 bg-[#FF1744]/10 text-[#FF1744]">
                     <p className="text-[10px] font-black uppercase tracking-widest">Connection Problem</p>
                     <p className="text-sm">{loadError}</p>
                 </div>

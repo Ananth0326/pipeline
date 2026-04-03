@@ -3,21 +3,25 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #0a0a0a;
+  --foreground: #e1e1e1;
+  --surface: #161616;
+  --line: rgba(255, 255, 255, 0.08);
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
   font-family: var(--font-inter);
+}
+
+.td-surface {
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+
+.td-border {
+  border-color: var(--line);
 }
 
 /* Custom scrollbar for Kanban */
@@ -34,4 +38,4 @@ body {
 }
 .minimal-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgba(156, 163, 175, 0.5); 
-}
+}

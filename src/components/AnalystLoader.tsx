@@ -8,11 +8,11 @@ interface AnalystLoaderProps {
 }
 
 export default function AnalystLoader({ isOpen }: AnalystLoaderProps) {
-    const [gifSrc, setGifSrc] = useState('/giphy.gif');
+    const [gifSrc, setGifSrc] = useState('/analyst.gif');
 
     useEffect(() => {
         if (isOpen) {
-            setGifSrc(`/giphy.gif?ts=${Date.now()}`);
+            setGifSrc(`/analyst.gif?ts=${Date.now()}`);
         }
     }, [isOpen]);
 
@@ -24,16 +24,16 @@ export default function AnalystLoader({ isOpen }: AnalystLoaderProps) {
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.2, ease: 'easeOut' }}
-                    className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-xl"
+                    className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-xl"
                 >
                     <div className="flex flex-col items-center">
                         <img
                             src={gifSrc}
                             alt="Analyst loader"
-                            className="w-[450px] max-w-[90vw] border border-white object-cover grayscale contrast-150 shadow-[0_0_30px_rgba(255,255,255,0.2)]"
+                            className="w-[450px] max-w-[90vw] border border-white object-cover grayscale contrast-[1.5] shadow-[0_0_30px_rgba(0,230,118,0.28)]"
                         />
                         <p className="mt-4 animate-pulse font-mono text-xs uppercase tracking-[0.3em] text-white/90">
-                            LOGGING TO LEDGER...
+                            LOGGING ENTRY TO LEDGER...
                         </p>
                     </div>
                 </motion.div>

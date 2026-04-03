@@ -41,17 +41,17 @@ export default function EditCompanyPage({ params }: { params: Promise<{ id: stri
         }
     };
 
-    if (!company) return <div className="p-20 text-center font-black uppercase tracking-widest text-gray-300">Loading Application...</div>;
+    if (!company) return <div className="p-20 text-center font-black uppercase tracking-widest text-[#E1E1E1]/70">Loading Application...</div>;
 
     return (
         <div className="space-y-12">
             <div>
-                <a href={`/company/${id}`} className="text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-black transition-colors">← Back to Details</a>
+                <a href={`/company/${id}`} className="text-[10px] font-black uppercase tracking-widest text-[#E1E1E1]/70 hover:text-[#00F2FE] transition-colors">Back to Details</a>
                 <h2 className="text-5xl font-black uppercase tracking-tighter mt-4 leading-none">EDIT INFO</h2>
-                <p className="text-gray-400 font-medium mt-2 underline decoration-gray-100 underline-offset-4">{company.company_name}</p>
+                <p className="text-[#E1E1E1]/70 font-medium mt-2 underline decoration-white/20 underline-offset-4">{company.company_name}</p>
             </div>
 
-            <div className="bg-white dark:bg-black border rounded-3xl p-10 lg:p-16 shadow-sm">
+            <div className="bg-[#161616] border border-white/10 rounded-3xl p-10 lg:p-16 backdrop-blur-md">
                 <CompanyForm initialData={company} onSubmit={handleSubmit} isSubmitting={isSubmitting} />
             </div>
         </div>

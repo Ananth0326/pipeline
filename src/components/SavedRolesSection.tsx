@@ -74,6 +74,7 @@ export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps
         setGifExtractingId(role.id);
         setExtractErrorId(null);
         setExtractErrorMsg('');
+
         const minimumLoaderTime = new Promise<void>((resolve) => {
             if (gifTimeoutRef.current) {
                 clearTimeout(gifTimeoutRef.current);
@@ -82,34 +83,38 @@ export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps
         });
 
         try {
-            const res = await fetch('/api/extract-job', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ url: role.job_link })
-            });
-            const data = await res.json();
+            await Promise.all([
+                (async () => {
+                    const res = await fetch('/api/extract-job', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ url: role.job_link })
+                    });
+                    const data = await res.json();
 
-            if (!res.ok) throw new Error(data.error || 'Extraction failed.');
-            if (data.data) {
-                await addCompany({
-                    company_name: data.data.company_name || role.company_name,
-                    role_title: data.data.role_title || '',
-                    location: data.data.location || '',
-                    jd_text: data.data.jd_text || '',
-                    application_platform: role.job_link,
-                    status: 'applied',
-                    status_text: 'Applied',
-                    status_color: 'yellow'
-                });
+                    if (!res.ok) throw new Error(data.error || 'Extraction failed.');
+                    if (data.data) {
+                        await addCompany({
+                            company_name: data.data.company_name || role.company_name,
+                            role_title: data.data.role_title || '',
+                            location: data.data.location || '',
+                            jd_text: data.data.jd_text || '',
+                            application_platform: role.job_link,
+                            status: 'applied',
+                            status_text: 'Applied',
+                            status_color: 'yellow'
+                        });
 
-                await deleteSavedRole(role.id);
-                setChangingId(null);
-            }
+                        await deleteSavedRole(role.id);
+                        setChangingId(null);
+                    }
+                })(),
+                minimumLoaderTime
+            ]);
         } catch (error: any) {
             setExtractErrorId(role.id);
             setExtractErrorMsg(error.message);
         } finally {
-            await minimumLoaderTime;
             setExtractingId(null);
             setGifExtractingId(null);
         }
@@ -180,19 +185,19 @@ export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps
         <section className="space-y-4">
             <div className="flex items-center justify-between">
                 <div>
-                    <h3 className="text-xs font-black uppercase tracking-widest text-gray-500">Saved Roles</h3>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Store interesting roles before applying.</p>
+                    <h3 className="text-xs font-black uppercase tracking-widest text-[#E1E1E1]/80">Saved Roles</h3>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-[#E1E1E1]/60">Store interesting roles before applying.</p>
                 </div>
-                <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">{savedRoles.length} items</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-[#E1E1E1]/60">{savedRoles.length} items</span>
             </div>
 
-            <form onSubmit={handleAdd} className="rounded-2xl border border-gray-100 p-4 bg-white grid grid-cols-1 md:grid-cols-12 gap-3">
+            <form onSubmit={handleAdd} className="rounded-2xl border border-white/10 p-4 bg-[#161616] grid grid-cols-1 md:grid-cols-12 gap-3">
                 <input
                     required
                     value={form.company_name}
                     onChange={(e) => setForm((prev) => ({ ...prev, company_name: e.target.value }))}
                     placeholder="Company name"
-                    className="md:col-span-4 border-2 border-gray-100 p-3 rounded-xl text-sm font-semibold outline-none focus:ring-4 focus:ring-gray-50"
+                    className="md:col-span-4 border border-white/10 bg-[#0A0A0A] p-3 rounded-xl text-sm font-semibold outline-none focus:ring-2 focus:ring-white/20"
                 />
                 <input
                     required
@@ -200,12 +205,12 @@ export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps
                     value={form.job_link}
                     onChange={(e) => setForm((prev) => ({ ...prev, job_link: e.target.value }))}
                     placeholder="https://job-link"
-                    className="md:col-span-6 border-2 border-gray-100 p-3 rounded-xl text-sm font-medium outline-none focus:ring-4 focus:ring-gray-50"
+                    className="md:col-span-6 border border-white/10 bg-[#0A0A0A] p-3 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-white/20"
                 />
                 <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="md:col-span-2 inline-flex items-center justify-center gap-2 rounded-xl bg-black text-white px-4 py-3 text-[10px] font-black uppercase tracking-widest hover:bg-gray-800 disabled:bg-gray-400"
+                    className="md:col-span-2 inline-flex items-center justify-center gap-2 rounded-xl bg-black text-[#E1E1E1] px-4 py-3 text-[10px] font-black uppercase tracking-widest hover:bg-[#111111] disabled:bg-gray-700 border border-white/10 shadow-lg shadow-emerald-500/40"
                 >
                     <Plus size={14} /> Add
                 </button>
@@ -215,17 +220,17 @@ export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps
                 <div className="px-3 py-2 rounded-lg border border-red-200 bg-red-50 text-red-700 text-xs">{error}</div>
             )}
 
-            <div className="rounded-2xl border border-gray-100 overflow-hidden bg-white">
+            <div className="rounded-2xl border border-white/10 overflow-hidden bg-[#161616]">
                 {savedRoles.length === 0 ? (
-                    <div className="px-6 py-10 text-sm text-gray-500 italic bg-gray-50/60">No saved roles yet.</div>
+                    <div className="px-6 py-10 text-sm text-[#E1E1E1]/60 italic bg-[#0A0A0A]/60">No saved roles yet.</div>
                 ) : (
                     <div className="overflow-auto">
                         <table className="w-full text-sm border-collapse">
-                            <thead className="bg-gray-50 border-b border-gray-100">
+                            <thead className="bg-[#0F0F0F] border-b border-white/10">
                                 <tr>
-                                    <th className="px-4 py-3 text-left text-[10px] font-black uppercase tracking-widest text-gray-400">Company</th>
-                                    <th className="px-4 py-3 text-left text-[10px] font-black uppercase tracking-widest text-gray-400">Job Link</th>
-                                    <th className="px-4 py-3 text-right text-[10px] font-black uppercase tracking-widest text-gray-400">Actions</th>
+                                    <th className="px-4 py-3 text-left text-[10px] font-black uppercase tracking-widest text-[#E1E1E1]/60">Company</th>
+                                    <th className="px-4 py-3 text-left text-[10px] font-black uppercase tracking-widest text-[#E1E1E1]/60">Job Link</th>
+                                    <th className="px-4 py-3 text-right text-[10px] font-black uppercase tracking-widest text-[#E1E1E1]/60">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -233,7 +238,7 @@ export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps
                                     const isEditing = editingId === role.id;
                                     const isChanging = changingId === role.id;
                                     return (
-                                        <tr key={role.id} className="border-b last:border-0 border-gray-100">
+                                        <tr key={role.id} className="border-b last:border-0 border-white/10">
                                             <td className="px-4 py-3">
                                                 {isEditing ? (
                                                     <input
@@ -246,7 +251,7 @@ export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps
                                                         href={role.job_link}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
-                                                        className="inline-flex items-center gap-1 font-bold text-blue-700 hover:text-blue-800"
+                                                        className="inline-flex items-center gap-1 font-bold text-[#00F2FE] hover:text-[#65f8ff]"
                                                     >
                                                         {role.company_name} <ExternalLink size={12} />
                                                     </a>
@@ -261,7 +266,7 @@ export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps
                                                         className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm"
                                                     />
                                                 ) : (
-                                                    <span className="text-xs text-gray-500 truncate block max-w-[380px]">{role.job_link}</span>
+                                                    <span className="text-xs text-[#E1E1E1]/65 truncate block max-w-[380px]">{role.job_link}</span>
                                                 )}
                                             </td>
                                             <td className="px-4 py-3">
