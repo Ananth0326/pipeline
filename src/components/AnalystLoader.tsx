@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 interface AnalystLoaderProps {
     isOpen: boolean;
@@ -9,6 +10,11 @@ interface AnalystLoaderProps {
 
 export default function AnalystLoader({ isOpen }: AnalystLoaderProps) {
     const [gifSrc, setGifSrc] = useState('/analyst.gif');
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     useEffect(() => {
         if (isOpen) {
@@ -16,7 +22,9 @@ export default function AnalystLoader({ isOpen }: AnalystLoaderProps) {
         }
     }, [isOpen]);
 
-    return (
+    if (!mounted) return null;
+
+    return createPortal(
         <AnimatePresence>
             {isOpen && (
                 <motion.div
@@ -39,5 +47,7 @@ export default function AnalystLoader({ isOpen }: AnalystLoaderProps) {
                 </motion.div>
             )}
         </AnimatePresence>
+        ,
+        document.body
     );
 }
