@@ -7,10 +7,11 @@ import { useRouter } from 'next/navigation';
 
 interface AddCompanyClientProps {
     initialCompanyName?: string;
+    initialRoleTitle?: string;
     savedRoleId?: string;
 }
 
-export default function AddCompanyClient({ initialCompanyName, savedRoleId }: AddCompanyClientProps) {
+export default function AddCompanyClient({ initialCompanyName, initialRoleTitle, savedRoleId }: AddCompanyClientProps) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const router = useRouter();
 
@@ -49,7 +50,7 @@ export default function AddCompanyClient({ initialCompanyName, savedRoleId }: Ad
 
             <div className="bg-[#161616] border border-white/10 rounded-3xl p-10 lg:p-16 backdrop-blur-md">
                 <CompanyForm
-                    initialData={initialCompanyName ? { company_name: initialCompanyName } : undefined}
+                    initialData={initialCompanyName || initialRoleTitle ? { company_name: initialCompanyName, role_title: initialRoleTitle } : undefined}
                     onSubmit={handleSubmit}
                     isSubmitting={isSubmitting}
                 />

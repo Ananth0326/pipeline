@@ -4,6 +4,7 @@ import QuickAddModal from '@/components/QuickAddModal';
 import SavedRolesModal from '@/components/SavedRolesModal';
 import SearchModal from '@/components/SearchModal';
 import AmbientOrbs from '@/components/AmbientOrbs';
+import SavedRoleNotifier from '@/components/SavedRoleNotifier';
 import { Company, SavedRole } from '@/lib/types';
 
 export const dynamic = 'force-dynamic';
@@ -51,6 +52,7 @@ export default async function DashboardPage() {
 
             <QuickAddModal />
             <SearchModal companies={companies} />
+            <SavedRoleNotifier />
         </div>
     );
 }

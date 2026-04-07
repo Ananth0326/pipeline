@@ -34,6 +34,8 @@ export interface SavedRole {
     id: string;
     company_name: string;
     job_link: string;
+    role_title?: string;
+    is_converted?: boolean;
     created_at: string;
     updated_at: string;
 }

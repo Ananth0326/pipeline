@@ -227,7 +227,7 @@ export async function getSavedRoles() {
     }
 }
 
-export async function addSavedRole(payload: Pick<SavedRole, 'company_name' | 'job_link'>) {
+export async function addSavedRole(payload: Pick<SavedRole, 'company_name' | 'job_link'> & Partial<Pick<SavedRole, 'role_title'>>) {
     try {
         const supabase = getSupabase();
         const { error } = await supabase
@@ -241,7 +241,7 @@ export async function addSavedRole(payload: Pick<SavedRole, 'company_name' | 'jo
     }
 }
 
-export async function updateSavedRole(id: string, updates: Partial<Pick<SavedRole, 'company_name' | 'job_link'>>) {
+export async function updateSavedRole(id: string, updates: Partial<Pick<SavedRole, 'company_name' | 'job_link' | 'role_title'>>) {
     try {
         const supabase = getSupabase();
         const { error } = await supabase

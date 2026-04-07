@@ -126,10 +126,28 @@ END $$;
 CREATE TABLE IF NOT EXISTS saved_roles (
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     company_name text NOT NULL,
+    role_title text,
     job_link text NOT NULL,
+    is_converted boolean DEFAULT false,
     created_at timestamp with time zone DEFAULT now(),
     updated_at timestamp with time zone DEFAULT now()
 );
+
+DO $$ BEGIN
+    ALTER TABLE saved_roles ADD COLUMN role_title text;
+EXCEPTION
+    WHEN duplicate_column THEN null;
+END $$;
+
+DO $$ BEGIN
+    ALTER TABLE saved_roles ADD COLUMN is_converted boolean DEFAULT false;
+EXCEPTION
+    WHEN duplicate_column THEN null;
+END $$;
+
+UPDATE saved_roles
+SET is_converted = false
+WHERE is_converted IS NULL;
 
 ALTER TABLE saved_roles ENABLE ROW LEVEL SECURITY;
 

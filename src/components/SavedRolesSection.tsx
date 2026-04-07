@@ -14,6 +14,7 @@ interface SavedRolesSectionProps {
 
 interface RoleFormState {
     company_name: string;
+    role_title: string;
     job_link: string;
 }
 
@@ -24,10 +25,10 @@ function normalizeLink(url: string) {
 
 export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps) {
     const router = useRouter();
-    const [form, setForm] = useState<RoleFormState>({ company_name: '', job_link: '' });
+    const [form, setForm] = useState<RoleFormState>({ company_name: '', role_title: '', job_link: '' });
     const [editingId, setEditingId] = useState<string | null>(null);
     const [changingId, setChangingId] = useState<string | null>(null);
-    const [editForm, setEditForm] = useState<RoleFormState>({ company_name: '', job_link: '' });
+    const [editForm, setEditForm] = useState<RoleFormState>({ company_name: '', role_title: '', job_link: '' });
     const [deleting, setDeleting] = useState<SavedRole | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState('');
@@ -53,9 +54,10 @@ export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps
         try {
             await addSavedRole({
                 company_name: form.company_name.trim(),
+                role_title: form.role_title.trim(),
                 job_link: normalizeLink(form.job_link.trim())
             });
-            setForm({ company_name: '', job_link: '' });
+            setForm({ company_name: '', role_title: '', job_link: '' });
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to add role.');
         } finally {
@@ -96,7 +98,7 @@ export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps
                     if (data.data) {
                         await addCompany({
                             company_name: data.data.company_name || role.company_name,
-                            role_title: data.data.role_title || '',
+                            role_title: data.data.role_title || role.role_title || '',
                             location: data.data.location || '',
                             jd_text: data.data.jd_text || '',
                             application_platform: role.job_link,
@@ -125,13 +127,14 @@ export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps
         setEditingId(role.id);
         setEditForm({
             company_name: role.company_name,
+            role_title: role.role_title || '',
             job_link: role.job_link
         });
     };
 
     const cancelEdit = () => {
         setEditingId(null);
-        setEditForm({ company_name: '', job_link: '' });
+        setEditForm({ company_name: '', role_title: '', job_link: '' });
     };
 
     const startChange = (id: string) => {
@@ -148,6 +151,9 @@ export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps
             company: role.company_name,
             savedRoleId: role.id
         });
+        if (role.role_title) {
+            params.set('roleTitle', role.role_title);
+        }
         router.push(`/add-company?${params.toString()}`);
     };
 
@@ -157,6 +163,7 @@ export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps
         try {
             await updateSavedRole(id, {
                 company_name: editForm.company_name.trim(),
+                role_title: editForm.role_title.trim(),
                 job_link: normalizeLink(editForm.job_link.trim())
             });
             cancelEdit();
@@ -197,7 +204,13 @@ export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps
                     value={form.company_name}
                     onChange={(e) => setForm((prev) => ({ ...prev, company_name: e.target.value }))}
                     placeholder="Company name"
-                    className="md:col-span-4 border border-white/10 bg-[#0A0A0A] p-3 rounded-xl text-sm font-semibold outline-none focus:ring-2 focus:ring-white/20"
+                    className="md:col-span-3 border border-white/10 bg-[#0A0A0A] p-3 rounded-xl text-sm font-semibold outline-none focus:ring-2 focus:ring-white/20"
+                />
+                <input
+                    value={form.role_title}
+                    onChange={(e) => setForm((prev) => ({ ...prev, role_title: e.target.value }))}
+                    placeholder="Role title (optional)"
+                    className="md:col-span-3 border border-white/10 bg-[#0A0A0A] p-3 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-white/20"
                 />
                 <input
                     required
@@ -205,7 +218,7 @@ export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps
                     value={form.job_link}
                     onChange={(e) => setForm((prev) => ({ ...prev, job_link: e.target.value }))}
                     placeholder="https://job-link"
-                    className="md:col-span-6 border border-white/10 bg-[#0A0A0A] p-3 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-white/20"
+                    className="md:col-span-4 border border-white/10 bg-[#0A0A0A] p-3 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-white/20"
                 />
                 <button
                     type="submit"
@@ -229,6 +242,7 @@ export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps
                             <thead className="bg-[#0F0F0F] border-b border-white/10">
                                 <tr>
                                     <th className="px-4 py-3 text-left text-[10px] font-black uppercase tracking-widest text-[#E1E1E1]/60">Company</th>
+                                    <th className="px-4 py-3 text-left text-[10px] font-black uppercase tracking-widest text-[#E1E1E1]/60">Role</th>
                                     <th className="px-4 py-3 text-left text-[10px] font-black uppercase tracking-widest text-[#E1E1E1]/60">Job Link</th>
                                     <th className="px-4 py-3 text-right text-[10px] font-black uppercase tracking-widest text-[#E1E1E1]/60">Actions</th>
                                 </tr>
@@ -255,6 +269,18 @@ export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps
                                                     >
                                                         {role.company_name} <ExternalLink size={12} />
                                                     </a>
+                                                )}
+                                            </td>
+                                            <td className="px-4 py-3">
+                                                {isEditing ? (
+                                                    <input
+                                                        value={editForm.role_title}
+                                                        onChange={(e) => setEditForm((prev) => ({ ...prev, role_title: e.target.value }))}
+                                                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm"
+                                                        placeholder="Role title"
+                                                    />
+                                                ) : (
+                                                    <span className="text-xs text-[#E1E1E1]/80">{role.role_title || 'Untitled Role'}</span>
                                                 )}
                                             </td>
                                             <td className="px-4 py-3">
