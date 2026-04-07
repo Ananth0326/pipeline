@@ -246,7 +246,7 @@ export default function KanbanBoard({ companies: initialCompanies }: KanbanBoard
                                 key={col.id} 
                                 animate={{ scale: isMagneticHovered ? 1.02 : 1 }}
                                 transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                                className={`relative min-w-[300px] w-[300px] flex flex-col bg-[#161616]/85 backdrop-blur-md rounded-2xl border ${isMagneticHovered ? 'border-white/25' : 'border-white/10'} shrink-0 snap-center max-h-full ${col.glow}`}
+                                className={`relative min-w-[300px] w-[300px] flex flex-col bg-[#161616]/85 backdrop-blur-[12px] rounded-2xl border ${isMagneticHovered ? 'border-white/20' : 'border-white/5'} shrink-0 snap-center max-h-full ${col.glow}`}
                             >
                                 {/* Subtle Radial Gradient Background for Active/Hover State */}
                                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-2xl" />
@@ -345,7 +345,7 @@ function KanbanCard({ company, isOverlay = false }: { company: Company, isOverla
                     router.push(`/company/${company.id}`);
                 }
             }}
-            className={`group bg-[#161616] backdrop-blur-md p-4 rounded-xl border touch-none select-none ${isOverlay ? 'border-[#00E676]/50 shadow-[0_10px_30px_rgba(0,0,0,0.3)] cursor-grabbing z-50' : `border-white/10 hover:border-white/50 ${hoverShadowClass} cursor-grab`} transition-all relative flex flex-col gap-3`}
+            className={`group bg-[#161616] backdrop-blur-[12px] p-4 rounded-xl border touch-none select-none ${isOverlay ? 'border-[#00E676]/50 shadow-[0_10px_30px_rgba(0,0,0,0.3)] cursor-grabbing z-50' : `border-white/5 hover:border-white/30 ${hoverShadowClass} cursor-grab`} transition-all relative flex flex-col gap-3`}
         >
             <div className="flex justify-between items-start gap-2">
                 <div>

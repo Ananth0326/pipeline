@@ -25,7 +25,7 @@ export default function TerminalNotification({
                     animate={{ x: 0, opacity: 1 }}
                     exit={{ x: 420, opacity: 0 }}
                     transition={{ type: 'spring', stiffness: 320, damping: 28, mass: 0.7 }}
-                    className="fixed right-4 md:right-8 top-20 md:top-24 z-[120] w-[min(92vw,460px)] border border-cyan-500/35 border-l-[4px] border-l-cyan-500 bg-[#000000]/88 backdrop-blur-[10px] rounded-xl p-4 shadow-[0_0_28px_rgba(6,182,212,0.24)]"
+                    className="fixed right-4 md:right-8 top-20 md:top-24 z-[120] w-[min(92vw,460px)] border border-white/5 border-l-[4px] border-l-cyan-500 bg-[#000000]/88 backdrop-blur-[12px] rounded-xl p-4 shadow-[0_0_28px_rgba(6,182,212,0.24)]"
                     role="alert"
                     aria-live="assertive"
                 >

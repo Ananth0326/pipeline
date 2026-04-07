@@ -34,7 +34,7 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en" className={`${outfit.variable} ${inter.variable} ${mono.variable}`}>
-            <body className="antialiased min-h-screen bg-[#0A0A0A] text-[#E1E1E1] font-sans">
+            <body className="antialiased min-h-screen bg-terminal-textured text-[#E1E1E1] font-sans">
                 {/* TOP NAV - Optimized for mobile */}
                 <nav className="border-b border-white/10 px-6 md:px-8 py-4 flex justify-between items-center bg-[#0A0A0A]/90 backdrop-blur-md sticky top-0 z-40">
                     <h1 className="text-xl font-black tracking-tighter font-outfit">PIPELINE</h1>
