@@ -21,8 +21,19 @@ const mono = Roboto_Mono({
 });
 
 export const metadata: Metadata = {
-    title: 'Pipeline | Job Tracker',
-    description: 'Fast, minimal job application tracker',
+    title: 'Pipeline Mastery | Job Tracking Dashboard',
+    description: 'Stunning glassmorphism job pipeline dashboard to track applications from applied to offer.',
+    keywords: ['job pipeline', 'application tracker', 'interview dashboard', 'career workflow'],
+    openGraph: {
+        title: 'Pipeline Mastery Dashboard',
+        description: 'Track every hiring stage with elegant visuals, progress rings, and motion-rich cards.',
+        type: 'website',
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'Pipeline Mastery Dashboard',
+        description: 'Modern glassmorphism job pipeline tracker with Framer Motion and TailwindCSS.',
+    },
 };
 
 export default function RootLayout({

@@ -3,21 +3,27 @@
 @tailwind utilities;
 
 :root {
-  --background: #0f0f23;
-  --foreground: #f8fafc;
-  --primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --success: linear-gradient(135deg, #4ade80, #22c55e);
-  --glass-bg: rgba(255, 255, 255, 0.05);
-  --glass-border: rgba(255, 255, 255, 0.1);
-  --cosmic-bg: linear-gradient(160deg, #0f0f23 0%, #1a1a2e 45%, #16213e 100%);
+  --background: #f5f0ff;
+  --foreground: #ffffff;
+  --primary: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 75%, #f5576c 100%);
+  --success: linear-gradient(135deg, #10b981, #34d399);
+  --warning: linear-gradient(135deg, #f59e0b, #fbbf24);
+  --info: linear-gradient(135deg, #3b82f6, #60a5fa);
+  --danger: linear-gradient(135deg, #ef4444, #f87171);
+  --glass-bg: rgba(255, 255, 255, 0.15);
+  --glass-border: rgba(139, 92, 246, 0.3);
+  --sunset-bg: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 75%, #f5576c 100%);
+  --sunset-text: linear-gradient(135deg, #fff1f2 0%, #fef3c7 30%, #ede9fe 65%, #ffffff 100%);
 }
 
-[data-theme='light'] {
-  --background: #e9eef9;
-  --foreground: #0f172a;
-  --glass-bg: rgba(255, 255, 255, 0.4);
-  --glass-border: rgba(255, 255, 255, 0.65);
-  --cosmic-bg: linear-gradient(160deg, #dbe8ff 0%, #eff4ff 45%, #d4e5ff 100%);
+[data-theme='ocean'] {
+  --background: #e0f2fe;
+  --foreground: #eff6ff;
+  --primary: linear-gradient(135deg, #0369a1 0%, #0ea5e9 35%, #22d3ee 100%);
+  --glass-bg: rgba(255, 255, 255, 0.2);
+  --glass-border: rgba(56, 189, 248, 0.35);
+  --sunset-bg: linear-gradient(135deg, #075985 0%, #0284c7 35%, #0ea5e9 70%, #22d3ee 100%);
+  --sunset-text: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 40%, #ccfbf1 100%);
 }
 
 * {
@@ -37,26 +43,8 @@ body {
   font-family: var(--font-inter);
 }
 
-.hero-glow-text {
-  background-image: var(--primary);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: pulse-glow 2.8s ease-in-out infinite;
-}
-
 .animate-status-pulse {
   animation: status-pulse 2.2s ease-in-out infinite;
-}
-
-@keyframes pulse-glow {
-  0%,
-  100% {
-    text-shadow: 0 0 12px rgba(102, 126, 234, 0.45), 0 0 28px rgba(118, 75, 162, 0.25);
-  }
-  50% {
-    text-shadow: 0 0 24px rgba(102, 126, 234, 0.75), 0 0 48px rgba(118, 75, 162, 0.45);
-  }
 }
 
 @keyframes status-pulse {
@@ -67,6 +55,6 @@ body {
   }
   50% {
     transform: scale(1.03);
-    filter: saturate(125%);
+    filter: saturate(128%);
   }
 }
