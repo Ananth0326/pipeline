@@ -3,27 +3,32 @@
 @tailwind utilities;
 
 :root {
-  --background: #f5f0ff;
-  --foreground: #ffffff;
-  --primary: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 75%, #f5576c 100%);
-  --success: linear-gradient(135deg, #10b981, #34d399);
-  --warning: linear-gradient(135deg, #f59e0b, #fbbf24);
-  --info: linear-gradient(135deg, #3b82f6, #60a5fa);
-  --danger: linear-gradient(135deg, #ef4444, #f87171);
-  --glass-bg: rgba(255, 255, 255, 0.15);
-  --glass-border: rgba(139, 92, 246, 0.3);
-  --sunset-bg: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 75%, #f5576c 100%);
-  --sunset-text: linear-gradient(135deg, #fff1f2 0%, #fef3c7 30%, #ede9fe 65%, #ffffff 100%);
+  --background: #fdfcfb;
+  --foreground: #1c1917;
+  --secondary-text: #78716c;
+  --card-bg: #ffffff;
+  --card-border: rgba(0, 0, 0, 0.05);
+  --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.02), 0 10px 20px rgba(0, 0, 0, 0.03);
+  --mesh-bg: radial-gradient(circle at 0% 0%, #fdfcfb 0%, transparent 50%),
+    radial-gradient(circle at 100% 0%, #f5f5f0 0%, transparent 46%),
+    radial-gradient(circle at 100% 100%, #e8e8e1 0%, transparent 50%),
+    linear-gradient(135deg, #fdfcfb 0%, #f5f5f0 58%, #e8e8e1 100%);
+  --accent: #d4af37;
+  --surface-hover: #f8f7f4;
 }
 
 [data-theme='ocean'] {
-  --background: #e0f2fe;
-  --foreground: #eff6ff;
-  --primary: linear-gradient(135deg, #0369a1 0%, #0ea5e9 35%, #22d3ee 100%);
-  --glass-bg: rgba(255, 255, 255, 0.2);
-  --glass-border: rgba(56, 189, 248, 0.35);
-  --sunset-bg: linear-gradient(135deg, #075985 0%, #0284c7 35%, #0ea5e9 70%, #22d3ee 100%);
-  --sunset-text: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 40%, #ccfbf1 100%);
+  --background: #f7fbfd;
+  --foreground: #142133;
+  --secondary-text: #64748b;
+  --card-bg: #ffffff;
+  --card-border: rgba(15, 23, 42, 0.08);
+  --card-shadow: 0 1px 3px rgba(2, 6, 23, 0.02), 0 10px 20px rgba(2, 6, 23, 0.05);
+  --mesh-bg: radial-gradient(circle at 0% 0%, #f7fbfd 0%, transparent 52%),
+    radial-gradient(circle at 100% 0%, #edf5fb 0%, transparent 48%),
+    radial-gradient(circle at 100% 100%, #e2eef9 0%, transparent 52%),
+    linear-gradient(135deg, #f7fbfd 0%, #edf5fb 58%, #e2eef9 100%);
+  --surface-hover: #f3f7fb;
 }
 
 * {
@@ -43,6 +48,39 @@ body {
   font-family: var(--font-inter);
 }
 
+.mesh-background {
+  background-image: var(--mesh-bg);
+}
+
+.paper-grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.04;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.premium-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+}
+
+.subtle-control {
+  border: 1px solid var(--card-border);
+  background: #fff;
+  color: var(--foreground);
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.subtle-control:hover {
+  background: var(--surface-hover);
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
 .animate-status-pulse {
   animation: status-pulse 2.2s ease-in-out infinite;
 }
@@ -51,10 +89,8 @@ body {
   0%,
   100% {
     transform: scale(1);
-    filter: saturate(100%);
   }
   50% {
-    transform: scale(1.03);
-    filter: saturate(128%);
+    transform: scale(1.02);
   }
 }

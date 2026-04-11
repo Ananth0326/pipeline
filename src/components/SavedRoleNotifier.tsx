@@ -11,10 +11,10 @@ type StagnantSavedRole = {
 };
 
 const FIRST_TRIGGER_HOUR = 15;
-const FIRST_TRIGGER_MINUTE = 12;
+const FIRST_TRIGGER_MINUTE = 5;
 const REPEAT_MS = 3 * 60 * 60 * 1000;
 
-function msUntilNext1512(now = new Date()) {
+function msUntilNext1505(now = new Date()) {
     const base = new Date(now);
     base.setHours(FIRST_TRIGGER_HOUR, FIRST_TRIGGER_MINUTE, 0, 0);
 
@@ -28,7 +28,7 @@ function msUntilNext1512(now = new Date()) {
     return nextSlot.getTime() - now.getTime();
 }
 
-function playTerminalPing() {
+function playNudgeTone() {
     try {
         const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
         if (!AudioCtx) return;
@@ -81,14 +81,14 @@ export default function SavedRoleNotifier() {
 
             setRole(nextRole);
             setIsOpen(true);
-            playTerminalPing();
+            playNudgeTone();
         } catch (error) {
             console.error('Stagnant role check failed:', error);
         }
     };
 
     useEffect(() => {
-        const waitMs = msUntilNext1512();
+        const waitMs = msUntilNext1505();
 
         timeoutRef.current = setTimeout(() => {
             fetchStagnantRole();

@@ -19,7 +19,7 @@ export async function GET() {
             .from('saved_roles')
             .select('*')
             .eq('is_converted', false)
-            .order('updated_at', { ascending: false })
+            .order('created_at', { ascending: false })
             .limit(1);
 
         let { data, error } = await query;
@@ -29,7 +29,7 @@ export async function GET() {
             const fallback = await supabase
                 .from('saved_roles')
                 .select('*')
-                .order('updated_at', { ascending: false })
+                .order('created_at', { ascending: false })
                 .limit(1);
 
             data = fallback.data as SavedRoleRow[] | null;
