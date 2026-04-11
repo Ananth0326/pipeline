@@ -103,7 +103,7 @@ export default function JobPipelineDashboard() {
   const hasMore = visibleCount < allItems.length;
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[var(--sunset-bg)] text-white">
+    <div className="relative min-h-screen overflow-hidden bg-[image:var(--sunset-bg)] text-white">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_15%,rgba(255,255,255,0.28),transparent_42%),radial-gradient(circle_at_80%_0%,rgba(255,255,255,0.2),transparent_40%)]" />
 
       <div className="pointer-events-none absolute inset-0">
@@ -125,7 +125,7 @@ export default function JobPipelineDashboard() {
       >
         <nav className="mx-auto mt-4 flex w-[min(1220px,94%)] items-center justify-between rounded-2xl border border-violet-500/30 bg-white/15 px-4 py-3 backdrop-blur-xl md:px-6">
           <div className="flex items-center gap-3">
-            <div className="grid h-9 w-9 place-items-center rounded-full bg-[var(--primary)] text-sm font-black">PM</div>
+            <div className="grid h-9 w-9 place-items-center rounded-full bg-[image:var(--primary)] text-sm font-black">PM</div>
             <span className="text-sm font-semibold tracking-[0.2em]">PIPELINE</span>
           </div>
 
@@ -166,7 +166,7 @@ export default function JobPipelineDashboard() {
       <main className="relative z-10 px-4 pb-16 pt-28 md:px-8 md:pt-32">
         <section className="mx-auto flex min-h-[calc(100vh-9rem)] w-[min(1220px,100%)] flex-col justify-center">
           <motion.div initial={{ opacity: 0, y: 25 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="space-y-5">
-            <h1 className="bg-[var(--sunset-text)] bg-clip-text text-5xl font-black leading-tight text-transparent md:text-7xl">
+            <h1 className="bg-[image:var(--sunset-text)] bg-clip-text text-5xl font-black leading-tight text-transparent md:text-7xl">
               Pipeline Mastery
             </h1>
             <p className="max-w-2xl text-base text-white/90 md:text-xl">Track every stage with elegance</p>

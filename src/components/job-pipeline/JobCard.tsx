@@ -41,7 +41,7 @@ export default function JobCard({ item, index }: JobCardProps) {
       <div className="relative z-10 space-y-5">
         <div className="flex items-center justify-between">
           <div className="relative grid h-14 w-14 place-items-center rounded-full">
-            <span className="absolute inset-0 rounded-full bg-[var(--primary)] p-[2px]" />
+            <span className="absolute inset-0 rounded-full bg-[image:var(--primary)] p-[2px]" />
             <span className="relative grid h-[52px] w-[52px] place-items-center rounded-full bg-white/20 text-sm font-bold text-white">
               {initials}
             </span>
@@ -51,7 +51,7 @@ export default function JobCard({ item, index }: JobCardProps) {
 
         <div className="space-y-1">
           <p className="text-xs uppercase tracking-[0.18em] text-white/80">{item.company} | {item.location}</p>
-          <h3 className="bg-[var(--sunset-text)] bg-clip-text text-2xl font-bold text-transparent">{item.jobTitle}</h3>
+          <h3 className="bg-[image:var(--sunset-text)] bg-clip-text text-2xl font-bold text-transparent">{item.jobTitle}</h3>
         </div>
 
         <div className="flex items-center justify-between gap-4">
@@ -64,7 +64,7 @@ export default function JobCard({ item, index }: JobCardProps) {
 
         <button
           type="button"
-          className="group/button relative isolate w-full overflow-hidden rounded-xl bg-[var(--primary)] px-4 py-2.5 text-sm font-semibold text-white transition-transform duration-300 hover:scale-[1.02]"
+          className="group/button relative isolate w-full overflow-hidden rounded-xl bg-[image:var(--primary)] px-4 py-2.5 text-sm font-semibold text-white transition-transform duration-300 hover:scale-[1.02]"
         >
           <span className="absolute inset-0 -z-10 opacity-0 transition-opacity duration-300 group-hover/button:opacity-100 bg-[radial-gradient(circle,rgba(255,255,255,0.5)_0%,transparent_60%)]" />
           <span className="absolute left-1/2 top-1/2 -z-10 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/60 opacity-0 blur-md transition-all duration-500 group-hover/button:h-40 group-hover/button:w-40 group-hover/button:opacity-30" />
