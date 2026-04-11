@@ -1,5 +1,10 @@
-import { redirect } from 'next/navigation';
+import dynamic from 'next/dynamic';
 
-export default function Home() {
-    redirect('/dashboard');
+const JobPipelineDashboard = dynamic(
+  () => import('@/components/job-pipeline/JobPipelineDashboard'),
+  { ssr: false }
+);
+
+export default function HomePage() {
+  return <JobPipelineDashboard />;
 }

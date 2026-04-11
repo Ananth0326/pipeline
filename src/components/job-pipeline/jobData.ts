@@ -1,0 +1,68 @@
+import { JobPipelineItem } from './types';
+
+export const jobItems: JobPipelineItem[] = [
+  {
+    id: 1,
+    company: 'Vercel',
+    jobTitle: 'Frontend Engineer',
+    progress: 28,
+    status: 'Pending',
+    nextAction: 'Tailor resume for ATS',
+  },
+  {
+    id: 2,
+    company: 'Stripe',
+    jobTitle: 'Product Engineer',
+    progress: 62,
+    status: 'Interview',
+    nextAction: 'Prepare system design notes',
+  },
+  {
+    id: 3,
+    company: 'Notion',
+    jobTitle: 'UI Platform Engineer',
+    progress: 91,
+    status: 'Offer',
+    nextAction: 'Review compensation package',
+  },
+  {
+    id: 4,
+    company: 'Figma',
+    jobTitle: 'Design Technologist',
+    progress: 44,
+    status: 'Rejected',
+    nextAction: 'Request recruiter feedback',
+  },
+  {
+    id: 5,
+    company: 'OpenAI',
+    jobTitle: 'Solutions Engineer',
+    progress: 36,
+    status: 'Pending',
+    nextAction: 'Send hiring manager follow-up',
+  },
+  {
+    id: 6,
+    company: 'Linear',
+    jobTitle: 'Growth Engineer',
+    progress: 70,
+    status: 'Interview',
+    nextAction: 'Practice product walkthrough',
+  },
+  {
+    id: 7,
+    company: 'Ramp',
+    jobTitle: 'Fullstack Engineer',
+    progress: 88,
+    status: 'Offer',
+    nextAction: 'Finalize start date options',
+  },
+  {
+    id: 8,
+    company: 'Datadog',
+    jobTitle: 'Developer Advocate',
+    progress: 22,
+    status: 'Rejected',
+    nextAction: 'Archive notes and reapply later',
+  },
+];
