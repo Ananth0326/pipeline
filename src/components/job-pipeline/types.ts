@@ -1,7 +1,7 @@
 export type JobStatus = 'Applied' | 'Interview' | 'Offer' | 'Rejected';
 
 export type JobPipelineItem = {
-  id: number;
+  id: string | number;
   company: string;
   jobTitle: string;
   status: JobStatus;

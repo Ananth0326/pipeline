@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronDown, Filter, Home, MoonStar, Sun } from 'lucide-react';
 import JobCard from './JobCard';
-import { jobItems } from './jobData';
+import type { JobPipelineItem } from './types';
 import SavedRoleNotifier from '@/components/SavedRoleNotifier';
 
 function SkeletonCard() {
@@ -47,18 +47,18 @@ const floatingShapes: Shape[] = [
   },
 ];
 
-export default function JobPipelineDashboard() {
+type JobPipelineDashboardProps = {
+  items: JobPipelineItem[];
+};
+
+export default function JobPipelineDashboard({ items }: JobPipelineDashboardProps) {
   const [theme, setTheme] = useState<'sunset' | 'ocean'>('sunset');
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(true);
   const [visibleCount, setVisibleCount] = useState(8);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
-  const allItems = useMemo(() => {
-    return Array.from({ length: 3 }).flatMap((_, idx) =>
-      jobItems.map((item) => ({ ...item, id: item.id + idx * 100 }))
-    );
-  }, []);
+  const allItems = useMemo(() => items, [items]);
 
   useEffect(() => {
     const storedTheme = window.localStorage.getItem('pipeline-theme');
@@ -102,6 +102,10 @@ export default function JobPipelineDashboard() {
 
   const visibleItems = allItems.slice(0, visibleCount);
   const hasMore = visibleCount < allItems.length;
+  const activeCount = allItems.filter((item) => item.status !== 'Rejected').length;
+  const interviewCount = allItems.filter((item) => item.status === 'Interview').length;
+  const offerCount = allItems.filter((item) => item.status === 'Offer').length;
+  const conversionRate = allItems.length === 0 ? 0 : Math.round((offerCount / allItems.length) * 100);
 
   return (
     <div className="mesh-background relative min-h-screen overflow-hidden text-[var(--foreground)]">
@@ -172,6 +176,20 @@ export default function JobPipelineDashboard() {
               Pipeline Mastery
             </h1>
             <p className="max-w-2xl text-base text-[#78716C] md:text-xl">Track every stage with elegance</p>
+            <div className="grid max-w-3xl grid-cols-1 gap-3 sm:grid-cols-3">
+              <div className="premium-card px-4 py-3">
+                <p className="text-[11px] uppercase tracking-[0.16em] text-[#78716C]">Active Pipelines</p>
+                <p className="mt-1 text-2xl font-bold text-[#1C1917]">{activeCount}</p>
+              </div>
+              <div className="premium-card px-4 py-3">
+                <p className="text-[11px] uppercase tracking-[0.16em] text-[#78716C]">Interviews</p>
+                <p className="mt-1 text-2xl font-bold text-[#1C1917]">{interviewCount}</p>
+              </div>
+              <div className="premium-card px-4 py-3">
+                <p className="text-[11px] uppercase tracking-[0.16em] text-[#78716C]">Offer Conversion</p>
+                <p className="mt-1 text-2xl font-bold text-[#1C1917]">{conversionRate}%</p>
+              </div>
+            </div>
           </motion.div>
 
           <motion.a
@@ -194,11 +212,18 @@ export default function JobPipelineDashboard() {
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
-                {visibleItems.map((item, index) => (
-                  <JobCard key={item.id} item={item} index={index} />
-                ))}
-              </div>
+              {visibleItems.length > 0 ? (
+                <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
+                  {visibleItems.map((item, index) => (
+                    <JobCard key={item.id} item={item} index={index} />
+                  ))}
+                </div>
+              ) : (
+                <div className="premium-card p-8 text-center">
+                  <p className="text-lg font-semibold text-[#1C1917]">No applications found</p>
+                  <p className="mt-2 text-sm text-[#78716C]">Your pipeline is empty right now. Add a company to start tracking.</p>
+                </div>
+              )}
               <div ref={sentinelRef} className="h-12 w-full" aria-hidden />
               {hasMore ? <p className="mt-2 text-center text-sm text-[#78716C]">Loading more opportunities...</p> : null}
             </>
