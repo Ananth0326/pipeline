@@ -1,9 +1,4 @@
-import dynamic from 'next/dynamic';
-
-const JobPipelineDashboard = dynamic(
-  () => import('@/components/job-pipeline/JobPipelineDashboard'),
-  { ssr: false }
-);
+import JobPipelineDashboard from '@/components/job-pipeline/JobPipelineDashboard';
 
 export default function DashboardPage() {
   return <JobPipelineDashboard />;
