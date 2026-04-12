@@ -192,25 +192,25 @@ export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps
         <section className="space-y-4">
             <div className="flex items-center justify-between">
                 <div>
-                    <h3 className="text-xs font-black uppercase tracking-widest text-[#E1E1E1]/80">Saved Roles</h3>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-[#E1E1E1]/60">Store interesting roles before applying.</p>
+                    <h3 className="text-xs font-black uppercase tracking-widest text-[#1C1917]">Saved Roles</h3>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-[#78716C]">Store interesting roles before applying.</p>
                 </div>
-                <span className="text-[10px] font-black uppercase tracking-widest text-[#E1E1E1]/60">{savedRoles.length} items</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-[#78716C]">{savedRoles.length} items</span>
             </div>
 
-            <form onSubmit={handleAdd} className="rounded-2xl border border-white/10 p-4 bg-[#161616] grid grid-cols-1 md:grid-cols-12 gap-3">
+            <form onSubmit={handleAdd} className="premium-card rounded-xl p-4 grid grid-cols-1 md:grid-cols-12 gap-3">
                 <input
                     required
                     value={form.company_name}
                     onChange={(e) => setForm((prev) => ({ ...prev, company_name: e.target.value }))}
                     placeholder="Company name"
-                    className="md:col-span-3 border border-white/10 bg-[#0A0A0A] p-3 rounded-xl text-sm font-semibold outline-none focus:ring-2 focus:ring-white/20"
+                    className="md:col-span-3 border border-black/10 bg-white p-3 rounded-xl text-sm font-semibold outline-none focus:ring-2 focus:ring-black/10"
                 />
                 <input
                     value={form.role_title}
                     onChange={(e) => setForm((prev) => ({ ...prev, role_title: e.target.value }))}
                     placeholder="Role title (optional)"
-                    className="md:col-span-3 border border-white/10 bg-[#0A0A0A] p-3 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-white/20"
+                    className="md:col-span-3 border border-black/10 bg-white p-3 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-black/10"
                 />
                 <input
                     required
@@ -218,12 +218,12 @@ export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps
                     value={form.job_link}
                     onChange={(e) => setForm((prev) => ({ ...prev, job_link: e.target.value }))}
                     placeholder="https://job-link"
-                    className="md:col-span-4 border border-white/10 bg-[#0A0A0A] p-3 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-white/20"
+                    className="md:col-span-4 border border-black/10 bg-white p-3 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-black/10"
                 />
                 <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="md:col-span-2 inline-flex items-center justify-center gap-2 rounded-xl bg-black text-[#E1E1E1] px-4 py-3 text-[10px] font-black uppercase tracking-widest hover:bg-[#111111] disabled:bg-gray-700 border border-white/10 shadow-lg shadow-emerald-500/40"
+                    className="md:col-span-2 inline-flex items-center justify-center gap-2 rounded-xl bg-[#1C1917] text-white px-4 py-3 text-[10px] font-black uppercase tracking-widest hover:bg-black disabled:bg-gray-500 border border-black/10"
                 >
                     <Plus size={14} /> Add
                 </button>
@@ -233,18 +233,18 @@ export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps
                 <div className="px-3 py-2 rounded-lg border border-red-200 bg-red-50 text-red-700 text-xs">{error}</div>
             )}
 
-            <div className="rounded-2xl border border-white/10 overflow-hidden bg-[#161616]">
+            <div className="premium-card rounded-xl overflow-hidden">
                 {savedRoles.length === 0 ? (
-                    <div className="px-6 py-10 text-sm text-[#E1E1E1]/60 italic bg-[#0A0A0A]/60">No saved roles yet.</div>
+                    <div className="px-6 py-10 text-sm text-[#78716C] italic bg-white">No saved roles yet.</div>
                 ) : (
                     <div className="overflow-auto">
                         <table className="w-full text-sm border-collapse">
-                            <thead className="bg-[#0F0F0F] border-b border-white/10">
+                            <thead className="bg-stone-100 border-b border-black/10">
                                 <tr>
-                                    <th className="px-4 py-3 text-left text-[10px] font-black uppercase tracking-widest text-[#E1E1E1]/60">Company</th>
-                                    <th className="px-4 py-3 text-left text-[10px] font-black uppercase tracking-widest text-[#E1E1E1]/60">Role</th>
-                                    <th className="px-4 py-3 text-left text-[10px] font-black uppercase tracking-widest text-[#E1E1E1]/60">Job Link</th>
-                                    <th className="px-4 py-3 text-right text-[10px] font-black uppercase tracking-widest text-[#E1E1E1]/60">Actions</th>
+                                    <th className="px-4 py-3 text-left text-[10px] font-black uppercase tracking-widest text-[#78716C]">Company</th>
+                                    <th className="px-4 py-3 text-left text-[10px] font-black uppercase tracking-widest text-[#78716C]">Role</th>
+                                    <th className="px-4 py-3 text-left text-[10px] font-black uppercase tracking-widest text-[#78716C]">Job Link</th>
+                                    <th className="px-4 py-3 text-right text-[10px] font-black uppercase tracking-widest text-[#78716C]">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -252,7 +252,7 @@ export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps
                                     const isEditing = editingId === role.id;
                                     const isChanging = changingId === role.id;
                                     return (
-                                        <tr key={role.id} className="border-b last:border-0 border-white/10">
+                                        <tr key={role.id} className="border-b last:border-0 border-black/5">
                                             <td className="px-4 py-3">
                                                 {isEditing ? (
                                                     <input
@@ -265,7 +265,7 @@ export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps
                                                         href={role.job_link}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
-                                                        className="inline-flex items-center gap-1 font-bold text-[#00F2FE] hover:text-[#65f8ff]"
+                                                        className="inline-flex items-center gap-1 font-bold text-[#1C1917] hover:text-black"
                                                     >
                                                         {role.company_name} <ExternalLink size={12} />
                                                     </a>
@@ -280,7 +280,7 @@ export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps
                                                         placeholder="Role title"
                                                     />
                                                 ) : (
-                                                    <span className="text-xs text-[#E1E1E1]/80">{role.role_title || 'Untitled Role'}</span>
+                                                    <span className="text-xs text-[#1C1917]">{role.role_title || 'Untitled Role'}</span>
                                                 )}
                                             </td>
                                             <td className="px-4 py-3">
@@ -292,7 +292,7 @@ export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps
                                                         className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm"
                                                     />
                                                 ) : (
-                                                    <span className="text-xs text-[#E1E1E1]/65 truncate block max-w-[380px]">{role.job_link}</span>
+                                                    <span className="text-xs text-[#78716C] truncate block max-w-[380px]">{role.job_link}</span>
                                                 )}
                                             </td>
                                             <td className="px-4 py-3">

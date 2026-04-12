@@ -24,7 +24,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { motion, AnimatePresence } from 'framer-motion';
-import { GripVertical, Clock, CheckCircle2, XCircle, FileText, Briefcase } from 'lucide-react';
+import { Clock, CheckCircle2, XCircle, FileText, Briefcase } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 const playThudSound = () => {
@@ -57,49 +57,52 @@ const COLUMNS = [
         id: 'applied', 
         title: 'Applied', 
         icon: <FileText size={16} />, 
-        color: 'text-[#00F2FE] bg-[#00F2FE]/20 border border-[#00F2FE]/40', 
+        color: 'text-slate-600 bg-slate-100 border border-slate-200', 
         glow: '',
-        titleClass: 'text-[#00F2FE]' 
+        titleClass: 'text-[#1C1917]' 
     },
     { 
         id: 'assessment', 
         title: 'Assessment', 
         icon: <Clock size={16} />, 
-        color: 'text-[#FFB800] bg-[#FFB800]/20 border border-[#FFB800]/40', 
+        color: 'text-amber-700 bg-amber-50 border border-amber-200', 
         glow: '',
-        titleClass: 'text-[#FFB800]'
+        titleClass: 'text-[#1C1917]'
     },
     { 
         id: 'interview', 
         title: 'Interview', 
         icon: <Briefcase size={16} />, 
-        color: 'text-[#A16EFF] bg-[#A16EFF]/20 border border-[#A16EFF]/40', 
+        color: 'text-blue-700 bg-blue-50 border border-blue-200', 
         glow: '',
-        titleClass: 'text-[#A16EFF]'
+        titleClass: 'text-[#1C1917]'
     },
     { 
         id: 'offer', 
         title: 'Offer', 
         icon: <CheckCircle2 size={16} />, 
-        color: 'text-[#00E676] bg-[#00E676]/20 border border-[#00E676]/40 shadow-[0_0_16px_rgba(0,230,118,0.35)]', 
-        glow: 'shadow-[0_0_26px_rgba(0,230,118,0.25)]',
-        titleClass: 'text-[#00E676]'
+        color: 'text-emerald-700 bg-emerald-50 border border-emerald-200', 
+        glow: '',
+        titleClass: 'text-[#1C1917]'
     },
     { 
         id: 'rejected', 
         title: 'Rejected', 
         icon: <XCircle size={16} />, 
-        color: 'text-[#FF1744] bg-[#FF1744]/20 border border-[#FF1744]/40', 
+        color: 'text-rose-700 bg-rose-50 border border-rose-200', 
         glow: '',
-        titleClass: 'text-[#FF1744]'
+        titleClass: 'text-[#1C1917]'
     },
 ];
 
 interface KanbanBoardProps {
     companies: Company[];
+    onOpenDetails?: (id: string) => void;
+    onEdit?: (company: Company) => void;
+    onArchive?: (company: Company) => void;
 }
 
-export default function KanbanBoard({ companies: initialCompanies }: KanbanBoardProps) {
+export default function KanbanBoard({ companies: initialCompanies, onOpenDetails, onEdit, onArchive }: KanbanBoardProps) {
     const [companies, setCompanies] = useState<Company[]>(initialCompanies);
     const [activeId, setActiveId] = useState<string | null>(null);
     const [overId, setOverId] = useState<string | null>(null);
@@ -246,21 +249,27 @@ export default function KanbanBoard({ companies: initialCompanies }: KanbanBoard
                                 key={col.id} 
                                 animate={{ scale: isMagneticHovered ? 1.02 : 1 }}
                                 transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                                className={`relative min-w-[300px] w-[300px] flex flex-col bg-[#161616]/85 backdrop-blur-[12px] rounded-2xl border ${isMagneticHovered ? 'border-white/20' : 'border-white/5'} shrink-0 snap-center max-h-full ${col.glow}`}
+                                className={`premium-card relative min-w-[300px] w-[300px] flex flex-col bg-white shrink-0 snap-center max-h-full ${col.glow} ${isMagneticHovered ? 'ring-1 ring-black/10' : ''}`}
                             >
                                 {/* Subtle Radial Gradient Background for Active/Hover State */}
-                                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-2xl" />
-                                <div className="p-4 border-b border-white/10 flex items-center justify-between sticky top-0 bg-[#161616]/85 backdrop-blur-md rounded-t-2xl z-10">
+                                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-black/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-xl" />
+                                <div className="p-4 border-b border-black/5 flex items-center justify-between sticky top-0 bg-white rounded-t-xl z-10">
                                     <div className="flex items-center gap-2">
                                         <span className={`p-1.5 rounded-lg ${col.color}`}>{col.icon}</span>
                                         <h3 className={`font-outfit font-black tracking-tighter uppercase ${col.titleClass}`}>{col.title}</h3>
                                     </div>
-                                    <span className="text-[10px] font-mono bg-[#0A0A0A] border border-white/10 px-2 py-1 rounded-md text-[#E1E1E1]/70">
+                                    <span className="text-[10px] font-mono bg-stone-100 border border-black/5 px-2 py-1 rounded-md text-[#78716C]">
                                         {columnCompanies.length}
                                     </span>
                                 </div>
                                 
-                                <KanbanColumn id={col.id} companies={columnCompanies} />
+                                <KanbanColumn
+                                    id={col.id}
+                                    companies={columnCompanies}
+                                    onOpenDetails={onOpenDetails}
+                                    onEdit={onEdit}
+                                    onArchive={onArchive}
+                                />
                             </motion.div>
                         );
                     })}
@@ -274,13 +283,25 @@ export default function KanbanBoard({ companies: initialCompanies }: KanbanBoard
                     sideEffects: defaultDropAnimationSideEffects({ styles: { active: { opacity: '0.4' } } }) 
                 }}
             >
-                {activeCompany ? <KanbanCard company={activeCompany} isOverlay /> : null}
+                {activeCompany ? <KanbanCard company={activeCompany} isOverlay onOpenDetails={onOpenDetails} onEdit={onEdit} onArchive={onArchive} /> : null}
             </DragOverlay>
         </DndContext>
     );
 }
 
-function KanbanColumn({ id, companies }: { id: string, companies: Company[] }) {
+function KanbanColumn({
+  id,
+  companies,
+  onOpenDetails,
+  onEdit,
+  onArchive,
+}: {
+  id: string;
+  companies: Company[];
+  onOpenDetails?: (id: string) => void;
+  onEdit?: (company: Company) => void;
+  onArchive?: (company: Company) => void;
+}) {
     const { setNodeRef } = useSortable({ id, data: { type: 'Column' } });
     
     return (
@@ -288,7 +309,7 @@ function KanbanColumn({ id, companies }: { id: string, companies: Company[] }) {
             <SortableContext items={companies.map(c => c.id)} strategy={verticalListSortingStrategy}>
                 <AnimatePresence>
                     {companies.map(company => (
-                        <KanbanCard key={company.id} company={company} />
+                        <KanbanCard key={company.id} company={company} onOpenDetails={onOpenDetails} onEdit={onEdit} onArchive={onArchive} />
                     ))}
                 </AnimatePresence>
             </SortableContext>
@@ -296,7 +317,19 @@ function KanbanColumn({ id, companies }: { id: string, companies: Company[] }) {
     );
 }
 
-function KanbanCard({ company, isOverlay = false }: { company: Company, isOverlay?: boolean }) {
+function KanbanCard({
+  company,
+  isOverlay = false,
+  onOpenDetails,
+  onEdit,
+  onArchive,
+}: {
+  company: Company;
+  isOverlay?: boolean;
+  onOpenDetails?: (id: string) => void;
+  onEdit?: (company: Company) => void;
+  onArchive?: (company: Company) => void;
+}) {
     const router = useRouter();
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
         id: company.id,
@@ -309,19 +342,17 @@ function KanbanCard({ company, isOverlay = false }: { company: Company, isOverla
     };
 
     if (isDragging && !isOverlay) {
-        return (
-            <div ref={setNodeRef} style={style} className="h-24 bg-[#0A0A0A] rounded-xl border border-dashed border-white/25 opacity-50" />
-        );
+        return <div ref={setNodeRef} style={style} className="h-24 bg-stone-100 rounded-xl border border-dashed border-black/20 opacity-50" />;
     }
 
     const updatedDate = new Date(company.updated_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
     const hoverShadowMap: Record<string, string> = {
-        blue: 'hover:shadow-[0_14px_28px_rgba(0,242,254,0.15)]',
-        yellow: 'hover:shadow-[0_14px_28px_rgba(0,242,254,0.15)]',
-        orange: 'hover:shadow-[0_14px_28px_rgba(255,184,0,0.15)]',
-        purple: 'hover:shadow-[0_14px_28px_rgba(161,110,255,0.15)]',
-        green: 'hover:shadow-[0_14px_28px_rgba(0,230,118,0.15)]',
-        red: 'hover:shadow-[0_14px_28px_rgba(255,23,68,0.15)]',
+        blue: 'hover:shadow-[0_20px_25px_-5px_rgba(0,0,0,0.05)]',
+        yellow: 'hover:shadow-[0_20px_25px_-5px_rgba(0,0,0,0.05)]',
+        orange: 'hover:shadow-[0_20px_25px_-5px_rgba(0,0,0,0.05)]',
+        purple: 'hover:shadow-[0_20px_25px_-5px_rgba(0,0,0,0.05)]',
+        green: 'hover:shadow-[0_20px_25px_-5px_rgba(0,0,0,0.05)]',
+        red: 'hover:shadow-[0_20px_25px_-5px_rgba(0,0,0,0.05)]',
     };
     const hoverShadowClass = hoverShadowMap[company.status_color] || hoverShadowMap.yellow;
 
@@ -345,24 +376,54 @@ function KanbanCard({ company, isOverlay = false }: { company: Company, isOverla
                     router.push(`/company/${company.id}`);
                 }
             }}
-            className={`group bg-[#161616] backdrop-blur-[12px] p-4 rounded-xl border touch-none select-none ${isOverlay ? 'border-[#00E676]/50 shadow-[0_10px_30px_rgba(0,0,0,0.3)] cursor-grabbing z-50' : `border-white/5 hover:border-white/30 ${hoverShadowClass} cursor-grab`} transition-all relative flex flex-col gap-3`}
+            className={`group bg-white p-4 rounded-xl border touch-none select-none ${isOverlay ? 'border-black/20 shadow-[0_10px_30px_rgba(0,0,0,0.08)] cursor-grabbing z-50' : `border-black/5 hover:border-black/10 ${hoverShadowClass} cursor-grab`} transition-all relative flex flex-col gap-3`}
         >
             <div className="flex justify-between items-start gap-2">
                 <div>
-                    <h4 className="font-inter font-bold text-[#E1E1E1] text-sm leading-tight">{company.company_name}</h4>
-                    <p className="font-mono text-[10px] text-[#E1E1E1]/65 mt-1 truncate max-w-[180px]">{company.role_title}</p>
+                    <h4 className="font-inter font-bold text-[#1C1917] text-sm leading-tight">{company.company_name}</h4>
+                    <p className="font-mono text-[10px] text-[#78716C] mt-1 truncate max-w-[180px]">{company.role_title}</p>
                 </div>
             </div>
             
             <div className="flex justify-between items-center mt-auto">
-                <span className="text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded bg-[#0A0A0A] text-[#E1E1E1]/60 border border-white/10">
+                <span className="text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded bg-stone-100 text-[#78716C] border border-black/5">
                     {updatedDate}
                 </span>
-                {company.next_action && (
-                    <span className="text-[9px] truncate max-w-[100px] text-[#E1E1E1]/60 font-medium" title={company.next_action}>
-                        {company.next_action}
-                    </span>
-                )}
+                <button
+                    type="button"
+                    onPointerDown={(e) => e.stopPropagation()}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onOpenDetails?.(company.id);
+                    }}
+                    className="subtle-control rounded-md px-2 py-1 text-[9px] font-black uppercase tracking-widest"
+                >
+                    Details
+                </button>
+            </div>
+            <div className="flex items-center justify-end gap-1">
+              <button
+                type="button"
+                onPointerDown={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onEdit?.(company);
+                }}
+                className="subtle-control rounded-md px-2 py-1 text-[9px] font-black uppercase tracking-widest"
+              >
+                Edit
+              </button>
+              <button
+                type="button"
+                onPointerDown={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onArchive?.(company);
+                }}
+                className="subtle-control rounded-md px-2 py-1 text-[9px] font-black uppercase tracking-widest"
+              >
+                Archive
+              </button>
             </div>
         </motion.div>
     );

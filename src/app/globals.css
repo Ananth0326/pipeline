@@ -81,6 +81,20 @@ body {
   border-color: rgba(0, 0, 0, 0.12);
 }
 
+.minimal-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.minimal-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(120, 113, 108, 0.35);
+  border-radius: 999px;
+}
+
+.minimal-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 .animate-status-pulse {
   animation: status-pulse 2.2s ease-in-out infinite;
 }
