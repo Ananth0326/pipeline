@@ -42,6 +42,7 @@ export default function ApplicationDetailsSheet({
             transition={{ type: 'spring', damping: 26, stiffness: 260 }}
             className="absolute right-0 top-0 h-full w-full max-w-2xl border-l border-black/10 bg-[#FDFCFB] p-6 md:p-8 shadow-[-24px_0_60px_rgba(0,0,0,0.08)]"
           >
+            <div className="modal-grain" />
             <div className="mb-6 flex items-start justify-between gap-4 border-b border-black/10 pb-5">
               <div>
                 <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#78716C]">Application Details</p>

@@ -81,6 +81,31 @@ body {
   border-color: rgba(0, 0, 0, 0.12);
 }
 
+.paper-input {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 0;
+  padding: 0.6rem 0.1rem;
+  color: #1c1917;
+  transition: border-color 0.24s ease;
+}
+
+.paper-input:focus {
+  outline: none;
+  border-bottom-color: #1c1917;
+}
+
+.modal-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.04;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
 .minimal-scrollbar::-webkit-scrollbar {
   width: 8px;
   height: 8px;

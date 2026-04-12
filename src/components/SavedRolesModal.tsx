@@ -41,6 +41,7 @@ export default function SavedRolesModal({ savedRoles }: SavedRolesModalProps) {
                             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
                             className="premium-card relative z-[91] w-full max-w-6xl max-h-[90vh] overflow-hidden rounded-2xl bg-[#FDFCFB] flex flex-col"
                         >
+                            <div className="modal-grain" />
                             <div className="p-6 md:p-8 flex items-center justify-between border-b border-black/10">
                                 <h2 className="text-lg font-black uppercase tracking-widest text-[#1C1917] font-outfit">Saved Roles</h2>
                                 <button

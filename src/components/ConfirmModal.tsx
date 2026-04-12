@@ -33,6 +33,7 @@ export default function ConfirmModal({ isOpen, onClose, onConfirm, title, messag
                         transition={{ type: 'spring', damping: 25, stiffness: 300 }}
                         className="premium-card relative w-full max-w-md rounded-2xl bg-white p-8"
                     >
+                        <div className="modal-grain" />
                         <button
                             onClick={onClose}
                             className="absolute top-6 right-6 text-[#78716C] hover:text-[#1C1917] transition-colors"

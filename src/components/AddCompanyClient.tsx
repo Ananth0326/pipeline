@@ -41,14 +41,14 @@ export default function AddCompanyClient({ initialCompanyName, initialRoleTitle,
     };
 
     return (
-        <div className="space-y-12">
+        <div className="mx-auto w-[min(980px,94%)] space-y-8 pt-28 md:pt-32 pb-10">
             <div>
-                <a href="/dashboard" className="text-[10px] font-black uppercase tracking-widest text-[#E1E1E1]/70 hover:text-[#00F2FE] transition-colors">Back - Cancel and Exit</a>
-                <h2 className="text-5xl font-black uppercase tracking-tighter mt-4">NEW APPLICATION</h2>
-                <p className="text-[#E1E1E1]/70 font-medium">Add a company to your pipeline.</p>
+                <a href="/dashboard" className="text-[10px] font-black uppercase tracking-widest text-[#78716C] hover:text-[#1C1917] transition-colors">Back - Cancel and Exit</a>
+                <h2 className="text-5xl font-black uppercase tracking-tighter mt-4 text-[#1C1917]">NEW APPLICATION</h2>
+                <p className="text-[#78716C] font-medium">Add a company to your pipeline.</p>
             </div>
 
-            <div className="bg-[#161616] border border-white/10 rounded-3xl p-10 lg:p-16 backdrop-blur-md">
+            <div className="space-y-4">
                 <CompanyForm
                     initialData={initialCompanyName || initialRoleTitle ? { company_name: initialCompanyName, role_title: initialRoleTitle } : undefined}
                     onSubmit={handleSubmit}

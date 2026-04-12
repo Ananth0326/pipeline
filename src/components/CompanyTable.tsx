@@ -124,7 +124,7 @@ export default function CompanyTable({ companies }: CompanyTableProps) {
 
       <AnimatePresence mode="wait">
         {viewMode === 'kanban' ? (
-          <motion.div key="kanban" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
+          <motion.div key="kanban" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.14 }}>
             <KanbanBoard
               companies={companies}
               onOpenDetails={openDetails}
@@ -133,7 +133,7 @@ export default function CompanyTable({ companies }: CompanyTableProps) {
             />
           </motion.div>
         ) : (
-          <motion.div key="list" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="space-y-3">
+          <motion.div key="list" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.14 }} className="space-y-3">
             <div className="grid grid-cols-[2fr_1fr_1fr_1.3fr_auto] gap-3 px-4 text-[10px] font-black uppercase tracking-[0.16em] text-[#78716C]">
               <span>Company / Role</span>
               <span>Status</span>
@@ -143,7 +143,7 @@ export default function CompanyTable({ companies }: CompanyTableProps) {
             </div>
 
             {companies.map((company) => (
-              <div key={company.id} className="premium-card grid grid-cols-[2fr_1fr_1fr_1.3fr_auto] items-center gap-3 p-4">
+              <div key={company.id} className="premium-card grid grid-cols-[2fr_1fr_1fr_1.3fr_auto] items-center gap-3 p-4 transition-all duration-150 hover:-translate-y-px hover:shadow-[0_12px_20px_rgba(0,0,0,0.05)]">
                 <div>
                   <p className="font-bold text-[#1C1917]">{company.company_name}</p>
                   <p className="text-xs text-[#78716C]">{company.role_title}</p>
@@ -162,7 +162,7 @@ export default function CompanyTable({ companies }: CompanyTableProps) {
                     <MoreVertical size={14} />
                   </button>
                   {menuId === company.id ? (
-                    <div className="premium-card absolute right-0 z-20 mt-2 w-44 p-1">
+                    <div className="absolute right-0 z-20 mt-2 w-44 rounded-xl border border-black/10 bg-white/95 p-1 backdrop-blur-md shadow-[0_10px_18px_rgba(0,0,0,0.08)]">
                       <button type="button" onClick={() => { setMenuId(null); openDetails(company.id); }} className="subtle-control w-full rounded-md px-3 py-2 text-left text-xs font-semibold">Details</button>
                       <button type="button" onClick={() => { setMenuId(null); setEditingCompany(company); }} className="subtle-control mt-1 w-full rounded-md px-3 py-2 text-left text-xs font-semibold">Edit</button>
                       <button type="button" onClick={() => { setMenuId(null); archiveCompany(company); }} className="subtle-control mt-1 w-full rounded-md px-3 py-2 text-left text-xs font-semibold">Archive</button>
@@ -209,6 +209,7 @@ export default function CompanyTable({ companies }: CompanyTableProps) {
               exit={{ y: 30, opacity: 0, scale: 0.98 }}
               className="premium-card relative z-[111] max-h-[88vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-[#FDFCFB] p-6 md:p-8"
             >
+              <div className="modal-grain" />
               <div className="mb-5 flex items-center justify-between border-b border-black/10 pb-4">
                 <div>
                   <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#78716C]">Edit Application</p>

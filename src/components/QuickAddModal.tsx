@@ -77,8 +77,9 @@ export default function QuickAddModal() {
                             animate={{ y: 0, opacity: 1 }}
                             exit={{ y: '100%', opacity: 0, scale: 0.95 }}
                             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                            className="premium-card relative bg-[#FDFCFB] w-full max-w-2xl max-h-[90vh] md:max-h-[85vh] overflow-y-auto rounded-t-[2.5rem] md:rounded-[2.5rem]"
+                            className="premium-card relative bg-[#FDFCFB] w-full max-w-2xl h-[92vh] md:h-[88vh] overflow-hidden rounded-t-[2.5rem] md:rounded-[2.5rem]"
                         >
+                            <div className="modal-grain" />
                             {/* Mobile Pull Handle */}
                             <div className="md:hidden flex justify-center py-3">
                                 <div className="w-12 h-1.5 bg-black/20 rounded-full" />
@@ -98,10 +99,11 @@ export default function QuickAddModal() {
                                 </button>
                             </div>
 
-                            <div className="p-8 pb-12 md:pb-8">
+                            <div className="h-[calc(100%-88px)] overflow-hidden p-6 md:p-8">
                                 <CompanyForm
                                     onSubmit={handleSubmit}
                                     isSubmitting={isSubmitting}
+                                    compact
                                 />
                             </div>
                         </motion.div>

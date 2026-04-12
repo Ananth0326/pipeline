@@ -249,7 +249,7 @@ export default function KanbanBoard({ companies: initialCompanies, onOpenDetails
                                 key={col.id} 
                                 animate={{ scale: isMagneticHovered ? 1.02 : 1 }}
                                 transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                                className={`premium-card relative min-w-[300px] w-[300px] flex flex-col bg-white shrink-0 snap-center max-h-full ${col.glow} ${isMagneticHovered ? 'ring-1 ring-black/10' : ''}`}
+                                className={`premium-card relative min-w-[300px] w-[300px] flex flex-col bg-white shrink-0 snap-center max-h-full ${col.glow} ${isMagneticHovered ? 'ring-1 ring-black/10 bg-black/[0.03]' : ''}`}
                             >
                                 {/* Subtle Radial Gradient Background for Active/Hover State */}
                                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-black/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-xl" />
@@ -363,8 +363,9 @@ function KanbanCard({
             animate={{ 
                 opacity: 1, 
                 scale: isOverlay ? 1.05 : 1,
-                rotate: isOverlay ? 5 : 0 
+                rotate: isOverlay ? 2 : 0 
             }}
+            whileDrag={{ rotate: 2 }}
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
             ref={setNodeRef}
