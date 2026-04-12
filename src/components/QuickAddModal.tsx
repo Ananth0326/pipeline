@@ -99,7 +99,7 @@ export default function QuickAddModal() {
                                 </button>
                             </div>
 
-                            <div className="h-[calc(100%-88px)] overflow-hidden p-6 md:p-8">
+                            <div className="minimal-scrollbar h-[calc(100%-88px)] overflow-y-auto overflow-x-hidden p-6 md:p-8">
                                 <CompanyForm
                                     onSubmit={handleSubmit}
                                     isSubmitting={isSubmitting}

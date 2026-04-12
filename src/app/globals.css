@@ -111,6 +111,11 @@ body {
   height: 8px;
 }
 
+.minimal-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(120, 113, 108, 0.35) transparent;
+}
+
 .minimal-scrollbar::-webkit-scrollbar-thumb {
   background: rgba(120, 113, 108, 0.35);
   border-radius: 999px;
