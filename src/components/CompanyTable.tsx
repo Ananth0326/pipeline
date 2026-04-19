@@ -25,6 +25,7 @@ export default function CompanyTable({ companies }: CompanyTableProps) {
   const [detailsData, setDetailsData] = useState<any | null>(null);
   const [editingCompany, setEditingCompany] = useState<Company | null>(null);
   const [isSubmittingEdit, setIsSubmittingEdit] = useState(false);
+  const [error, setError] = useState('');
 
   const stats = useMemo(() => {
     const active = companies.filter((c) => c.status !== 'rejected').length;
@@ -48,7 +49,8 @@ export default function CompanyTable({ companies }: CompanyTableProps) {
   };
 
   const archiveCompany = async (company: Company) => {
-    await updateCompany(
+    setError('');
+    const res = await updateCompany(
       company.id,
       {
         status: 'rejected',
@@ -57,10 +59,12 @@ export default function CompanyTable({ companies }: CompanyTableProps) {
       },
       'Archived from dashboard'
     );
+    if (res?.error) setError(res.error);
   };
 
   const handleEditSubmit = async (formData: any, resumeFile: File | null) => {
     if (!editingCompany) return;
+    setError('');
     setIsSubmittingEdit(true);
     try {
       let resumeData;
@@ -71,11 +75,15 @@ export default function CompanyTable({ companies }: CompanyTableProps) {
           buffer: await resumeFile.arrayBuffer(),
         };
       }
-      await updateCompany(editingCompany.id, formData, 'Updated from dashboard modal', resumeData);
-      setEditingCompany(null);
-    } catch (error) {
-      console.error('Failed to update company:', error);
-      alert('Failed to update application.');
+      const res = await updateCompany(editingCompany.id, formData, 'Updated from dashboard modal', resumeData);
+      if (res?.error) {
+        setError(res.error);
+      } else {
+        setEditingCompany(null);
+      }
+    } catch (err) {
+      console.error('Failed to update company:', err);
+      setError(err instanceof Error ? err.message : 'Failed to update application.');
     } finally {
       setIsSubmittingEdit(false);
     }
@@ -83,6 +91,12 @@ export default function CompanyTable({ companies }: CompanyTableProps) {
 
   return (
     <div className="space-y-5">
+      {error && !editingCompany && (
+        <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-red-700">
+            <p className="text-[10px] font-black uppercase tracking-[0.16em] text-red-600">Error</p>
+            <p className="mt-1 text-sm">{error}</p>
+        </div>
+      )}
       <section className="grid grid-cols-2 gap-4 md:grid-cols-4">
         <div className="premium-card p-4">
           <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#78716C]">Total Apps</p>
@@ -219,6 +233,12 @@ export default function CompanyTable({ companies }: CompanyTableProps) {
                   <X size={18} />
                 </button>
               </div>
+              {error && (
+                  <div className="mb-6 rounded-xl border border-red-200 bg-red-50 p-4 text-red-700">
+                      <p className="text-[10px] font-black uppercase tracking-[0.16em] text-red-600">Error</p>
+                      <p className="mt-1 text-sm">{error}</p>
+                  </div>
+              )}
               <CompanyForm initialData={editingCompany} onSubmit={handleEditSubmit} isSubmitting={isSubmittingEdit} />
             </motion.div>
           </div>
@@ -230,7 +250,9 @@ export default function CompanyTable({ companies }: CompanyTableProps) {
         onClose={() => setDeleteTarget(null)}
         onConfirm={async () => {
           if (!deleteTarget) return;
-          await deleteCompany(deleteTarget.id);
+          setError('');
+          const res = await deleteCompany(deleteTarget.id);
+          if (res?.error) setError(res.error);
           setDeleteTarget(null);
         }}
         title={deleteTarget ? `Delete ${deleteTarget.company_name}?` : 'Delete application?'}

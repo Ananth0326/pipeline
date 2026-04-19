@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 export default function QuickAddModal() {
     const [isOpen, setIsOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState('');
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
@@ -29,6 +30,7 @@ export default function QuickAddModal() {
     }, []);
 
     const handleSubmit = async (data: any, resumeFile: File | null) => {
+        setError('');
         setIsSubmitting(true);
         try {
             let resumeData = undefined;
@@ -40,11 +42,16 @@ export default function QuickAddModal() {
                     buffer
                 };
             }
-            await addCompany(data, resumeData);
-            setIsOpen(false);
-        } catch (error) {
-            console.error('Failed to add company:', error);
-            alert('Failed to save application.');
+            const res = await addCompany(data, resumeData);
+            if (res?.error) {
+                setError(res.error);
+            } else {
+                setIsOpen(false);
+                setError('');
+            }
+        } catch (err) {
+            console.error('Failed to add company:', err);
+            setError(err instanceof Error ? err.message : 'Failed to save application.');
         } finally {
             setIsSubmitting(false);
         }
@@ -100,6 +107,12 @@ export default function QuickAddModal() {
                             </div>
 
                             <div className="minimal-scrollbar min-h-0 flex-1 overflow-y-auto overflow-x-hidden p-6 md:p-8">
+                                {error && (
+                                    <div className="mb-6 rounded-xl border border-red-200 bg-red-50 p-4 text-red-700">
+                                        <p className="text-[10px] font-black uppercase tracking-[0.16em] text-red-600">Error</p>
+                                        <p className="mt-1 text-sm">{error}</p>
+                                    </div>
+                                )}
                                 <CompanyForm
                                     onSubmit={handleSubmit}
                                     isSubmitting={isSubmitting}

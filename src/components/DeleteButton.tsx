@@ -12,13 +12,22 @@ interface DeleteButtonProps {
 
 export default function DeleteButton({ id, companyName }: DeleteButtonProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [error, setError] = useState('');
 
     const handleDelete = async () => {
-        await deleteCompanyAndRedirect(id);
+        setError('');
+        const res = await deleteCompanyAndRedirect(id);
+        if (res?.error) setError(res.error);
     };
 
     return (
         <>
+            {error && (
+                <div className="mb-4 rounded-xl border border-red-200 bg-red-50 p-4 text-red-700 w-full text-left">
+                    <p className="text-[10px] font-black uppercase tracking-[0.16em] text-red-600">Error</p>
+                    <p className="mt-1 text-sm">{error}</p>
+                </div>
+            )}
             <button
                 type="button"
                 onClick={() => setIsModalOpen(true)}

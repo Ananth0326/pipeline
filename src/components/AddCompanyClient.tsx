@@ -1,7 +1,7 @@
 'use client';
 
 import CompanyForm from '@/components/CompanyForm';
-import { addCompany, deleteSavedRole } from '@/lib/actions';
+import { addCompany, updateSavedRole } from '@/lib/actions';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -13,9 +13,11 @@ interface AddCompanyClientProps {
 
 export default function AddCompanyClient({ initialCompanyName, initialRoleTitle, savedRoleId }: AddCompanyClientProps) {
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState('');
     const router = useRouter();
 
     const handleSubmit = async (formData: any, resumeFile: File | null) => {
+        setError('');
         setIsSubmitting(true);
         try {
             let resumeData = undefined;
@@ -27,14 +29,18 @@ export default function AddCompanyClient({ initialCompanyName, initialRoleTitle,
                 };
             }
 
-            await addCompany(formData, resumeData);
-            if (savedRoleId) {
-                await deleteSavedRole(savedRoleId);
+            const res = await addCompany(formData, resumeData);
+            if (res?.error) {
+                setError(res.error);
+            } else {
+                if (savedRoleId) {
+                    await updateSavedRole(savedRoleId, { is_converted: true });
+                }
+                router.push('/dashboard');
             }
-            router.push('/dashboard');
-        } catch (error) {
-            console.error('Failed to add company:', error);
-            alert('Error adding application');
+        } catch (err) {
+            console.error('Failed to add company:', err);
+            setError(err instanceof Error ? err.message : 'Error adding application');
         } finally {
             setIsSubmitting(false);
         }
@@ -49,6 +55,12 @@ export default function AddCompanyClient({ initialCompanyName, initialRoleTitle,
             </div>
 
             <div className="space-y-4">
+                {error && (
+                    <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-red-700 mb-6">
+                        <p className="text-[10px] font-black uppercase tracking-[0.16em] text-red-600">Error</p>
+                        <p className="mt-1 text-sm">{error}</p>
+                    </div>
+                )}
                 <CompanyForm
                     initialData={initialCompanyName || initialRoleTitle ? { company_name: initialCompanyName, role_title: initialRoleTitle } : undefined}
                     onSubmit={handleSubmit}

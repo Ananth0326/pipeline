@@ -12,14 +12,17 @@ export default function ProgressSection({ company }: ProgressSectionProps) {
     const [isUpdating, setIsUpdating] = useState(false);
     const [statusText, setStatusText] = useState(company.status_text || 'Applied');
     const [statusColor, setStatusColor] = useState(company.status_color || 'yellow');
+    const [error, setError] = useState('');
 
     const handleUpdate = async (updates: Partial<Company>, logMessage: string) => {
+        setError('');
         setIsUpdating(true);
         try {
-            await updateCompany(company.id, updates, logMessage);
-        } catch (error) {
-            console.error('Failed to update:', error);
-            alert('Update failed');
+            const res = await updateCompany(company.id, updates, logMessage);
+            if (res?.error) setError(res.error);
+        } catch (err) {
+            console.error('Failed to update:', err);
+            setError(err instanceof Error ? err.message : 'Update failed');
         } finally {
             setIsUpdating(false);
         }
@@ -31,6 +34,12 @@ export default function ProgressSection({ company }: ProgressSectionProps) {
 
     return (
         <div className="bg-[#161616] border border-white/10 p-8 rounded-3xl space-y-8 backdrop-blur-md">
+            {error && (
+                <div className="rounded-xl border border-red-900/50 bg-red-900/20 p-4 text-red-200">
+                    <p className="text-[10px] font-black uppercase tracking-[0.16em] text-red-400">Error</p>
+                    <p className="mt-1 text-sm">{error}</p>
+                </div>
+            )}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
                 <div className="flex-1 space-y-1">
                     <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#00F2FE]">Current Manual Status</h3>

@@ -100,7 +100,7 @@ export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps
 
                     if (!res.ok) throw new Error(data.error || 'Extraction failed.');
                     if (data.data) {
-                        await addCompany({
+                        const addRes = await addCompany({
                             company_name: data.data.company_name || role.company_name,
                             role_title: data.data.role_title || role.role_title || '',
                             location: data.data.location || '',
@@ -111,7 +111,11 @@ export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps
                             status_color: 'yellow'
                         });
 
-                        await deleteSavedRole(role.id);
+                        if (addRes?.error) throw new Error(addRes.error);
+
+                        const updateRes = await updateSavedRole(role.id, { is_converted: true });
+                        if (updateRes?.error) throw new Error(updateRes.error);
+
                         setChangingId(null);
                     }
                 })(),

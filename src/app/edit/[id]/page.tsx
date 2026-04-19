@@ -10,16 +10,18 @@ export default function EditCompanyPage({ params }: { params: Promise<{ id: stri
     const { id } = use(params);
     const [company, setCompany] = useState<Company | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState('');
     const router = useRouter();
 
     useEffect(() => {
         getCompany(id).then(setCompany).catch(err => {
             console.error(err);
-            alert('Failed to load application');
+            setError('Failed to load application');
         });
     }, [id]);
 
     const handleSubmit = async (formData: any, resumeFile: File | null) => {
+        setError('');
         setIsSubmitting(true);
         try {
             let resumeData = undefined;
@@ -31,11 +33,15 @@ export default function EditCompanyPage({ params }: { params: Promise<{ id: stri
                 };
             }
 
-            await updateCompany(id, formData, undefined, resumeData);
-            router.push(`/company/${id}`);
-        } catch (error) {
-            console.error('Failed to update company:', error);
-            alert('Error updating application');
+            const res = await updateCompany(id, formData, undefined, resumeData);
+            if (res?.error) {
+                setError(res.error);
+            } else {
+                router.push(`/company/${id}`);
+            }
+        } catch (err) {
+            console.error('Failed to update company:', err);
+            setError(err instanceof Error ? err.message : 'Error updating application');
         } finally {
             setIsSubmitting(false);
         }
@@ -52,6 +58,12 @@ export default function EditCompanyPage({ params }: { params: Promise<{ id: stri
             </div>
 
             <div className="premium-card bg-white rounded-2xl p-10 lg:p-16">
+                {error && (
+                    <div className="mb-6 rounded-xl border border-red-200 bg-red-50 p-4 text-red-700">
+                        <p className="text-[10px] font-black uppercase tracking-[0.16em] text-red-600">Error</p>
+                        <p className="mt-1 text-sm">{error}</p>
+                    </div>
+                )}
                 <CompanyForm initialData={company} onSubmit={handleSubmit} isSubmitting={isSubmitting} />
             </div>
         </div>

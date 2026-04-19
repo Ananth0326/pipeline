@@ -79,6 +79,7 @@ export async function getCompany(id: string) {
     }
 }
 
+
 async function uploadResume(companyName: string, resumeFile: { name: string, type: string, buffer: ArrayBuffer }) {
     const supabase = getSupabase();
     const uuid = crypto.randomUUID();
@@ -100,33 +101,42 @@ async function uploadResume(companyName: string, resumeFile: { name: string, typ
 }
 
 export async function addCompany(data: Partial<Company>, resumeFile?: { name: string, type: string, buffer: ArrayBuffer }) {
-    const supabase = getSupabase();
-    let resumeUrl = null;
+    try {
+        const supabase = getSupabase();
+        let resumeUrl = null;
 
-    if (resumeFile && data.company_name) {
-        resumeUrl = await uploadResume(data.company_name, resumeFile);
+        if (resumeFile && data.company_name) {
+            resumeUrl = await uploadResume(data.company_name, resumeFile);
+        }
+
+        // Auto-fill next action if not provided
+        if (!data.next_action) {
+            data.next_action = computeNextAction(data);
+        }
+
+        // Default manual status if not provided
+        if (data.status === undefined) data.status = 'applied';
+        if (data.status_text === undefined) data.status_text = 'Applied';
+        if (data.status_color === undefined) data.status_color = 'yellow';
+
+        const { data: inserted, error } = await supabase
+            .from('companies')
+            .insert([{ ...data, resume_url: resumeUrl }])
+            .select()
+            .single();
+
+        if (error) {
+            console.error('Supabase Error (addCompany):', error);
+            return { error: error.message };
+        }
+
+        await logActivity(inserted.id, 'Application Created');
+        revalidatePath('/dashboard');
+        return { success: true };
+    } catch (error) {
+        console.error('Action Error (addCompany):', error);
+        return { error: toUserFacingError(error, 'Failed to add application.').message };
     }
-
-    // Auto-fill next action if not provided
-    if (!data.next_action) {
-        data.next_action = computeNextAction(data);
-    }
-
-    // Default manual status if not provided
-    if (data.status === undefined) data.status = 'applied';
-    if (data.status_text === undefined) data.status_text = 'Applied';
-    if (data.status_color === undefined) data.status_color = 'yellow';
-
-    const { data: inserted, error } = await supabase
-        .from('companies')
-        .insert([{ ...data, resume_url: resumeUrl }])
-        .select()
-        .single();
-
-    if (error) throw error;
-
-    await logActivity(inserted.id, 'Application Created');
-    revalidatePath('/dashboard');
 }
 
 export async function updateCompany(
@@ -135,79 +145,105 @@ export async function updateCompany(
     logMessage?: string,
     resumeFile?: { name: string, type: string, buffer: ArrayBuffer }
 ) {
-    const supabase = getSupabase();
+    try {
+        const supabase = getSupabase();
 
-    // If status/assessment fields are changed, auto-compute next_action
-    if (updates.status || updates.status_text || updates.assessment_done !== undefined || updates.assessment_response || updates.qualified !== undefined || updates.interview_date) {
-        const { data: current } = await supabase.from('companies').select('*').eq('id', id).single();
-        if (current) {
-            const merged = { ...current, ...updates };
-            if (!updates.next_action) {
-                updates.next_action = computeNextAction(merged);
+        // If status/assessment fields are changed, auto-compute next_action
+        if (updates.status || updates.status_text || updates.assessment_done !== undefined || updates.assessment_response || updates.qualified !== undefined || updates.interview_date) {
+            const { data: current } = await supabase.from('companies').select('*').eq('id', id).single();
+            if (current) {
+                const merged = { ...current, ...updates };
+                if (!updates.next_action) {
+                    updates.next_action = computeNextAction(merged);
+                }
             }
         }
-    }
 
-    // Default status_text if it becomes empty
-    if (updates.status_text === '') {
-        updates.status_text = 'Applied';
-    }
-
-    // Auto-clear logic: If status is changed to 'rejected', clear assessment and interview fields
-    if (updates.status === 'rejected' || updates.status_color === 'red') {
-        updates.assessment_done = false;
-        updates.assessment_response = undefined;
-        updates.qualified = undefined;
-        updates.interview_date = undefined;
-    }
-
-    // Handle Resume Update
-    if (resumeFile) {
-        // Fetch name if we don't have it
-        let companyName = updates.company_name;
-        if (!companyName) {
-            const { data } = await supabase.from('companies').select('company_name').eq('id', id).single();
-            companyName = data?.company_name || 'update';
+        // Default status_text if it becomes empty
+        if (updates.status_text === '') {
+            updates.status_text = 'Applied';
         }
-        const resumeUrl = await uploadResume(companyName as string, resumeFile);
-        updates.resume_url = resumeUrl;
-        if (!logMessage) logMessage = 'Resume Updated';
+
+        // Auto-clear logic: If status is changed to 'rejected', clear assessment and interview fields
+        if (updates.status === 'rejected' || updates.status_color === 'red') {
+            updates.assessment_done = false;
+            updates.assessment_response = undefined;
+            updates.qualified = undefined;
+            updates.interview_date = undefined;
+        }
+
+        // Handle Resume Update
+        if (resumeFile) {
+            // Fetch name if we don't have it
+            let companyName = updates.company_name;
+            if (!companyName) {
+                const { data } = await supabase.from('companies').select('company_name').eq('id', id).single();
+                companyName = data?.company_name || 'update';
+            }
+            const resumeUrl = await uploadResume(companyName as string, resumeFile);
+            updates.resume_url = resumeUrl;
+            if (!logMessage) logMessage = 'Resume Updated';
+        }
+
+        const { error } = await supabase
+            .from('companies')
+            .update(updates)
+            .eq('id', id);
+
+        if (error) {
+            console.error('Supabase Error (updateCompany):', error);
+            return { error: error.message };
+        }
+
+        if (logMessage) {
+            await logActivity(id, logMessage);
+        }
+
+        revalidatePath('/dashboard');
+        revalidatePath(`/company/${id}`);
+        return { success: true };
+    } catch (error) {
+        console.error('Action Error (updateCompany):', error);
+        return { error: toUserFacingError(error, 'Failed to update application.').message };
     }
-
-    const { error } = await supabase
-        .from('companies')
-        .update(updates)
-        .eq('id', id);
-
-    if (error) throw error;
-
-    if (logMessage) {
-        await logActivity(id, logMessage);
-    }
-
-    revalidatePath('/dashboard');
-    revalidatePath(`/company/${id}`);
 }
 
 export async function deleteCompany(id: string) {
-    const supabase = getSupabase();
-    const { error } = await supabase
-        .from('companies')
-        .delete()
-        .eq('id', id);
+    try {
+        const supabase = getSupabase();
+        const { error } = await supabase
+            .from('companies')
+            .delete()
+            .eq('id', id);
 
-    if (error) throw error;
-    revalidatePath('/dashboard');
+        if (error) {
+            console.error('Supabase Error (deleteCompany):', error);
+            return { error: error.message };
+        }
+        revalidatePath('/dashboard');
+        return { success: true };
+    } catch (error) {
+        console.error('Action Error (deleteCompany):', error);
+        return { error: toUserFacingError(error, 'Failed to delete application.').message };
+    }
 }
 
 export async function deleteCompanyAndRedirect(id: string) {
-    const supabase = getSupabase();
-    const { error } = await supabase
-        .from('companies')
-        .delete()
-        .eq('id', id);
+    try {
+        const supabase = getSupabase();
+        const { error } = await supabase
+            .from('companies')
+            .delete()
+            .eq('id', id);
 
-    if (error) throw error;
+        if (error) {
+            console.error('Supabase Error (deleteCompanyAndRedirect):', error);
+            return { error: error.message };
+        }
+    } catch (error) {
+        console.error('Action Error (deleteCompanyAndRedirect):', error);
+        return { error: toUserFacingError(error, 'Failed to delete application.').message };
+    }
     revalidatePath('/dashboard');
     redirect('/dashboard');
 }
@@ -218,6 +254,7 @@ export async function getSavedRoles() {
         const { data, error } = await supabase
             .from('saved_roles')
             .select('*')
+            .or('is_converted.is.null,is_converted.eq.false')
             .order('updated_at', { ascending: false });
 
         if (error) throw error;
@@ -245,7 +282,7 @@ export async function addSavedRole(payload: Pick<SavedRole, 'company_name' | 'jo
     }
 }
 
-export async function updateSavedRole(id: string, updates: Partial<Pick<SavedRole, 'company_name' | 'job_link' | 'role_title'>>) {
+export async function updateSavedRole(id: string, updates: Partial<Pick<SavedRole, 'company_name' | 'job_link' | 'role_title' | 'is_converted'>>) {
     try {
         const supabase = getSupabase();
         const { error } = await supabase
