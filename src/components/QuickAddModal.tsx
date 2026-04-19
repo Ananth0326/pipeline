@@ -77,15 +77,15 @@ export default function QuickAddModal() {
                             animate={{ y: 0, opacity: 1 }}
                             exit={{ y: '100%', opacity: 0, scale: 0.95 }}
                             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                            className="premium-card relative bg-[#FDFCFB] w-full max-w-2xl h-[92vh] md:h-[88vh] overflow-hidden rounded-t-[2.5rem] md:rounded-[2.5rem]"
+                            className="premium-card relative flex h-[92vh] w-full max-w-2xl flex-col overflow-hidden rounded-t-[2.5rem] bg-[#FDFCFB] md:h-[88vh] md:rounded-[2.5rem]"
                         >
                             <div className="modal-grain" />
                             {/* Mobile Pull Handle */}
-                            <div className="md:hidden flex justify-center py-3">
+                            <div className="md:hidden shrink-0 flex justify-center py-3">
                                 <div className="w-12 h-1.5 bg-black/20 rounded-full" />
                             </div>
 
-                            <div className="sticky top-0 bg-[#FDFCFB]/95 backdrop-blur-md px-8 py-6 md:p-6 border-b border-black/10 flex justify-between items-center z-10">
+                            <div className="sticky top-0 shrink-0 bg-[#FDFCFB]/95 backdrop-blur-md px-8 py-6 md:p-6 border-b border-black/10 flex justify-between items-center z-10">
                                 <div>
                                     <h2 className="text-xl font-black tracking-tighter uppercase font-outfit text-[#1C1917]">Quick Add</h2>
                                     <p className="text-[10px] font-bold text-[#78716C] uppercase tracking-widest font-sans">New Application Entry</p>
@@ -99,7 +99,7 @@ export default function QuickAddModal() {
                                 </button>
                             </div>
 
-                            <div className="minimal-scrollbar h-[calc(100%-88px)] overflow-y-auto overflow-x-hidden p-6 md:p-8">
+                            <div className="minimal-scrollbar min-h-0 flex-1 overflow-y-auto overflow-x-hidden p-6 md:p-8">
                                 <CompanyForm
                                     onSubmit={handleSubmit}
                                     isSubmitting={isSubmitting}

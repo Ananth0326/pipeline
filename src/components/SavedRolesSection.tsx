@@ -52,12 +52,16 @@ export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps
         setError('');
         setIsSubmitting(true);
         try {
-            await addSavedRole({
+            const res = await addSavedRole({
                 company_name: form.company_name.trim(),
                 role_title: form.role_title.trim(),
                 job_link: normalizeLink(form.job_link.trim())
             });
-            setForm({ company_name: '', role_title: '', job_link: '' });
+            if (res?.error) {
+                setError(res.error);
+            } else {
+                setForm({ company_name: '', role_title: '', job_link: '' });
+            }
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to add role.');
         } finally {
@@ -161,12 +165,16 @@ export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps
         setError('');
         setIsSubmitting(true);
         try {
-            await updateSavedRole(id, {
+            const res = await updateSavedRole(id, {
                 company_name: editForm.company_name.trim(),
                 role_title: editForm.role_title.trim(),
                 job_link: normalizeLink(editForm.job_link.trim())
             });
-            cancelEdit();
+            if (res?.error) {
+                setError(res.error);
+            } else {
+                cancelEdit();
+            }
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to update role.');
         } finally {
@@ -179,8 +187,12 @@ export default function SavedRolesSection({ savedRoles }: SavedRolesSectionProps
         setError('');
         setIsSubmitting(true);
         try {
-            await deleteSavedRole(deleting.id);
-            setDeleting(null);
+            const res = await deleteSavedRole(deleting.id);
+            if (res?.error) {
+                setError(res.error);
+            } else {
+                setDeleting(null);
+            }
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to delete role.');
         } finally {

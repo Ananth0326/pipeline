@@ -234,10 +234,14 @@ export async function addSavedRole(payload: Pick<SavedRole, 'company_name' | 'jo
             .from('saved_roles')
             .insert([payload]);
 
-        if (error) throw error;
+        if (error) {
+            console.error('Supabase Error (addSavedRole):', error);
+            return { error: error.message };
+        }
         revalidatePath('/dashboard');
     } catch (error) {
-        throw toUserFacingError(error, 'Failed to add saved role.');
+        console.error('Action Error (addSavedRole):', error);
+        return { error: toUserFacingError(error, 'Failed to add saved role.').message };
     }
 }
 
@@ -249,10 +253,14 @@ export async function updateSavedRole(id: string, updates: Partial<Pick<SavedRol
             .update(updates)
             .eq('id', id);
 
-        if (error) throw error;
+        if (error) {
+            console.error('Supabase Error (updateSavedRole):', error);
+            return { error: error.message };
+        }
         revalidatePath('/dashboard');
     } catch (error) {
-        throw toUserFacingError(error, 'Failed to update saved role.');
+        console.error('Action Error (updateSavedRole):', error);
+        return { error: toUserFacingError(error, 'Failed to update saved role.').message };
     }
 }
 
@@ -264,9 +272,13 @@ export async function deleteSavedRole(id: string) {
             .delete()
             .eq('id', id);
 
-        if (error) throw error;
+        if (error) {
+            console.error('Supabase Error (deleteSavedRole):', error);
+            return { error: error.message };
+        }
         revalidatePath('/dashboard');
     } catch (error) {
-        throw toUserFacingError(error, 'Failed to delete saved role.');
+        console.error('Action Error (deleteSavedRole):', error);
+        return { error: toUserFacingError(error, 'Failed to delete saved role.').message };
     }
 }
