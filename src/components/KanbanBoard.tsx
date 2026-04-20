@@ -115,12 +115,7 @@ export default function KanbanBoard({ companies: initialCompanies, onOpenDetails
 
     const sensors = useSensors(
         useSensor(MouseSensor, { activationConstraint: { distance: 5 } }),
-        useSensor(TouchSensor, { 
-            activationConstraint: { 
-                delay: 250, 
-                tolerance: 5 
-            } 
-        }),
+        useSensor(TouchSensor, { activationConstraint: { distance: 5 } }),
         useSensor(KeyboardSensor)
     );
 
