@@ -8,7 +8,8 @@ import {
     DndContext,
     closestCorners,
     KeyboardSensor,
-    PointerSensor,
+    MouseSensor,
+    TouchSensor,
     useSensor,
     useSensors,
     DragEndEvent,
@@ -24,7 +25,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Clock, CheckCircle2, XCircle, FileText, Briefcase } from 'lucide-react';
+import { Clock, CheckCircle2, XCircle, FileText, Briefcase, GripHorizontal } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 const playThudSound = () => {
@@ -113,7 +114,13 @@ export default function KanbanBoard({ companies: initialCompanies, onOpenDetails
     }, [initialCompanies]);
 
     const sensors = useSensors(
-        useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+        useSensor(MouseSensor, { activationConstraint: { distance: 5 } }),
+        useSensor(TouchSensor, { 
+            activationConstraint: { 
+                delay: 250, 
+                tolerance: 5 
+            } 
+        }),
         useSensor(KeyboardSensor)
     );
 
@@ -370,19 +377,24 @@ function KanbanCard({
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
             ref={setNodeRef}
             style={style}
-            {...attributes}
-            {...listeners}
-            onClick={(e) => {
-                if (!isDragging && !isOverlay) {
+            onClick={() => {
+                if (!isOverlay) {
                     router.push(`/company/${company.id}`);
                 }
             }}
-            className={`group bg-white p-4 rounded-xl border touch-none select-none ${isOverlay ? 'border-black/20 shadow-[0_10px_30px_rgba(0,0,0,0.08)] cursor-grabbing z-50' : `border-black/5 hover:border-black/10 ${hoverShadowClass} cursor-grab`} transition-all relative flex flex-col gap-3`}
+            className={`group bg-white p-4 rounded-xl border select-none ${isOverlay ? 'border-black/20 shadow-[0_10px_30px_rgba(0,0,0,0.08)] z-50 ring-2 ring-black/5' : `border-black/5 hover:border-black/10 ${hoverShadowClass} cursor-pointer`} transition-all relative flex flex-col gap-3`}
         >
             <div className="flex justify-between items-start gap-2">
                 <div>
                     <h4 className="font-inter font-bold text-[#1C1917] text-sm leading-tight">{company.company_name}</h4>
                     <p className="font-mono text-[10px] text-[#78716C] mt-1 truncate max-w-[180px]">{company.role_title}</p>
+                </div>
+                <div
+                    {...attributes}
+                    {...listeners}
+                    className="touch-none cursor-grab active:cursor-grabbing p-1.5 rounded-md hover:bg-stone-100 border border-transparent hover:border-black/5 text-[#78716C] transition-colors"
+                >
+                    <GripHorizontal size={14} />
                 </div>
             </div>
             
