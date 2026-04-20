@@ -138,7 +138,7 @@ export default function CompanyTable({ companies }: CompanyTableProps) {
 
       <AnimatePresence mode="wait">
         {viewMode === 'kanban' ? (
-          <motion.div key="kanban" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.14 }}>
+          <motion.div key="kanban" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ type: 'tween', ease: 'easeOut', duration: 0.25 }}>
             <KanbanBoard
               companies={companies}
               onOpenDetails={openDetails}
@@ -147,7 +147,7 @@ export default function CompanyTable({ companies }: CompanyTableProps) {
             />
           </motion.div>
         ) : (
-          <motion.div key="list" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.14 }} className="space-y-3">
+          <motion.div key="list" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ type: 'tween', ease: 'easeOut', duration: 0.25 }} className="space-y-3">
             <div className="grid grid-cols-[2fr_1fr_1fr_1.3fr_auto] gap-3 px-4 text-[10px] font-black uppercase tracking-[0.16em] text-[#78716C]">
               <span>Company / Role</span>
               <span>Status</span>
@@ -157,7 +157,7 @@ export default function CompanyTable({ companies }: CompanyTableProps) {
             </div>
 
             {companies.map((company) => (
-              <div key={company.id} className="premium-card grid grid-cols-[2fr_1fr_1fr_1.3fr_auto] items-center gap-3 p-4 transition-all duration-150 hover:-translate-y-px hover:shadow-[0_12px_20px_rgba(0,0,0,0.05)]">
+              <div key={company.id} className="premium-card grid grid-cols-[2fr_1fr_1fr_1.3fr_auto] items-center gap-3 p-4 transition-all duration-300 ease-out hover:-translate-y-px hover:shadow-[0_12px_20px_rgba(0,0,0,0.05)]">
                 <div>
                   <p className="font-bold text-[#1C1917]">{company.company_name}</p>
                   <p className="text-xs text-[#78716C]">{company.role_title}</p>

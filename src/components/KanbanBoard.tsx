@@ -241,7 +241,7 @@ export default function KanbanBoard({ companies: initialCompanies, onOpenDetails
                     />
                 </div>
 
-                <div className="flex gap-4 overflow-x-auto pb-8 items-start snap-x h-[70vh] minimal-scrollbar relative z-10 w-full">
+                <div className="flex gap-4 overflow-x-auto pb-8 items-start snap-x scroll-smooth h-[70vh] minimal-scrollbar relative z-10 w-full">
                     {COLUMNS.map((col) => {
                         const columnCompanies = companies.filter(c => getColumnForStatus(c.status) === col.id);
                         const isMagneticHovered = activeId !== null && hoveredColumnId === col.id;
@@ -250,7 +250,7 @@ export default function KanbanBoard({ companies: initialCompanies, onOpenDetails
                             <motion.div 
                                 key={col.id} 
                                 animate={{ scale: isMagneticHovered ? 1.02 : 1 }}
-                                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                                transition={{ type: 'tween', ease: 'easeOut', duration: 0.3 }}
                                 className={`premium-card relative min-w-[300px] w-[300px] flex flex-col bg-white shrink-0 snap-center max-h-full ${col.glow} ${isMagneticHovered ? 'ring-1 ring-black/10 bg-black/[0.03]' : ''}`}
                             >
                                 {/* Subtle Radial Gradient Background for Active/Hover State */}
@@ -281,7 +281,7 @@ export default function KanbanBoard({ companies: initialCompanies, onOpenDetails
             <DragOverlay 
                 dropAnimation={{ 
                     duration: 400,
-                    easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+                    easing: 'ease-out',
                     sideEffects: defaultDropAnimationSideEffects({ styles: { active: { opacity: '0.4' } } }) 
                 }}
             >
@@ -369,7 +369,7 @@ function KanbanCard({
             }}
             whileDrag={{ rotate: 2 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            transition={{ type: "tween", ease: "easeOut", duration: 0.25 }}
             ref={setNodeRef}
             style={style}
             onClick={() => {
