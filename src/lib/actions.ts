@@ -9,8 +9,8 @@ function toUserFacingError(error: unknown, fallback: string): Error {
     const message = error instanceof Error ? error.message : '';
     const lower = message.toLowerCase();
 
-    if (lower.includes('abort') || lower.includes('timeout') || lower.includes('fetch failed') || lower.includes('failed to fetch')) {
-        return new Error('Supabase did not respond in time. Check NEXT_PUBLIC_SUPABASE_URL and your network, then try again.');
+    if (lower.includes('abort') || lower.includes('timeout') || lower.includes('fetch failed') || lower.includes('failed to fetch') || lower.includes('enotfound')) {
+        return new Error('Supabase did not respond in time, or the project is paused/deleted. Please check your Supabase Dashboard to ensure the project is active, verify NEXT_PUBLIC_SUPABASE_URL and your network, and try again.');
     }
 
     return new Error(message || fallback);
